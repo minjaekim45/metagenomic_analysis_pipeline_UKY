@@ -1,0 +1,34 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+
+# The number of CPUs or threads
+THR=4
+
+#---------------------------------------------------------
+
+echo "==[ 02.trimmed_reads: $(date) ]" ;
+cd "$FOLDER/02.trimmed_reads" ;
+
+source /curc/sw/anaconda3/latest
+
+conda activate trim-galore
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR --paired ../01.raw_reads/"$b".1.fastq ../01.raw_reads/"$b".2.fastq
+else
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR ../01.raw_reads/"$b".1.fastq
+fi ;
+
+module load ruby
+
+# Tagging fastq
+
+
+
+
+
