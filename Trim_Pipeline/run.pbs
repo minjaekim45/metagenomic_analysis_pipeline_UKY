@@ -28,6 +28,40 @@ module load ruby
 
 # Tagging fastq
 
+if [[ -e ./"$b".2_val_2.fq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i "./$b".2_val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+else
+   $enve/FastQ.tag.rb -i "./$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+fi
+
+#-------------------------------------------------------------------------------------
+# FastQ -> FastA 
+
+FQ2A="$enve/FastQ.toFastA.awk" ;
+echo "==[ 04.trimmed_fasta: $(date) ]" ;
+cd $FOLDER/04.trimmed_fasta ;
+
+if [[ -e ../02.trimmed_reads/"$b".2.tagged.fastq ]] ; then
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".2.tagged.fastq > "$b"_2.fa ;
+else
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq  > "$b"_SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+# Interpose fasta
+
+if [[ -e "$b"_2.fa ]] ; then
+   $enve/FastA.interpose.pl "$b".CoupledReads.fa "$b"_1.fa "$b"_2.fa ;
+else
+   mv "$b"_SingleReads.fa "$b".SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
+
 
 
 
