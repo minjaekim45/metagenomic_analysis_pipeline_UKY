@@ -14,7 +14,7 @@ THR=4
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd "$FOLDER/02.trimmed_reads" ;
 
-source /curc/sw/anaconda3/latest
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 conda activate trim-galore
 
