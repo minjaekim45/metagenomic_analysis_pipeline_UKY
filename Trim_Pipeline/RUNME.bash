@@ -3,26 +3,26 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./RUNME.bash folder queue PAR
+   Usage: ./RUNME.bash folder queue QOS
 
    folder	Path to the folder containing the raw reads. The raw reads must be in FastQ format,
    		and filenames must follow the format: <name>.<sis>.fastq, where <name> is the name
 		of the sample, and <sis> is 1 or 2 indicating which sister read the file contains.
 		Use only '1' as <sis> if you have single reads.
-   account	select an account (if no provided, coa_mki314_uksr will be used)
-   PAR			select a quality of service (if no provided, normal will be used)
+   partition	select a partition (if no provided, shas will be used)
+   qos			select a quality of service (if no provided, normal will be used)
    
    " >&2 ;
    exit 1 ;
 fi ;
 QUEUE=$2
 if [[ "$QUEUE" == "" ]] ; then
-   QUEUE="coa_mki314_uksr"
+   QUEUE="shas"
 fi ;
 
-PAR=$3
-if [[ "$PAR" == "" ]] ; then
-   PAR="normal"
+QOS=$3
+if [[ "$QOS" == "" ]] ; then
+   QOS="normal"
 fi ;
 
 
@@ -45,7 +45,8 @@ for i in $dir/*.1.fastq ; do
       mv "$b".1.fastq 01.raw_reads/ ;
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$PAR --error "$dir"/"Trim-$b"-%j.err -o "$dir"/"Trim-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "Trim-$b" --partition=$QUEUE --qos=$QOS --error "$dir"/"Trim-$b"-%j.err -o "$dir"/"Trim-$b"-%j.out  $pac/run.pbs | grep .;
 done ;
 
 echo 'Done'
+# Hi Greg!
