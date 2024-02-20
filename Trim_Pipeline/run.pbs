@@ -23,7 +23,8 @@ else
    trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR ../01.raw_reads/"$b".1.fastq
 fi ;
 
-module load ruby
+conda deactivate
+conda activate ruby
 
 # Tagging fastq
 
