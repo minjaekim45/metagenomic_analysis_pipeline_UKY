@@ -4,7 +4,7 @@
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
-enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+enve=/project/mki314_uksr/enveomics/Scripts
 # The number of CPUs or threads
 THR=4
 
