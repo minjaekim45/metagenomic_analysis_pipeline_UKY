@@ -1,0 +1,42 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --mem=80g
+#SBATCH -t 120:00:00
+
+source /curc/sw/anaconda3/latest
+conda activate nonpareil
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
+THR=4
+MEM=600000
+
+
+#---------------------------------------------------------
+
+echo "==[ 06.nonpareil: $(date) ]"
+cd $FOLDER/04.trimmed_fasta
+
+# Run Nonpareil
+
+cd $FOLDER/06.nonpareil
+
+if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!"
+   nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+else
+   echo "Coupled Reads! Should use only one pair reads"
+   nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+fi
+
+# Run Mash sketch
+
+cd $FOLDER/07.mash ;
+
+"$mash" sketch $FA -o $b.msh -k 25 -s 1000000  ;
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
