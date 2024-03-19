@@ -11,7 +11,7 @@ enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
 mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
 
-cd /pl/active/conant-csu/Minjae/nit_mg/07.mash
+cd /scratch/jwme229/unzip_test/07.mash
 
 readlink -f *.msh > mash_list.txt ;
 
