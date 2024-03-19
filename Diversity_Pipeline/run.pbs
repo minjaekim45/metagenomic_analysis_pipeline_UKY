@@ -4,7 +4,7 @@
 #SBATCH --mem=80g
 #SBATCH -t 120:00:00
 
-source /curc/sw/anaconda3/latest
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate nonpareil
 
 b=$SAMPLE
