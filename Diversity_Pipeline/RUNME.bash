@@ -25,7 +25,7 @@ fi ;
 
 QUEUE=$2
 if [[ "$QUEUE" == "" ]] ; then
-   QUEUE="smem"
+   QUEUE="coa_mki314_uksr"
 fi ;
 
 QOS=$3
