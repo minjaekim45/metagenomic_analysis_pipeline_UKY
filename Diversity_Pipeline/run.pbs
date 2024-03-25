@@ -25,10 +25,10 @@ cd $FOLDER/06.nonpareil
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
-   nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 else
    echo "Coupled Reads! Should use only one pair reads"
-   nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 fi
 
 # Run Mash sketch
