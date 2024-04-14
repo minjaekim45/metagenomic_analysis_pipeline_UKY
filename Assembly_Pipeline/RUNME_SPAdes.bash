@@ -18,7 +18,7 @@ fi ;
 
 QUEUE=$2
 if [[ "$QUEUE" == "" ]] ; then
-   QUEUE="shas"
+   QUEUE="coa_mki314_uksr"
 fi ;
 
 QOS=$3
@@ -54,7 +54,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    else
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
-   sbatch --export="$OPTS" -J "SPADES-$b" --partition=$QUEUE --qos=$QOS --error "$dir"/"SPADES-$b"-%j.err -o "$dir"/"SPADES-$b"-%j.out  $pac/run_SPAdes.pbs | grep .;
+   sbatch --export="$OPTS" -J "SPADES-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"SPADES-$b"-%j.err -o "$dir"/"SPADES-$b"-%j.out  $pac/run_SPAdes.pbs | grep .;
 done ;
 
 echo 'Done'
