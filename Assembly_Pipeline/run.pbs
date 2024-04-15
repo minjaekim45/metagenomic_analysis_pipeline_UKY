@@ -4,10 +4,10 @@
 #SBATCH -t 48:00:00
 
 b=$SAMPLE
-enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+enve=/project/mki314_uksr/enveomics/Scripts
 THR=10
 
-source /curc/sw/anaconda3/latest
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 conda activate idba
 

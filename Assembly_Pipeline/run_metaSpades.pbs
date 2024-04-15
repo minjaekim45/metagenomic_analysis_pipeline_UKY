@@ -5,9 +5,9 @@
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
-enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
-SP=/projects/kim45@colostate.edu/Software/SPAdes-3.15.3-Linux/bin
+SP=/project/mki314_uksr/Software/SPAdes-3.15.5-Linux/bin
 #---------------------------------------------------------
 
 echo "==[ 05.assembly: $(date) ]"
