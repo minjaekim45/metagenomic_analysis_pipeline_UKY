@@ -4,7 +4,7 @@
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
-enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
 
 
@@ -15,8 +15,8 @@ THR=4
 echo "==[ 15.metabat2: $(date) ]"
 cd $FOLDER/15.metabat2
 
-source /curc/sw/anaconda3/latest
-conda activate /projects/.colostate.edu/kim45/software/anaconda/envs/metabat2
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate /project/mki314_uksr/Software/anaconda/envs/metabat2
 
 # Run Bowtie2 alignment with all reads you have aginst one assembly
 
