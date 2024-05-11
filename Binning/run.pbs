@@ -1,0 +1,80 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+THR=4
+
+
+#---------------------------------------------------------
+
+# Run MetaBAT2 (Remove # to add metabat)
+
+echo "==[ 15.metabat2: $(date) ]"
+cd $FOLDER/15.metabat2
+
+source /curc/sw/anaconda3/latest
+conda activate /projects/.colostate.edu/kim45/software/anaconda/envs/metabat2
+
+# Run Bowtie2 alignment with all reads you have aginst one assembly
+
+bowtie2-build ../05.assembly/"$b.LargeContigs.fna" "$b"
+
+if [[ -s ../04.trimmed_fasta/"$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!"
+   bowtie2 -f -x "$b" -U $FA -S "$b"_"$b"_Single.sam -p $THR;
+ 
+else
+   echo "Coupled Reads!"
+   bowtie2 -f -x "$b" -1 ../04.trimmed_fasta/"$b"_1.fa -2 ../04.trimmed_fasta/"$b"_2.fa -S "$b"_"$b"_Coupled.sam -p $THR;
+fi;
+
+# Convert sam to bam and sort bam
+
+for i in ./"$b"_*.sam; do
+   m=$(basename $i .sam); 
+   samtools view -@ $THR -bS "$i" > "$m".bam;
+   samtools sort -@ $THR "$m".bam -o "$m".bam.sorted;
+done
+
+# Create a depth file & Run metabat2
+
+mkdir ./"$b"
+jgi_summarize_bam_contig_depths --outputDepth "$b"_depth.txt "$b"_*.bam.sorted;
+
+metabat2 -i ../05.assembly/"$b.LargeContigs.fna" -a "$b"_depth.txt -o ./"$b"/"$b"
+
+# Remove all sam files
+
+rm "$b"_*.sam
+
+# remove all unsorted bam files
+
+rm "$b"_*.bam
+
+conda deactivate
+
+# Prepare DasTool input
+
+#conda activate DasTool
+
+#cd $FOLDER/14.maxbin2
+
+#Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fasta > ../16.dastool/"$b".maxbin.scaffolds2bin.tsv
+
+#cd $FOLDER/15.metabat2
+
+#Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fa > ../16.dastool/"$b".metabat.scaffolds2bin.tsv
+
+# Run DasTool
+
+#cd $FOLDER/16.dastool
+#mkdir "$b"
+
+#DAS_Tool --search_engine blast -i "$b".maxbin.scaffolds2bin.tsv,"$b".metabat.scaffolds2bin.tsv -l maxbin,metabat -c ../05.assembly/"$b".LargeContigs.fna -o ./"$b"
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
