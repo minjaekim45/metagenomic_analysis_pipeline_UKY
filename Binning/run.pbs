@@ -6,7 +6,8 @@
 b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
-
+BT=/project/mki314_uksr/miniconda3/envs/bowtie2/bin
+ST=/project/mki314_uksr/miniconda3/envs/samtools/bin
 
 #---------------------------------------------------------
 
@@ -20,23 +21,23 @@ conda activate /project/mki314_uksr/miniconda3/envs/metabat2
 
 # Run Bowtie2 alignment with all reads you have aginst one assembly
 
-bowtie2-build ../05.assembly/"$b.LargeContigs.fna" "$b"
+$BT/bowtie2-build ../05.assembly/"$b.LargeContigs.fna" "$b"
 
 if [[ -s ../04.trimmed_fasta/"$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
-   bowtie2 -f -x "$b" -U $FA -S "$b"_"$b"_Single.sam -p $THR;
+   $BT/bowtie2 -f -x "$b" -U $FA -S "$b"_"$b"_Single.sam -p $THR;
  
 else
    echo "Coupled Reads!"
-   bowtie2 -f -x "$b" -1 ../04.trimmed_fasta/"$b"_1.fa -2 ../04.trimmed_fasta/"$b"_2.fa -S "$b"_"$b"_Coupled.sam -p $THR;
+   $BT/bowtie2 -f -x "$b" -1 ../04.trimmed_fasta/"$b"_1.fa -2 ../04.trimmed_fasta/"$b"_2.fa -S "$b"_"$b"_Coupled.sam -p $THR;
 fi;
 
 # Convert sam to bam and sort bam
 
 for i in ./"$b"_*.sam; do
    m=$(basename $i .sam); 
-   samtools view -@ $THR -bS "$i" > "$m".bam;
-   samtools sort -@ $THR "$m".bam -o "$m".bam.sorted;
+   $ST/samtools view -@ $THR -bS "$i" > "$m".bam;
+   $ST/samtools sort -@ $THR "$m".bam -o "$m".bam.sorted;
 done
 
 # Create a depth file & Run metabat2
