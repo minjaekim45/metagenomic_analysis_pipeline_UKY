@@ -1,0 +1,31 @@
+#/bin/bash
+#$ -e /account/mkim/
+#$ -o /account/mkim/
+
+source /account/mkim/anaconda3/etc/profile.d/conda.sh
+conda activate gtdbtk
+
+enve=/account/mkim/Software/enveomics/Scripts
+
+THR=60
+
+#---------------------------------------------------------
+
+echo "==[ 17.checkm: $(date) ]"
+
+cd $FOLDER/17.checkm/output/good_quality
+mkdir gtdbtk_output
+
+readlink -f *.fasta > list.txt
+
+cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
+
+paste list.txt ID.txt > batchfile.txt
+
+gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir ./gtdbtk_output --extension fasta --cpus $THR
+
+#----------------------------------------------------------
+
+echo "Done: $(date)."
+
+
