@@ -1,0 +1,77 @@
+#/bin/bash
+#$ -e /account/mkim/
+#$ -o /account/mkim/
+
+source /account/mkim/anaconda3/etc/profile.d/conda.sh
+
+conda activate CheckM
+
+enve=/account/mkim/Software/enveomics/Scripts
+FA=/account/mkim/Software/FastANI/fastANI
+THR=8
+
+#---------------------------------------------------------
+
+echo "==[ 17.checkm: $(date) ]"
+
+cd $FOLDER/17.checkm
+
+for fname in *; do
+  name="${fname%\.*}"
+  extension="${fname#$name}"
+  newname="${name//./_}"
+  newfname="$newname""$extension"
+  if [ "$fname" != "$newfname" ]; then
+    echo mv "$fname" "$newfname"
+    mv "$fname" "$newfname"
+  fi
+done
+
+mkdir output
+
+checkm lineage_wf -t $THR -x fasta --tab_table -f ./output/qs.o1.tsv  ./ ./output
+
+awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
+
+awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
+
+awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
+
+mkdir ./output/good_quality
+
+mv ./output/high_qual_w_score.tsv ./output/good_quality
+
+while IFS= read -r line
+do 
+   cp ./"$line".fasta ./output/good_quality
+done < ./output/list.txt
+
+gzip *.fasta 
+
+#---------------------------------------------------------
+
+## FASTANI
+
+export LD_LIBRARY_PATH="/account/mkim/Software/gsl/lib:$LD_LIBRARY_PATH"
+
+cd $FOLDER/17.checkm/output/good_quality
+
+PT=$FOLDER/17.checkm/output/good_quality/
+
+readlink -f *.fasta > list.txt
+
+mkdir fastani_results
+
+$FA -t 8 --ql list.txt --rl list.txt --fragLen 1000 -o ./fastani_results/fastani_output.txt --matrix
+
+cat ./fastani_results/fastani_output.txt | perl -pe 's|'$PT'||g' | perl -pe 's|'.fasta'||g' > ./fastani_results/fastani_good_MAGs.txt
+
+conda deactivate
+
+python3 /account/mkim/Software/Binning_Pipeline/dereplication_for_cluster.py ./fastani_results/fastani_good_MAGs.txt ./high_qual_w_score.tsv ./fastani_results/cluster_score_95.csv ./fastani_results/cluster_only_95.csv ./fastani_results/cluster_score_99.csv ./fastani_results/cluster_only_99.csv
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
+
+
