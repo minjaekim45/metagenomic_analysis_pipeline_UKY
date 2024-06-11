@@ -49,25 +49,7 @@ gzip *.fasta
 
 #---------------------------------------------------------
 
-## FASTANI
 
-export LD_LIBRARY_PATH="/account/mkim/Software/gsl/lib:$LD_LIBRARY_PATH"
-
-cd $FOLDER/17.checkm/output/good_quality
-
-PT=$FOLDER/17.checkm/output/good_quality/
-
-readlink -f *.fasta > list.txt
-
-mkdir fastani_results
-
-$FA -t 8 --ql list.txt --rl list.txt --fragLen 1000 -o ./fastani_results/fastani_output.txt --matrix
-
-cat ./fastani_results/fastani_output.txt | perl -pe 's|'$PT'||g' | perl -pe 's|'.fasta'||g' > ./fastani_results/fastani_good_MAGs.txt
-
-conda deactivate
-
-python3 /account/mkim/Software/Binning_Pipeline/dereplication_for_cluster.py ./fastani_results/fastani_good_MAGs.txt ./high_qual_w_score.tsv ./fastani_results/cluster_score_95.csv ./fastani_results/cluster_only_95.csv ./fastani_results/cluster_score_99.csv ./fastani_results/cluster_only_99.csv
 
 #---------------------------------------------------------
 
