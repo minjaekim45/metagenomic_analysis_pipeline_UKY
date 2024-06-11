@@ -2,12 +2,11 @@
 #$ -e /account/mkim/
 #$ -o /account/mkim/
 
-source /account/mkim/anaconda3/etc/profile.d/conda.sh
-
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate CheckM
 
-enve=/account/mkim/Software/enveomics/Scripts
-FA=/account/mkim/Software/FastANI/fastANI
+enve=/project/mki314_uksr/enveomics/Scripts
+FA=/scratch/jwme229/Software/FastANI/fastANI
 THR=8
 
 #---------------------------------------------------------
