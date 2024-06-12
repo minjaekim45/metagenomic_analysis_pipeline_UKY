@@ -2,10 +2,10 @@
 #$ -e /account/mkim/
 #$ -o /account/mkim/
 
-source /account/mkim/anaconda3/etc/profile.d/conda.sh
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate gtdbtk
 
-enve=/account/mkim/Software/enveomics/Scripts
+enve=/project/mki314_uksr/enveomics/Scripts
 
 THR=60
 
