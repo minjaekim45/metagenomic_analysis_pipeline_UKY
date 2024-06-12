@@ -18,7 +18,7 @@ fi ;
 
 QUEUE=$2
 if [[ "$QUEUE" == "" ]] ; then
-   QUEUE="hpc.q@ncshpc2*"
+   QUEUE="shas"
 fi ;
 
 dir=$(readlink -f $1)
