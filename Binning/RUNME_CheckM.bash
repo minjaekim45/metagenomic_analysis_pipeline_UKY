@@ -47,7 +47,7 @@ sub_directories=($(find "15.metabat2" -mindepth 1 -maxdepth 1 -type d))
 for subdir in "${sub_directories[@]}"; do
     mkdir $dir/17.checkm/$subdir
     # Move into the sub-directory
-    cd "15.metabat2/$subdir" || exit
+    cd "$dir/15.metabat2/$subdir" || exit
 
     b=$(basename $subdir)
     OPTS="SAMPLE=$b,FOLDER=$dir"
