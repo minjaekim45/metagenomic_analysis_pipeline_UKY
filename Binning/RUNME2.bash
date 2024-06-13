@@ -38,4 +38,4 @@ done
 # Launch jobs
 
 OPTS="SAMPLE=$b,FOLDER=$dir"
-qsub -v "$OPTS" -N "CheckM" -R y -pe multicore 8 -q $QUEUE $pac/run2.pbs | grep .
+sbatch --export="$OPTS" -J "CheckM-$b" --partition=$QUEUE --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run2.pbs | grep .;
