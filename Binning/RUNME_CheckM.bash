@@ -52,7 +52,7 @@ for subdir in "${sub_directories[@]}"; do
     b=$(basename $subdir)
     OPTS="SAMPLE=$b,FOLDER=$dir"
     
-    sbatch --export="$OPTS" -J "Metabat2-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"Metabat2-$b"-%j.err -o "$dir"/"Metabat2-$b"-%j.out  $pac/run.pbs | grep .;
+    sbatch --export="$OPTS" -J "CheckM-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run_CheckM.pbs | grep .;
 
 done
 
