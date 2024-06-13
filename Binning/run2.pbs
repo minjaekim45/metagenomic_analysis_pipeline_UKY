@@ -1,6 +1,7 @@
 #!/bin/bash
-#$ -e /account/mkim/
-#$ -o /account/mkim/
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate CheckM
