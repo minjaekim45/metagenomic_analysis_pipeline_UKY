@@ -59,24 +59,24 @@ conda deactivate
 
 #---------------------------------------------------------
 
-# Prepare DasTool input
+## Prepare DasTool input
 
-conda activate DasTool
+#conda activate DasTool
 
-cd $FOLDER/14.maxbin2
+#cd $FOLDER/14.maxbin2
 
-Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fasta > ../16.dastool/"$b".maxbin.scaffolds2bin.tsv
+#Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fasta > ../16.dastool/"$b".maxbin.scaffolds2bin.tsv
 
-cd $FOLDER/15.metabat2
+#cd $FOLDER/15.metabat2
 
-Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fa > ../16.dastool/"$b".metabat.scaffolds2bin.tsv
+#Fasta_to_Scaffolds2Bin.sh -i ./"$b" -e fa > ../16.dastool/"$b".metabat.scaffolds2bin.tsv
 
-# Run DasTool
+## Run DasTool
 
-cd $FOLDER/16.dastool
-mkdir "$b"
+#cd $FOLDER/16.dastool
+#mkdir "$b"
 
-DAS_Tool --search_engine blast -i "$b".maxbin.scaffolds2bin.tsv,"$b".metabat.scaffolds2bin.tsv -l maxbin,metabat -c ../05.assembly/"$b".LargeContigs.fna -o ./"$b"
+#DAS_Tool --search_engine blast -i "$b".maxbin.scaffolds2bin.tsv,"$b".metabat.scaffolds2bin.tsv -l maxbin,metabat -c ../05.assembly/"$b".LargeContigs.fna -o ./"$b"
 
 #---------------------------------------------------------
 
