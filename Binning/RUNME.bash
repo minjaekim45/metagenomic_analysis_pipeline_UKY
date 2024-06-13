@@ -53,17 +53,17 @@ fi ;
 cd $dir
 
 # Add this to add more binning methods (followings are example lines)
-for i in 14.maxbin2; do
-   [[ -d $i ]] || mkdir $i
-done
+#for i in 14.maxbin2; do
+#   [[ -d $i ]] || mkdir $i
+#done
 
 for i in 15.metabat2; do
    [[ -d $i ]] || mkdir $i
 done
 
-for i in 16.dastool; do
-   [[ -d $i ]] || mkdir $i
-done
+#for i in 16.dastool; do
+#   [[ -d $i ]] || mkdir $i
+#done
 
 # Launch jobs
 
