@@ -45,13 +45,14 @@ sub_directories=($(find "15.metabat2" -mindepth 1 -maxdepth 1 -type d))
 
 # Loop through each sub-directory
 for subdir in "${sub_directories[@]}"; do
-    mkdir $dir/17.checkm/$subdir
-    # Move into the sub-directory
-    cd "$dir/15.metabat2/$subdir" || exit
-
+    
     b=$(basename $subdir)
     OPTS="SAMPLE=$b,FOLDER=$dir"
     
+    mkdir $dir/17.checkm/$b
+    # Move into the sub-directory
+    cd "$dir/$subdir" || exit
+
     sbatch --export="$OPTS" -J "CheckM-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run_CheckM.pbs | grep .;
 
 done
