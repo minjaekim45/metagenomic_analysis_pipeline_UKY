@@ -45,37 +45,15 @@ sub_directories=($(find "15.metabat2" -mindepth 1 -maxdepth 1 -type d))
 
 # Loop through each sub-directory
 for subdir in "${sub_directories[@]}"; do
+    mkdir $dir/17.checkm/$subdir
     # Move into the sub-directory
-        cd "15.metabat2/$subdir" || exit
+    cd "15.metabat2/$subdir" || exit
+
+    b=$(basename $subdir)
+    OPTS="SAMPLE=$b,FOLDER=$dir"
     
-         checkm lineage_wf -x fa --tab_table ./ /scratch/jwme229/raw_data_files/17.checkm/30
+    sbatch --export="$OPTS" -J "Metabat2-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"Metabat2-$b"-%j.err -o "$dir"/"Metabat2-$b"-%j.out  $pac/run.pbs | grep .;
 
-
-    # Check if the sub-directory exists
-    if [ -d "$main_directory/$subdir" ]; then
-        # Move into the sub-directory
-        cd "$main_directory/$subdir" || exit
-
-        # Execute the command
-        
-
-        # Move back to the main directory
-        cd "$OLDPWD" || exit
-    else
-        echo "Directory '$subdir' does not exist."
-    fi
 done
 
 
-
-
-for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
-   b=$(basename $i .CoupledReads.fa)
-   OPTS="SAMPLE=$b,FOLDER=$dir"
-   if [[ -s $dir/04.trimmed_fasta/$b.SingleReads.fa ]] ; then
-      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.SingleReads.fa"
-   else
-      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
-   fi
-   sbatch --export="$OPTS" -J "Metabat2-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"Metabat2-$b"-%j.err -o "$dir"/"Metabat2-$b"-%j.out  $pac/run.pbs | grep .;
-done 
