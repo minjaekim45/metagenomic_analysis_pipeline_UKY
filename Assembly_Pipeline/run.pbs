@@ -5,7 +5,7 @@
 
 b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
-THR=10
+THR=100
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
