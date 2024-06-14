@@ -5,6 +5,7 @@
 
 
 b=$SAMPLE
+dir=/scratch/jwme229/raw_data_files
 enve=/project/mki314_uksr/enveomics/Scripts
 THR=20
 
@@ -13,7 +14,7 @@ conda activate CheckM
 
 #---------------------------------------------------------
 
-checkm lineage_wf -t $THR -x fa --tab_table ./ ../17.checkm/$b
+checkm lineage_wf -t $THR -x fa --tab_table ./ $dir/17.checkm/$b
 
 conda deactivate
 
