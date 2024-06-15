@@ -14,7 +14,24 @@ conda activate CheckM
 
 #---------------------------------------------------------
 
-checkm lineage_wf -t $THR -x fa --tab_table ./ $dir/17.checkm/$b
+checkm lineage_wf -t $THR -x fa --tab_table -f ./output/qs.o1.tsv ./ $dir/17.checkm/$b
+
+awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
+
+awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
+
+awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
+
+mkdir ./output/good_quality
+
+mv ./output/high_qual_w_score.tsv ./output/good_quality
+
+while IFS= read -r line
+do 
+   cp ./"$line".fasta ./output/good_quality
+done < ./output/list.txt
+
+gzip *.fasta
 
 conda deactivate
 
