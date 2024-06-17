@@ -17,7 +17,7 @@ mkdir $FOLDER/17.checkm/output
 
 checkm lineage_wf -t $THR -x fa --tab_table -f $FOLDER/17.checkm/output/qs.o1.tsv ./ $FOLDER/17.checkm/$b
 
-cd $FOLDER/17.checkm/output
+cd $FOLDER/17.checkm
 
 awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
 
