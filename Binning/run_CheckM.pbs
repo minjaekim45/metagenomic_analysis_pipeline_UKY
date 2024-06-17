@@ -14,7 +14,11 @@ conda activate CheckM
 
 #---------------------------------------------------------
 
+mkdir ../17.checkm/output
+
 checkm lineage_wf -t $THR -x fa --tab_table -f ./output/qs.o1.tsv ./ $dir/17.checkm/$b
+
+cd ../17.checkm/output
 
 awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
 
