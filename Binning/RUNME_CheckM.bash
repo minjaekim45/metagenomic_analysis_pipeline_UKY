@@ -48,14 +48,12 @@ for subdir in "${sub_directories[@]}"; do
 
    b=$(basename $subdir)
    OPTS="SAMPLE=$b,FOLDER=$dir"
-   
+
    mkdir $dir/17.checkm/$b
-   
+
    # Move into the sub-directory
    cd "$dir/15.metabat2/$b" || exit
-   
+
    sbatch --export="$OPTS" -J "CheckM-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run_CheckM.pbs | grep .;
 
 done
-
-
