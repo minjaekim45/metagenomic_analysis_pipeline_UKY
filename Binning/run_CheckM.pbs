@@ -13,7 +13,7 @@ conda activate CheckM
 
 #---------------------------------------------------------
 
-mkdir $FOLDER/17.checkm/output
+mkdir $FOLDER/17.checkm/$b/output
 
 checkm lineage_wf -t $THR -x fa --tab_table -f $FOLDER/17.checkm/$b/output/qs.o1.tsv ./ $FOLDER/17.checkm/$b
 
