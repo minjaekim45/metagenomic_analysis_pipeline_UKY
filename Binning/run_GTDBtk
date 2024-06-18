@@ -1,0 +1,33 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=60
+#SBATCH -t 12:00:00
+
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+THR=60
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate gtdbtk
+
+#---------------------------------------------------------
+
+echo "==[ 17.checkm: $(date) ]"
+
+cd $FOLDER/17.checkm/output/good_quality
+mkdir gtdbtk_output
+
+readlink -f *.fa > list.txt
+
+cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
+
+paste list.txt ID.txt > batchfile.txt
+
+gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir ./gtdbtk_output --extension fa --cpus $THR
+
+#----------------------------------------------------------
+
+conda deactivate
+
+echo "Done: $(date)."
