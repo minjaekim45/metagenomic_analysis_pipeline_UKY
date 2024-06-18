@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=16
+#SBATCH -t 12:00:00
+
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+THR=16
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate CheckM
+
+#---------------------------------------------------------
+
