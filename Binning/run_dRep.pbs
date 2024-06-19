@@ -6,10 +6,11 @@
 
 b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
-THR=16
+THR=6
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-conda activate CheckM
+conda activate dRep
 
 #---------------------------------------------------------
 
+dRep $FOLDER -p PROCESSORS $THR 
