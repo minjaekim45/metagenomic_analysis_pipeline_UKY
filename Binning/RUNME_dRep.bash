@@ -36,6 +36,10 @@ fi ;
 
 cd $dir
 
+for i in 18.dRep; do
+   [[ -d $i ]] || mkdir $i
+done
+
 # Get a list of subdirectories within the main directory
 checkm_dir=($(find "17.checkm" -mindepth 1 -maxdepth 1 -type d))
 
