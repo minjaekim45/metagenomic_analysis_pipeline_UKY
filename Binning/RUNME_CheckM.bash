@@ -41,10 +41,10 @@ for i in 17.checkm; do
 done
 
 # Get a list of subdirectories within the main directory
-sub_directories=($(find "15.metabat2" -mindepth 1 -maxdepth 1 -type d))
+metabat2_dir=($(find "15.metabat2" -mindepth 1 -maxdepth 1 -type d))
 
 # Loop through each sub-directory
-for subdir in "${sub_directories[@]}"; do
+for subdir in "${metabat2_dir[@]}"; do
 
    b=$(basename $subdir)
    OPTS="SAMPLE=$b,FOLDER=$dir"

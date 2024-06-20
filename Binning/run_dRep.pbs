@@ -17,4 +17,14 @@ mkdir $FOLDER/18.drep/$b/output
 
 cd $FOLDER/17.checkm/$b/output/good_quality
 
-dRep $FOLDER/18.drep/$b/output -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/ --S_algorithm fastANI
+dRep compare $FOLDER/18.drep/$b/output/compare -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
+
+cd $FOLDER/17.checkm/$b/output/good_quality
+
+dRep dereplicate $FOLDER/18.drep/$b/output/dereplicate -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
+
+#---------------------------------------------------------
+
+conda deactivate
+
+echo "Done: $(date)."

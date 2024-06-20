@@ -40,8 +40,8 @@ cd ./$b/output/good_quality
 
 gzip *.fa
 
-conda deactivate
-
 #---------------------------------------------------------
+
+conda deactivate
 
 echo "Done: $(date)."
