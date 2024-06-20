@@ -45,6 +45,8 @@ for subdir in "${checkm_dir[@]}"; do
    b=$(basename $subdir)
    OPTS="SAMPLE=$b,FOLDER=$dir"
 
+   mkdir $dir/18.dRep/$b
+
    # Move into the sub-directory
    cd "$dir/17.checkm/$b" || exit
 

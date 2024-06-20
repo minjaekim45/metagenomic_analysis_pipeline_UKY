@@ -36,10 +36,6 @@ do
    cp $FOLDER/15.metabat2/$b/"$line".fa $FOLDER/17.checkm/$b/output/good_quality
 done < ./$b/output/list.txt
 
-cd ./$b/output/good_quality
-
-gzip *.fa
-
 #---------------------------------------------------------
 
 conda deactivate
