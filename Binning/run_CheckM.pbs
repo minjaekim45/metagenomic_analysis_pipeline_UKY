@@ -33,24 +33,12 @@ mv ./$b/output/high_qual_w_score.tsv ./$b/output/good_quality
 
 while IFS= read -r line
 do
-   cp ./"$line" ./$b/output/good_quality
+   cp $FOLDER/15.metabat2/$b/"$line".fa $FOLDER/17.checkm/$b/output/good_quality
 done < ./$b/output/list.txt
 
-# Iterate through each file in the directory
-for file in *; do
-    # Check if the file does not already have the .fasta extension
-    if [[ ! "$file" == *.fasta ]]; then
-        # Add the .fasta extension to the file
-        new_file="$file.fasta"
-        
-        # Rename the file
-        mv "$file" "$new_file"
-        
-        echo "Renamed $file to $new_file"
-    fi
-done
+cd ./$b/output/good_quality
 
-gzip *.fasta
+gzip *.fa
 
 conda deactivate
 
