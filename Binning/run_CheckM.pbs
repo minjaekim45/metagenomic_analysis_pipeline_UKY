@@ -33,7 +33,7 @@ mv ./$b/output/high_qual_w_score.tsv ./$b/output/good_quality
 
 while IFS= read -r line
 do
-   cp ./"$line".fa ./$b/output/good_quality
+   cp ./"$line" ./$b/output/good_quality
 done < ./$b/output/list.txt
 
 # Iterate through each file in the directory
