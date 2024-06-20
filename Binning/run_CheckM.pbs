@@ -21,7 +21,7 @@ checkm lineage_wf -t $THR -x fa --tab_table -f $FOLDER/17.checkm/$b/output/qs.o1
 
 cd $FOLDER/17.checkm
 
-awk -F "\t" '{x=$12; y=$13} {if (x - y >= 50) print $0}' ./$b/output/qs.o1.tsv > ./$b/output/high_qual.tsv
+awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./$b/output/qs.o1.tsv > ./$b/output/high_qual.tsv
 
 awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./$b/output/high_qual.tsv > ./$b/output/high_qual_w_score.tsv
 
