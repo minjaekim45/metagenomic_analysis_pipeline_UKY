@@ -13,4 +13,8 @@ conda activate dRep
 
 #---------------------------------------------------------
 
-dRep $FOLDER -p PROCESSORS $THR 
+mkdir $FOLDER/18.drep/$b/output
+
+cd $FOLDER/17.checkm/$b/output/good_quality
+
+dRep $FOLDER/18.drep/$b/output -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/ --S_algorithm fastANI

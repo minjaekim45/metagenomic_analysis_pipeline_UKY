@@ -15,6 +15,8 @@ conda activate CheckM
 
 mkdir $FOLDER/17.checkm/$b/output
 
+cd $FOLDER/15.metabat2/$b
+
 checkm lineage_wf -t $THR -x fa --tab_table -f $FOLDER/17.checkm/$b/output/qs.o1.tsv ./ $FOLDER/17.checkm/$b
 
 cd $FOLDER/17.checkm
@@ -31,10 +33,24 @@ mv ./$b/output/high_qual_w_score.tsv ./$b/output/good_quality
 
 while IFS= read -r line
 do
-   cp ./$b/"$line".fa ./$b/output/good_quality
+   cp ./"$line".fa ./$b/output/good_quality
 done < ./$b/output/list.txt
 
-gzip *.fa
+# Iterate through each file in the directory
+for file in *; do
+    # Check if the file does not already have the .fasta extension
+    if [[ ! "$file" == *.fasta ]]; then
+        # Add the .fasta extension to the file
+        new_file="$file.fasta"
+        
+        # Rename the file
+        mv "$file" "$new_file"
+        
+        echo "Renamed $file to $new_file"
+    fi
+done
+
+gzip *.fasta
 
 conda deactivate
 
