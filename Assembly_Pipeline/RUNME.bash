@@ -71,4 +71,5 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    sbatch --export="$OPTS" -J "idba-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"idba-$b"-%j.err -o "$dir"/"idba-$b"-%j.out  $pac/run.pbs | grep .;
 done ;
 
+#Hello Kaili
 echo 'Done'
