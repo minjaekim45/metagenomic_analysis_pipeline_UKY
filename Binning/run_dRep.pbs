@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=16
+#SBATCH --ntasks=6
 #SBATCH -t 12:00:00
 
 
@@ -17,11 +17,11 @@ mkdir $FOLDER/18.dRep/$b/output
 
 cd $FOLDER/17.checkm/$b/output/good_quality
 
-dRep compare $FOLDER/18.dRep/$b/output/compare -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
+dRep compare $FOLDER/18.dRep/$b/output/compare -p $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
 
 cd $FOLDER/17.checkm/$b/output/good_quality
 
-dRep dereplicate $FOLDER/18.dRep/$b/output/dereplicate -p PROCESSORS $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
+dRep dereplicate $FOLDER/18.dRep/$b/output/dereplicate -p $THR -g $FOLDER/17.checkm/$b/output/good_quality/*.fa --S_algorithm fastANI
 
 #---------------------------------------------------------
 
