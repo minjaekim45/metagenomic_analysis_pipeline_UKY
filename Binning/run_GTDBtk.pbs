@@ -15,7 +15,7 @@ conda activate gtdbtk
 
 echo "==[ 17.checkm: $(date) ]"
 
-cd $FOLDER/17.checkm/output/good_quality
+cd $FOLDER/17.checkm/$b/output/good_quality
 mkdir gtdbtk_output
 
 readlink -f *.fa > list.txt
