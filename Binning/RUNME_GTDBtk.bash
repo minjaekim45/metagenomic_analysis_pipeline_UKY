@@ -55,9 +55,7 @@ for subdir in "${sub_directories[@]}"; do
    cd "$dir/17.checkm/$b" || exit
    
    # Launch jobs
-   sbatch -v "$OPTS" -N "GTDBTK" -R y -pe multicore 60 -q $QUEUE $pac/run3.pbs | grep .;
-
-   sbatch --export="$OPTS" -J "CheckM-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run_CheckM.pbs | grep .;
+   sbatch --export="$OPTS" -J "GTDBtk-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"CheckM-$b"-%j.err -o "$dir"/"CheckM-$b"-%j.out  $pac/run_GTDBtk.pbs | grep .;
 
 done
 
