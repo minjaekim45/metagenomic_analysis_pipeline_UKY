@@ -7,6 +7,8 @@
 #SBATCH -o unzip-%j.out             # Output file for this job.
 #SBATCH --account=coa_mki314_uksr     # Project allocation account name (REQUIRED)
 
+cd /scratch/jwme229/host_contam_rmvl/human_genome
+
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 conda activate hocort
