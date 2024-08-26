@@ -24,6 +24,21 @@ else
 fi ;
 
 conda deactivate
+#---------------------------------------------------------
+conda activate hocort
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   hocort map bowtie2 -x dir/basename -i input1.fastq input2.fastq -o out1.fastq out2.fastq
+else
+   hocort map bowtie2 -x dir/basename -i input1.fastq -o out1.fastq
+fi ;
+
+
+
+
+
+conda deactivate
+#---------------------------------------------------------
 conda activate ruby
 
 # Tagging fastq
@@ -35,7 +50,7 @@ else
    $enve/FastQ.tag.rb -i "./$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
-#-------------------------------------------------------------------------------------
+#---------------------------------------------------------
 # FastQ -> FastA 
 
 FQ2A="$enve/FastQ.toFastA.awk" ;
