@@ -54,10 +54,10 @@ conda activate ruby
 # Tagging fastq
 
 if [[ -e ../hocort_out/"$b".val_2.fq ]] ; then
-   $enve/FastQ.tag.rb -i ./"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
-   $enve/FastQ.tag.rb -i "./$b".val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
 else
-   $enve/FastQ.tag.rb -i "./$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
 #---------------------------------------------------------
