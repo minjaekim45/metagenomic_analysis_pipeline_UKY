@@ -24,30 +24,40 @@ else
 fi ;
 
 conda deactivate
+
 #---------------------------------------------------------
+
+echo "==[ hocort_out: $(date) ]" ;
+cd "$FOLDER/hocort_out" ;
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 conda activate hocort
 
-if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
-   hocort map bowtie2 -x dir/basename -i input1.fastq input2.fastq -o out1.fastq out2.fastq
+if [[ -e ../02.trimmed_reads/"$b".2_val_2.fq ]] ; then
+   hocort map bowtie2 -x human_genome/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq ../02.trimmed_reads/"$b".2_val_2.fq -o ../hocort_out/"$b".val_1.fq ../hocort_out/"$b".val_2.fq
 else
-   hocort map bowtie2 -x dir/basename -i input1.fastq -o out1.fastq
+   hocort map bowtie2 -x human_genome/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq -o ../hocort_out/"$b".val_1.fq
 fi ;
 
-
-
-
-
 conda deactivate
+
 #---------------------------------------------------------
+
+echo "==[ 02.trimmed_reads: $(date) ]" ;
+cd "$FOLDER/02.trimmed_reads" ;
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 conda activate ruby
 
 # Tagging fastq
 
-if [[ -e ./"$b".2_val_2.fq ]] ; then
-   $enve/FastQ.tag.rb -i ./"$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
-   $enve/FastQ.tag.rb -i "./$b".2_val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+if [[ -e ../hocort_out/"$b".val_2.fq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i "./$b".val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
 else
-   $enve/FastQ.tag.rb -i "./$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i "./$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
 #---------------------------------------------------------
