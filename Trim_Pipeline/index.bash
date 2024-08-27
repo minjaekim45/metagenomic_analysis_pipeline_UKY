@@ -15,7 +15,7 @@ conda activate hocort
 
 mkdir GRCh38_p14 ;
 
-hocort index bowtie2 --input GCF_000001405.40_GRCh38.p14_genomic.fasta --output /scratch/jwme229/host_contam_rmv/GRCh38_p14 ;
+hocort index bowtie2 --input GCF_000001405.40_GRCh38.p14_genomic.fasta --output /scratch/jwme229/host_contam_rmvl/GRCh38_p14 ;
 
 conda deactivate
 
