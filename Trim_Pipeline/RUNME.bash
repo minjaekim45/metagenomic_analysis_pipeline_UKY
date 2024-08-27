@@ -31,7 +31,7 @@ pac=$(dirname $(readlink -f $0)) ;
 cwd=$(pwd) ;
 
 cd $dir ;
-for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta zz.TMP ; do
+for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta hocort zz.TMP ; do
    if [[ ! -d $i ]] ; then mkdir $i ; fi ;
 done ;
 
