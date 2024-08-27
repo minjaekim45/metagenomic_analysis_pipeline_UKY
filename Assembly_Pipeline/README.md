@@ -1,17 +1,20 @@
-@author: Minjae Kim (minjaekim45 at gmail dot com) modified from enveomics pipeline
+@author: Minjae Kim (minjae.kim at uky dot edu)
 
-@update: Aug-31-2019
-IMPORTANT
+@update: Aug-27-2024
 
-This pipeline was benchmarked from enveomic pipelines and adjusted for the hpc at Colordo State University
-PURPOSE
+# IMPORTANT
+
+This pipeline was benchmarked from enveomic pipelines and adjusted for the HPC at University of Kentucky
+
+# PURPOSE
 
 Performs assembly using IDBA-UD, designed for Single-Cell Genomics and Metagenomics.
-HELP
+
+# HELP
 
     Prerequisites:
 
-    1.1. Using the conda environment on Summit. For the setup please see this link (https://curc.readthedocs.io/en/latest/software/python.html?highlight=anaconda) After setup the conda environment, conda create/install idba-ud assembler with the environment name "idba"
+    1.1. Using the conda environment on the Morgan Computer Cluster. For the setup please see this link (https://curc.readthedocs.io/en/latest/software/python.html?highlight=anaconda) After setup of the conda environment, conda create/install idba-ud assembler with the environment name "idba".
 
     1.2. Prepare the trimmed reads (e.g., use Trim_Pipeline) in interposed FastA format. Files must be raw, not zipped or packaged. Filenames must conform the format: .CoupledReads.fa or .SingledReads.fa, where is the name of the sample. Locate all the files within a folder named 04.trimmed_fasta, within your project folder. If you used trim.pbs, no further action is necessary.
 
