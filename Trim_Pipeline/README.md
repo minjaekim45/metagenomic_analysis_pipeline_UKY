@@ -29,7 +29,7 @@ Performs various trimming, quality-control analyses, and human reads filtering o
 
 2. Pipeline execution:
    
-   2.1. Simply execute `./RUNME.bash <dir>`, where <dir> is the folder containing
+   2.1. Simply execute `./RUNME.bash <dir>`, where '<dir>' is the folder containing
       the FastQ files.
 
 3. What to expect:
