@@ -35,9 +35,9 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate hocort
 
 if [[ -e ../02.trimmed_reads/"$b".2_val_2.fq ]] ; then
-   hocort map bowtie2 -x /scratch/jwme229/host_contam_rmvl/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq ../02.trimmed_reads/"$b".2_val_2.fq -o ../hocort_out/"$b".val_1.fq ../hocort_out/"$b".val_2.fq
+   hocort map bowtie2 -x $FOLDER/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq ../02.trimmed_reads/"$b".2_val_2.fq -o ../hocort_out/"$b".val_1.fq ../hocort_out/"$b".val_2.fq
 else
-   hocort map bowtie2 -x /scratch/jwme229/host_contam_rmvl/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq -o ../hocort_out/"$b".val_1.fq
+   hocort map bowtie2 -x $FOLDER/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq -o ../hocort_out/"$b".val_1.fq
 fi ;
 
 conda deactivate
