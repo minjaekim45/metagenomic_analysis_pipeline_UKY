@@ -7,7 +7,9 @@
 #SBATCH -o index-%j.out             # Output file for this job.
 #SBATCH --account=coa_mki314_uksr     # Project allocation account name (REQUIRED)
 
-cd /scratch/jwme229/host_contam_rmvl ;
+PATH=/scratch/jwme229/host_contam_rmvl ;
+
+cd $PATH
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
@@ -15,7 +17,7 @@ conda activate hocort
 
 #mkdir GRCh38_p14 ;
 
-hocort index bowtie2 --input GCF_000001405.40_GRCh38.p14_genomic.fasta --output /scratch/jwme229/host_contam_rmvl/GRCh38_p14 ;
+hocort index bowtie2 --input GCF_000001405.40_GRCh38.p14_genomic.fasta --output $PATH/GRCh38_p14 ;
 
 conda deactivate
 
