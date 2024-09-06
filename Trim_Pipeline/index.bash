@@ -37,6 +37,10 @@ dir=$(readlink -f $1) ;
 
 #---------------------------------------------------------
 
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+conda activate ncbi_datasets
+
 cd $dir ;
 mkdir human_genome ;
 mv $FILE $dir/human_genome ;
@@ -45,13 +49,16 @@ cd human_genome ;
 unzip $dir -d human_dataset
 datasets rehydrate --directory human_dataset/
 
+conda deactivate
+
+#---------------------------------------------------------
+
+conda activate hocort
+
 cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
 cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
 
 cd $dir
-
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-conda activate hocort
 
 hocort index bowtie2 --input ./human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta --output ./human_genome/GRCh38_p14 ;
 
