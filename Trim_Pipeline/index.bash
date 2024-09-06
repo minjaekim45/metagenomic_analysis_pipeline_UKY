@@ -33,22 +33,22 @@ if [[ "$IND" == "" ]] ; then
    IND="GRCh38_p14"
 fi ;
 
-PATH=$(readlink -f $1) ;
+dir=$(readlink -f $1) ;
 
 #---------------------------------------------------------
 
-cd $PATH ;
+cd $dir ;
 mkdir human_genome ;
-mv $FILE $PATH/human_genome ;
+mv $FILE $dir/human_genome ;
 
 cd human_genome ;
-unzip $FILE -d human_dataset
+unzip $dir -d human_dataset
 datasets rehydrate --directory human_dataset/
 
 cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
-cp GCF_000001405.40_GRCh38.p14_genomic.fna $PATH/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
+cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
 
-cd $PATH
+cd $dir
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate hocort
