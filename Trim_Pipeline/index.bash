@@ -49,14 +49,14 @@ cd ./human_genome/
 unzip $FILE -d human_dataset
 datasets rehydrate --directory human_dataset/
 
+cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
+cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
+
 conda deactivate
 
 #---------------------------------------------------------
 
 conda activate hocort
-
-cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
-cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
 
 cd $dir
 
