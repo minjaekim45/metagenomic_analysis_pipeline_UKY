@@ -60,7 +60,7 @@ cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GR
 
 cd $dir
 
-hocort index bowtie2 --input ./human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta --output ./human_genome/GRCh38_p14 ;
+hocort index bowtie2 --input ./human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta --output ./human_genome/$IND ;
 
 conda deactivate
 
