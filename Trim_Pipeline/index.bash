@@ -45,7 +45,8 @@ cd $dir ;
 mkdir human_genome ;
 mv $FILE $dir/human_genome ;
 
-unzip $dir/human_genome/$FILE -d human_dataset
+cd ./human_genome/
+unzip $FILE -d human_dataset
 datasets rehydrate --directory human_dataset/
 
 conda deactivate
@@ -54,7 +55,7 @@ conda deactivate
 
 conda activate hocort
 
-cd $dir/human_genome/human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
+cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
 cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
 
 cd $dir
