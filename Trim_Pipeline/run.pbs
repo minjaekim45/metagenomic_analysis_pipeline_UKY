@@ -5,10 +5,10 @@
 
 b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
-# The number of CPUs or threads
 THR=4
 
 #---------------------------------------------------------
+# Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd "$FOLDER/02.trimmed_reads" ;
@@ -26,38 +26,28 @@ fi ;
 conda deactivate
 
 #---------------------------------------------------------
-
-echo "==[ hocort_out: $(date) ]" ;
-cd "$FOLDER/hocort_out" ;
-
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+# Filter human reads
 
 conda activate hocort
 
-if [[ -e ../02.trimmed_reads/"$b".2_val_2.fq ]] ; then
-   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq ../02.trimmed_reads/"$b".2_val_2.fq -o ../hocort_out/"$b".val_1.fq ../hocort_out/"$b".val_2.fq
+if [[ -e ./"$b".2_val_2.fq ]] ; then
+   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ../hocort_out/"$b".filter_1.fq ../hocort_out/"$b".filter_2.fq
 else
-   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ../02.trimmed_reads/"$b".1_val_1.fq -o ../hocort_out/"$b".val_1.fq
+   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq -o ../hocort_out/"$b".filter_1.fq
 fi ;
 
 conda deactivate
 
 #---------------------------------------------------------
-
-echo "==[ 02.trimmed_reads: $(date) ]" ;
-cd "$FOLDER/02.trimmed_reads" ;
-
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+# Tagging fastq
 
 conda activate ruby
 
-# Tagging fastq
-
 if [[ -e ../hocort_out/"$b".val_2.fq ]] ; then
-   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
-   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".filter_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".filter_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
 else
-   $enve/FastQ.tag.rb -i ../hocort_out/"$b".val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ../hocort_out/"$b".filter_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
 #---------------------------------------------------------
@@ -86,5 +76,3 @@ fi ;
 #---------------------------------------------------------
 
 echo "Done: $(date)." ;
-
-
