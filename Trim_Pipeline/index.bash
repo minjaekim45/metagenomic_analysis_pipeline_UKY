@@ -10,32 +10,38 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./index.bash folder file_name index_name
+   Usage: ./index.bash folder genome accession
 
-   folder       Path to the folder containing the compressed genome dataset from NCBI
+   folder      Path to the folder containing the compressed genome dataset from NCBI.
+               Compressed file should follow the format of 'human_GRCh38_dataset.zip',
+               though you may use a more recent version.
    
-   file_name    Name of the compressed file. Must be a .zip file.
-
-   index_name   Desired name for the index you are creating. Defaults to GRCh38_p14 to
-                represent the most recent human genome dataset.
+   genome      Name of the genome assembly. Defaults to 'GRCh38_p14' to represent the
+               most recent human genome dataset.
+   
+   accession   NCBI accession number. Defaults to 'GCF_000001405.40' to represent the
+               most recent human genome dataset.
    
    " >&2 ;
    exit 1 ;
 fi ;
 
-FILE=$2
-if [[ "$FILE" == "" ]] ; then
-   FILE="human_GRCh38_dataset.zip"
+genome=$2
+if [[ "$genome" == "" ]] ; then
+   genome="GRCh38_p14"
 fi ;
 
-IND=$3
-if [[ "$IND" == "" ]] ; then
-   IND="GRCh38_p14"
+accession=$3
+if [[ "$accession" == "" ]] ; then
+   accession="GCF_000001405.40"
 fi ;
 
 dir=$(readlink -f $1) ;
+gen="${genome%_*}" ;
+ome="${genome#*_}" ;
 
 #---------------------------------------------------------
+# Unzips file
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
@@ -43,24 +49,25 @@ conda activate ncbi_datasets
 
 cd $dir ;
 mkdir human_genome ;
-mv $FILE $dir/human_genome ;
+mv human_${gen}_dataset.zip $dir/human_genome ;
 
-cd ./human_genome/
-unzip $FILE -d human_dataset
+cd ./human_genome/ ;
+unzip human_${gen}_dataset.zip -d human_dataset
 datasets rehydrate --directory human_dataset/
 
-cd ./human_dataset/ncbi_dataset/data/GCF_000001405.40 ;
-cp GCF_000001405.40_GRCh38.p14_genomic.fna $dir/human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta ;
+cd ./human_dataset/ncbi_dataset/data/$accession ;
+cp ${accession}_${gen}.${ome}_genomic.fna $dir/human_genome/${accession}_${gen}.${ome}_genomic.fasta ;
 
 conda deactivate
 
 #---------------------------------------------------------
+# Performs indexing
 
 conda activate hocort
 
-cd $dir
+cd $dir ;
 
-hocort index bowtie2 --input ./human_genome/GCF_000001405.40_GRCh38.p14_genomic.fasta --output ./human_genome/$IND ;
+hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
 
 conda deactivate
 
