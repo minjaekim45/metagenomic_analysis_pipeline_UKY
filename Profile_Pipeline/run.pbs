@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 6:00:00
+
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
+
+# The number of CPUs or threads
+THR=4
+
+#---------------------------------------------------------
+# MetaPhlAn analysis
+
+echo "==[ 04.trimmed_fasta: $(date) ]" ;
+cd $FOLDER/04.trimmed_fasta ;
+
+singularity run --app metaphlan410 $container metaphlan "$b".CoupledReads.fa --input_type fasta --add_viruses --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
