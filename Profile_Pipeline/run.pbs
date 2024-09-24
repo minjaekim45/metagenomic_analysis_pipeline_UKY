@@ -17,7 +17,9 @@ THR=4
 echo "==[ 04.trimmed_fasta: $(date) ]" ;
 cd $FOLDER/04.trimmed_fasta ;
 
-singularity run --app metaphlan410 /share/singularity/images/ccs/conda/amd-conda1-centos8.sinf metaphlan "$b".CoupledReads.fa --input_type fasta --add_viruses --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
+singularity run --app metaphlan410 /share/singularity/images/ccs/conda/amd-conda1-centos8.sinf metaphlan -h
+
+#"$b".CoupledReads.fa --input_type fasta --add_viruses --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
 
 #---------------------------------------------------------
 
