@@ -6,7 +6,7 @@
 b=$SAMPLE
 
 # Container path remains the same for anyone running on the MCC cluster
-container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
+container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
 
 # The number of CPUs or threads
 THR=4
@@ -17,9 +17,8 @@ THR=4
 echo "==[ 04.trimmed_fasta: $(date) ]" ;
 cd $FOLDER/04.trimmed_fasta ;
 
-PATH=/mnt/gpfs3_amd/share/apps/spack/0.16.2-3602-af806a8c1e/bin:/share/singularity/bin:/share/singularity/users/bin:/opt/ohpc/pub/mpi/libfabric/1.10.1/bin:/opt/ohpc/pub/mpi/ucx-ohpc/1.9.0/bin:/opt/ohpc/pub/mpi/openmpi4-gnu9/4.0.5/bin:/opt/ohpc/pub/compiler/gcc/9.3.0/bin:/opt/ohpc/pub/utils/prun/2.1:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+singularity run --app metaphlan410 $container metaphlan -h
 
-singularity run --app metaphlan410 /share/singularity/images/ccs/conda/amd-conda1-centos8.sinf metaphlan -h
 
 #"$b".CoupledReads.fa --input_type fasta --add_viruses --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
 
