@@ -17,7 +17,7 @@ THR=4
 echo "==[ 04.trimmed_fasta: $(date) ]" ;
 cd $FOLDER/04.trimmed_fasta ;
 
-singularity run --app metaphlan410 $container metaphlan "$b".CoupledReads.fa --input_type fasta --add_viruses --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
+singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container metaphlan "$b".CoupledReads.fa --input_type fasta --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
 
 #---------------------------------------------------------
 
