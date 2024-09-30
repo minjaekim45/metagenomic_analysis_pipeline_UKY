@@ -24,7 +24,7 @@ mv *.bowtie2out.txt ../2.bowtie2out/
 #---------------------------------------------------------
 # Create abundance table
 
-cd $FOLDER/metaphlan_analysis ;
+cd $FOLDER/1.metaphlan_analysis ;
 
 singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
 
