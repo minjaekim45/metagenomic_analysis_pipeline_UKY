@@ -19,6 +19,11 @@ cd $FOLDER/04.trimmed_fasta ;
 
 singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container metaphlan "$b".CoupledReads.fa --input_type fasta --nproc $THR > ../metaphlan_analysis/"$b"_profile.txt
 
+#---------------------------------------------------------
+# Create abundance table
+
+cd $FOLDER/metaphlan_analysis ;
+
 singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
 
 grep -E "s__|SRS" merged_abundance_table.txt \
