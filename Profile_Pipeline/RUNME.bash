@@ -30,7 +30,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi ;
 
-for i in metaphlan_analysis ; do
+for i in 1.metaphlan_analysis 2.bowtie2out ; do
    [[ -d $i ]] || mkdir $i
 done
 
