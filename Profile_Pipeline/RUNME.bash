@@ -46,4 +46,17 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"Profile-$b"-%j.err -o "$dir"/"Profile-$b"-%j.out  $pac/run.pbs | grep .;
 done 
 
+# Create abundance table
+
+#cd $FOLDER/1.metaphlan_analysis ;
+
+#singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
+
+#grep -E "s__|SRS" merged_abundance_table.txt \
+#| grep -v "t__" \
+#| sed "s/^.*|//g" \
+#| sed "s/SRS[0-9]*-//g" \
+#> merged_abundance_table_species.txt
+
+
 echo 'Done'
