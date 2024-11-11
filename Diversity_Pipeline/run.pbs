@@ -2,26 +2,26 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --mem=80g
-#SBATCH -t 120:00:00
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+
+# Change enveomics and mash paths to yours 
+enve=/project/mki314_uksr/enveomics/Scripts
+mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
+
+# The number of CPUs or threads | Maximum RAM usage in Mib
+THR=4
+MEM=76293
+
+#---------------------------------------------------------
+# Run Nonpareil
+
+echo "==[ 06.nonpareil: $(date) ]" ;
+cd $FOLDER/06.nonpareil ;
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate nonpareil
-
-b=$SAMPLE
-enve=/project/mki314_uksr/enveomics/Scripts
-mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
-THR=4
-MEM=600000
-
-
-#---------------------------------------------------------
-
-echo "==[ 06.nonpareil: $(date) ]"
-cd $FOLDER/04.trimmed_fasta
-
-# Run Nonpareil
-
-cd $FOLDER/06.nonpareil
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
@@ -31,8 +31,10 @@ else
    nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 fi
 
+#---------------------------------------------------------
 # Run Mash sketch
 
+echo "==[ 07.mash: $(date) ]" ;
 cd $FOLDER/07.mash ;
 
 "$mash" sketch $FA -o $b.msh -k 25 -s 1000000  ;
