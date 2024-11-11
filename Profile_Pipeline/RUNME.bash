@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: ./RUNME.bash [folder] [queue] [QOS]
