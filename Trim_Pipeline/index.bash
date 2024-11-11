@@ -44,7 +44,6 @@ ome="${genome#*_}" ;
 # Unzips file
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-
 conda activate ncbi_datasets
 
 cd $dir ;
