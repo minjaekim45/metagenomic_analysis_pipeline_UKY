@@ -10,7 +10,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./index.bash folder genome accession
+   Usage: sbatch ./index.bash [folder] [genome] [accession]
 
    folder      Path to the folder containing the compressed genome dataset from NCBI.
                Compressed file should follow the format of 'human_GRCh38_dataset.zip',
