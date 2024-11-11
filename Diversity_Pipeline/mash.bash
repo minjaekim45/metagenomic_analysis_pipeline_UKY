@@ -10,7 +10,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./mash.bash <folder>
+   Usage: sbatch ./mash.bash [folder]
 
    folder      Path to the folder containing the '07.mash' directory.
    
