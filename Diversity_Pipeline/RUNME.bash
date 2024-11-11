@@ -2,7 +2,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./RUNME.bash folder queue
+   Usage: ./RUNME.bash [folder] [queue] [QOS]
 
    folder	Path to the folder containing the 04.trimmed_fasta folder. The
 		trimmed reads must be in interposed FastA format, and filenames
