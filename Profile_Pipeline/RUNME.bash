@@ -3,7 +3,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./RUNME.bash folder queue QOS
+   Usage: ./RUNME.bash [folder] [queue] [QOS]
    
    folder	   Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
                are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
