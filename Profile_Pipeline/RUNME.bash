@@ -5,7 +5,11 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: ./RUNME.bash folder queue QOS
    
-   folder
+   folder	   Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
+               are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
+               name of the sample.
+   partition	Select a partition (if not provided, coa_mki314_uksr will be used)
+   qos		   Select a quality of service (if not provided, normal will be used)
    
    " >&2 ;
    exit 1 ;
@@ -30,7 +34,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi ;
 
-for i in 1.metaphlan_analysis 2.bowtie2out ; do
+for i in 05.metaphlan profile_output ; do
    [[ -d $i ]] || mkdir $i
 done
 
@@ -43,20 +47,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"Profile-$b"-%j.err -o "$dir"/"Profile-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"Profile-$b"-%j.err -o "$dir"/profile_output/"Profile-$b"-%j.out  $pac/run.pbs | grep .;
 done 
-
-# Create abundance table
-
-#cd $FOLDER/1.metaphlan_analysis ;
-
-#singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
-
-#grep -E "s__|SRS" merged_abundance_table.txt \
-#| grep -v "t__" \
-#| sed "s/^.*|//g" \
-#| sed "s/SRS[0-9]*-//g" \
-#> merged_abundance_table_species.txt
-
 
 echo 'Done'
