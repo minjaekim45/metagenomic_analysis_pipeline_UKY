@@ -4,11 +4,11 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: ./RUNME.bash [folder] [queue] [QOS]
    
-   folder	   Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
+   folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
                are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
                name of the sample.
-   partition	Select a partition (if not provided, coa_mki314_uksr will be used)
-   qos		   Select a quality of service (if not provided, normal will be used)
+   partition   Select a partition (if not provided, coa_mki314_uksr will be used)
+   qos         Select a quality of service (if not provided, normal will be used)
    
    " >&2 ;
    exit 1 ;
