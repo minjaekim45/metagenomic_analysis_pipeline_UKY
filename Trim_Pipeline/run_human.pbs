@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=4
-#SBATCH -t 30:00:00
+#SBATCH --ntasks=8
+#SBATCH -t 24:00:00
 
 b=$SAMPLE
 
@@ -9,7 +9,7 @@ b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
 
 # The number of CPUs or threads
-THR=4
+THR=8
 
 #---------------------------------------------------------
 # Quality trimming
