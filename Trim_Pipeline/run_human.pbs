@@ -15,10 +15,9 @@ THR=8
 # Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
-cd "$FOLDER/02.trimmed_reads" ;
+cd $FOLDER/02.trimmed_reads ;
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-
 conda activate trim-galore
 
 if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
