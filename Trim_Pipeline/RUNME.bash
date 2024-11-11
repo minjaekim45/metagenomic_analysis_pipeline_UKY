@@ -11,7 +11,7 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    filtration	Method of contamination removal. Use 'fast' if you are removing general contamination,
    		use 'human' if you need to remove human sequences as well. (if not provided, fast
      		will be used)
-   partition	Select a partition (if not provided, shas will be used)
+   partition	Select a partition (if not provided, coa_mki314_uksr will be used)
    qos		Select a quality of service (if not provided, normal will be used)
    
    " >&2 ;
