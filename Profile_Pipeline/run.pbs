@@ -15,7 +15,7 @@ THR=8
 # MetaPhlAn analysis
 
 echo "==[ 05.metaphlan: $(date) ]" ;
-cd "$FOLDER/05.metaphlan" ; ;
+cd $FOLDER/05.metaphlan ; ;
 
 singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container \
   | metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
