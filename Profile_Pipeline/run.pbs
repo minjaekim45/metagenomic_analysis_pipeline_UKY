@@ -18,9 +18,9 @@ echo "==[ 05.metaphlan: $(date) ]" ;
 cd $FOLDER/05.metaphlan ;
 
 singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container \
-  | metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
-  | --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_profile.txt --unclassified_estimation \
-  | --nproc $THR
+  metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
+  --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_profile.txt --unclassified_estimation \
+  --nproc $THR
 
 #---------------------------------------------------------
 # Merge tables
