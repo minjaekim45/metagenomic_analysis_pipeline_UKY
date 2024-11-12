@@ -12,9 +12,7 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: ./index.bash folder genome accession
 
-   folder      Path to the folder containing the compressed genome dataset from NCBI.
-               Compressed file should follow the format of 'human_GRCh38_dataset.zip',
-               though you may use a more recent version.
+   folder      Path to the folder containing the '05.metaphlan' directory.
    
    " >&2 ;
    exit 1 ;
@@ -23,12 +21,14 @@ fi ;
 dir=$(readlink -f $1) ;
 
 #---------------------------------------------------------
-# Merges tables
-
-cd $dir ;
 
 # Container path remains the same for anyone running on the MCC cluster
 container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
+
+#---------------------------------------------------------
+# Merges tables
+
+cd $dir/05.metaphlan ;
 
 singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
 
@@ -38,3 +38,6 @@ grep -E "s__|SRS" merged_abundance_table.txt \
 | sed "s/SRS[0-9]*-//g" \
 > merged_abundance_table_species.txt
 
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
