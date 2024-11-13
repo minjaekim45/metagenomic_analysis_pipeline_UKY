@@ -19,17 +19,17 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
 fi ;
 
 dir=$(readlink -f $1) ;
-output_file="statistics.txt"
 
 #---------------------------------------------------------
 # Pull statistics from .err files
 
+cd $dir ;
+output_file="statistics.txt"
+
 for i in $dir/trim_output/*.err ; do 
-   b=$(basename $i .err) ;
-   cp "$b".err "$b".txt
-   sed -n "73,82p" "$b".txt >> "$output_file"
-   sed -n "301,310p" "$b".txt >> "$output_file"
-   sed -n "545,562p" "$b".txt >> "$output_file"
+   sed -n "73,82p" "$i" >> "$output_file"
+   sed -n "301,310p" "$i" >> "$output_file"
+   sed -n "545,562p" "$i" >> "$output_file"
    echo -n "," >> "$output_file"
 done ;
 
