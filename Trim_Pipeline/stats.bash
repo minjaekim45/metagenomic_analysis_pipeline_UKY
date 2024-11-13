@@ -24,9 +24,9 @@ output_file="statistics.txt"
 #---------------------------------------------------------
 # Pull statistics from .err files
 
-for i in $dir/trim_output/*.txt ; do 
-   b=$(basename $i .txt) ;
-   # Extract text from line 75 and line 76, columns 1-22 and 36-46, and append to statistics.txt
+for i in $dir/trim_output/*.err ; do 
+   b=$(basename $i .err) ;
+   cp "$b".err "$b".txt
    sed -n "73,82p" "$b".txt >> "$output_file"
    sed -n "301,310p" "$b".txt >> "$output_file"
    sed -n "545,562p" "$b".txt >> "$output_file"
