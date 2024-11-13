@@ -27,9 +27,9 @@ output_file="statistics.txt"
 for i in $dir/trim_output/*.err ; do 
    b=$(basename $i .err) ;
    # Extract text from line 75 and line 76, columns 1-22 and 36-46, and append to statistics.txt
-   awk "NR >= 73 && NR <= 82" "$b".err >> "$output_file"
-   awk "NR >= 301 && NR <= 310" "$b".err >> "$output_file"
-   awk "NR >= 545 && NR <= 562" "$b".err >> "$output_file"
+   sed -n "73,82p" "$b".err >> "$output_file"
+   sed -n "301,310p" "$b".err >> "$output_file"
+   sed -n "545,562p" "$b".err >> "$output_file"
    echo -n "," >> "$output_file"
 done ;
 
