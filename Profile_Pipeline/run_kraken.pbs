@@ -1,1 +1,40 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH -t 6:00:00
 
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda2-centos8.sinf
+
+# The number of CPUs or threads
+THR=24
+
+#---------------------------------------------------------
+# MetaPhlAn analysis
+
+echo "==[ 06.kraken: $(date) ]" ;
+cd $FOLDER/06.kraken ;
+
+singularity run --app kraken2212 $container kraken2-build --standard --threads $THR --db ./database
+
+
+singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container \
+  metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
+  --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_profile.txt --unclassified_estimation --nproc $THR
+
+#---------------------------------------------------------
+# Merge tables
+
+singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
+
+grep -E "s__|SRS" merged_abundance_table.txt \
+  | grep -v "t__" \
+  | sed "s/^.*|//g" \
+  | sed "s/SRS[0-9]*-//g" \
+  > merged_abundance_table_species.txt
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
