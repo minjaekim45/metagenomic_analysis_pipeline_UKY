@@ -57,11 +57,11 @@ if [[ "$TOOL" == "metaphlan" ]] ; then
    for i in 05.metaphlan profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
-elif
+elif [[ "$TOOL" == "kraken" ]] ; then
    for i in 06.kraken profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
-else
+else [[ "$TOOL" == "kaiju" ]] ; then
    for i in 07.kaiju profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
