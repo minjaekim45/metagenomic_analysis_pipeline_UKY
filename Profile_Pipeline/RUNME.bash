@@ -61,7 +61,7 @@ elif [[ "$TOOL" == "kraken" ]] ; then
    for i in 06.kraken profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
-else [[ "$TOOL" == "kaiju" ]] ; then
+elif [[ "$TOOL" == "kaiju" ]] ; then
    for i in 07.kaiju profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
