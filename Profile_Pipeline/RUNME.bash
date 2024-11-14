@@ -56,15 +56,15 @@ fi ;
 if [[ "$TOOL" == "metaphlan" ]] ; then
    for i in 05.metaphlan profile_output ; do
       [[ -d $i ]] || mkdir $i
-   done
+   done ;
 elif
    for i in 06.kraken profile_output ; do
       [[ -d $i ]] || mkdir $i
-   done
+   done ;
 else
    for i in 07.kaiju profile_output ; do
       [[ -d $i ]] || mkdir $i
-   done
+   done ;
 fi ;
 
 for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
