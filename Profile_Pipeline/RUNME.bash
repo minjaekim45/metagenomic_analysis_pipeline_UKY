@@ -61,7 +61,7 @@ elif
    for i in 06.kraken profile_output ; do
       [[ -d $i ]] || mkdir $i
    done
-elif
+else
    for i in 07.kaiju profile_output ; do
       [[ -d $i ]] || mkdir $i
    done
