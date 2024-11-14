@@ -30,7 +30,7 @@ container=/share/singularity/images/ccs/conda/amd-conda2-centos8.sinf
 
 cd $dir ;
 
-singularity run --app kraken2212 $container kraken2-build --standard --threads $THR --db $dir/database
+singularity run --app kraken2212 $container kraken2-build --standard --threads 24 --db $dir/database
 
 #---------------------------------------------------------
 
