@@ -2,23 +2,43 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./RUNME.bash [folder] [queue] [QOS]
+   Usage: ./RUNME.bash [folder] [tool] [queue] [QOS]
    
    folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
                are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
                name of the sample.
+   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan',
+               'kraken', or 'kaiju'.
    partition   Select a partition (if not provided, coa_mki314_uksr will be used)
    qos         Select a quality of service (if not provided, normal will be used)
    
    " >&2 ;
    exit 1 ;
 fi ;
-QUEUE=$2
+
+TOOL=$2
+if [[ "$TOOL" == "" || "$TOOL" == "-h" ]] ; then
+   echo "
+   Usage: ./RUNME.bash [folder] [tool] [queue] [QOS]
+   
+   folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
+               are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
+               name of the sample.
+   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan',
+               'kraken', or 'kaiju'.
+   partition   Select a partition (if not provided, coa_mki314_uksr will be used)
+   qos         Select a quality of service (if not provided, normal will be used)
+   
+   " >&2 ;
+   exit 1 ;
+fi ;
+
+QUEUE=$3
 if [[ "$QUEUE" == "" ]] ; then
    QUEUE="coa_mki314_uksr"
 fi ;
 
-QOS=$3
+QOS=$4
 if [[ "$QOS" == "" ]] ; then
    QOS="normal"
 fi ;
@@ -33,9 +53,19 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi ;
 
-for i in 05.metaphlan profile_output ; do
-   [[ -d $i ]] || mkdir $i
-done
+if [[ "$TOOL" == "metaphlan" ]] ; then
+   for i in 05.metaphlan profile_output ; do
+      [[ -d $i ]] || mkdir $i
+   done
+elif
+   for i in 06.kraken profile_output ; do
+      [[ -d $i ]] || mkdir $i
+   done
+elif
+   for i in 07.kaiju profile_output ; do
+      [[ -d $i ]] || mkdir $i
+   done
+fi ;
 
 for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    b=$(basename $i .CoupledReads.fa)
@@ -46,7 +76,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"Profile-$b"-%j.err -o "$dir"/profile_output/"Profile-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"Profile-$b"-%j.err -o "$dir"/profile_output/"Profile-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done 
 
 echo 'Done'
