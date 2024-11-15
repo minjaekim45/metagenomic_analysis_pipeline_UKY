@@ -17,8 +17,8 @@ MEM=76293
 #---------------------------------------------------------
 # Run Nonpareil
 
-echo "==[ 06.nonpareil: $(date) ]" ;
-cd $FOLDER/06.nonpareil ;
+echo "==[ 08.nonpareil: $(date) ]" ;
+cd $FOLDER/08.nonpareil ;
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate nonpareil
@@ -34,8 +34,8 @@ fi
 #---------------------------------------------------------
 # Run Mash sketch
 
-echo "==[ 07.mash: $(date) ]" ;
-cd $FOLDER/07.mash ;
+echo "==[ 09.mash: $(date) ]" ;
+cd $FOLDER/09.mash ;
 
 "$mash" sketch $FA -o $b.msh -k 25 -s 1000000  ;
 
