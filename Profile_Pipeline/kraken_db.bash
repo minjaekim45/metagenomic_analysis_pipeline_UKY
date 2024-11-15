@@ -23,14 +23,14 @@ dir=$(readlink -f $1) ;
 #---------------------------------------------------------
 
 # Container path remains the same for anyone running on the MCC cluster
-container=/share/singularity/images/ccs/conda/amd-conda2-centos8.sinf
+container=/share/singularity/images/ccs/conda/amd-conda18-rocky8.sinf
 
 #---------------------------------------------------------
 # Build database
 
 cd $dir ;
 
-singularity run --app kraken2212 $container kraken2-build --standard --threads 24 --db $dir/database
+singularity run --app kraken22132 $container kraken2-build --standard --threads 24 --db $dir/database
 
 #---------------------------------------------------------
 
