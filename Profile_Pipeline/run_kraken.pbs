@@ -6,7 +6,7 @@
 b=$SAMPLE
 
 # Container path remains the same for anyone running on the MCC cluster
-container=/share/singularity/images/ccs/conda/amd-conda2-centos8.sinf
+container=/share/singularity/images/ccs/conda/amd-conda18-rocky8.sinf
 
 # The number of CPUs or threads
 THR=24
@@ -19,7 +19,7 @@ cd $FOLDER/06.kraken ;
 
 mv ../database . ;
 
-singularity run --app kraken2212 $container kraken2 --db ./database --threads $THR --report ./"$b"_k2_report.txt --paired ../04.trimmed_fasta/"$b".CoupledReads.fa
+singularity run --app kraken22132 $container kraken2 --db ./database --threads $THR --report ./"$b"_k2_report.txt --paired ../04.trimmed_fasta/"$b".CoupledReads.fa
 
 #---------------------------------------------------------
 
