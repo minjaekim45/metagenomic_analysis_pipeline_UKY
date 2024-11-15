@@ -43,7 +43,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi ;
 
-for i in 06.nonpareil 07.mash diversity_output ; do
+for i in 08.nonpareil 09.mash diversity_output ; do
    [[ -d $i ]] || mkdir $i
 done
 
