@@ -23,25 +23,31 @@ dir=$(readlink -f $1) ;
 #---------------------------------------------------------
 
 cd $dir ;
-> "$dir"/stats.txt
 
+# Create the output file and write the headers
+output_file="stats.txt"
+echo -e "Sample;Original;After Quality;After Hocort" > "$dir"/stats.txt ;
+
+# Iterate over each .fastq file in the directory
 for i in $dir/01.raw_reads/*.fastq ; do
-   b1=$(basename $i .fastq) ;
-   line_count_1=$(wc -l "$i") ;
-   echo "$b1: $line_count_1;" >> "stats.txt"
-done ;
+   b=$(basename $i .fastq) ;
+   
+   # Count the lines in the .fastq file
+   fastq_lines=$(wc -l < "$i") ;
 
-for i in $dir/02.trimmed_reads/*_val_*.fq ; do
-   b2=$(basename $i .fq) ;
-   line_count_2=$(wc -l "$i") ;
-   echo "$b2: $line_count_2;" >> "stats.txt"
-done ;
+   # Count the lines in the quality-trimmed .fq file
+   fq_lines_val=0 ;
+   fq_file_val="$dir/02.trimmed_reads/${b}_val_*.fq" ;
+   fq_lines_val=$(wc -l < "$fq_file_val") ;
 
-for i in $dir/02.trimmed_reads/*.filtered_*.fq ; do
-   b3=$(basename $i .fq) ;
-   line_count_3=$(wc -l "$i") ;
-   echo "$b3: $line_count_3;" >> "stats.txt"
-done ;
+   # Count the lines in the host-contaminant free .fq file
+   fq_lines_fil=0 ;
+   fq_file_fil="$dir/02.trimmed_reads/${b}_filtered.fq" ;
+   fq_lines_fil=$(wc -l < "$fq_file_fil") ;
+
+   # Append the results to stats.txt
+   echo -e "$b;$fastq_lines;$fq_lines_val;$fq_lines_fil" >> "$output_file" ;
+done
 
 #---------------------------------------------------------
 
