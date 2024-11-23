@@ -37,7 +37,7 @@ for i in $dir/01.raw_reads/*.fastq ; do
 
    # Count the lines in the quality-trimmed .fq file
    fq_lines_val=0 ;
-   fq_file_val=$dir/02.trimmed_reads/${b}_val_*.fq ;
+   fq_file_val="$dir/02.trimmed_reads/${b}_val.fq" ;
    fq_lines_val=$(wc -l < "$fq_file_val") ;
 
    # Count the lines in the host-contaminant free .fq file
