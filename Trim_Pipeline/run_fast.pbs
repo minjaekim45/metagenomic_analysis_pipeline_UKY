@@ -29,7 +29,7 @@ fi ;
 #---------------------------------------------------------
 # Tagging fastq
 
-module load ruby
+conda activate ruby
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
    $enve/FastQ.tag.rb -i ./"$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
