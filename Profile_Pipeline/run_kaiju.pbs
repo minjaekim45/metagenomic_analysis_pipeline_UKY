@@ -6,7 +6,10 @@
 b=$SAMPLE
 
 # Container path remains the same for anyone running on the MCC cluster
-container=/share/singularity/images/ccs/conda/amd-conda18-rocky8.sinf
+container=/share/singularity/images/ccs/conda/amd-conda17-rocky8.sinf
+
+# Path for the Kaiju databases
+db=/share/apps/amd/kaiju
 
 # The number of CPUs or threads
 THR=24
@@ -17,9 +20,7 @@ THR=24
 echo "==[ 07.kaiju: $(date) ]" ;
 cd $FOLDER/07.kaiju ;
 
-mv ../database . ;
-
-singularity run --app kraken22132 $container kraken2 --db ./database --threads $THR --report ./"$b"_k2_report.txt --paired ../04.trimmed_fasta/"$b".CoupledReads.fa
+singularity run --app kaiju1101 $container kaiju -t $db/nr_euk/nodes.dmp -f $db/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -v
 
 #---------------------------------------------------------
 
