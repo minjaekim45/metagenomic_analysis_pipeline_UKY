@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=24
+#SBATCH --ntasks=128
 #SBATCH -t 6:00:00
 
 b=$SAMPLE
@@ -12,7 +12,7 @@ container=/share/singularity/images/ccs/conda/amd-conda17-rocky8.sinf
 db=/share/apps/amd/kaiju
 
 # The number of CPUs or threads
-THR=24
+THR=128
 
 #---------------------------------------------------------
 # MetaPhlAn analysis
