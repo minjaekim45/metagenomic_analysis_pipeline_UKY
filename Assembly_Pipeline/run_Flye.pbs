@@ -1,0 +1,33 @@
+#!/bin/bash
+#SBATCH --job-name=assembly
+#SBATCH --nodes=1
+#SBATCH --mem=100G
+#SBATCH --ntasks=100
+#SBATCH -t 48:00:00
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+THR=100
+ASSEMBLER=$Flye #options are Flye, hybridspades
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+#---------------------------------------------------------
+#Flye assembly
+if [[ -z "$ASSEMBLER" || "$ASSEMBLER" == "Flye" ]]; then
+  echo "==[ Flye assembly: $(date) ]"
+  conda activate flye
+  flye --asm-coverage 50 --threads $THR --genome-size 12m --nano-hq --out-dir $FA $SAMPLE.flye_assembly 
+fi
+# Hybridspades assembly
+if [[ -z "$ASSEMBLER" || "$ASSEMBLER" == "hybridspades" ]]; then
+  conda activate spades
+  echo "==[ Hybridspades assembly: $(date) ]"
+  spades.py -t $THR -k 21,33,55,77 --careful --nanopore $FA -o --trusted-contigs /scratch/rcsa230/ $SAMPLE.hybridspades_assembly 
+fi
+conda deactivate
+#---------------------------------------------------------
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."

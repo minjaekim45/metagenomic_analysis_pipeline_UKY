@@ -1,0 +1,96 @@
+#!/bin/bash
+#SBATCH --job-name=trimming-filtering            # Job name
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH -t 24:00:00
+
+b=$SAMPLE
+GENOME=/scratch/rcsa230/genomes/contam
+#FOLDER=directory where folders of trimmed reads are stored where RUNME was run
+
+# Change enveomics path to yours 
+enve=/project/mki314_uksr/enveomics/Scripts
+
+#setup miniconda environment
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+# The number of CPUs or threads
+THR=8
+
+#---------------------------------------------------------
+# Quality trimming
+
+echo "==[ 02.trimmed_reads: $(date) ]" ;
+cd $FOLDER/02.trimmed_reads ;
+
+conda activate trim-galore
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR --paired ../01.raw_reads/"$b".1.fastq ../01.raw_reads/"$b".2.fastq
+else
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR ../01.raw_reads/"$b".1.fastq
+fi ;
+
+conda deactivate
+
+#---------------------------------------------------------
+# Filter contaminating reads using concatenated indexed fasta with identified organisms from kraken2 profiling
+
+conda activate hocort
+
+if [[ -e ./"$b".2_val_2.fq ]] ; then
+   hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ./"$b".2_filtered.fq
+else
+   hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq
+fi ;
+
+conda deactivate
+
+#---------------------------------------------------------
+# Tagging fastq
+
+conda activate ruby
+
+if [[ -e ./"$b".2_filtered.fq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b".1_filtered.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b".2_filtered.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+else
+   $enve/FastQ.tag.rb -i ./"$b".1_filtered.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+fi
+
+#---------------------------------------------------------
+# read_quality
+
+if [[ -e ./"$b".2.fastq_trimming_report.txt ]] ; then
+   mv "$b".1.fastq_trimming_report.txt ../03.read_quality/"$b".1.fastq_trimming_report.txt ;
+   mv "$b".2.fastq_trimming_report.txt ../03.read_quality/"$b".2.fastq_trimming_report.txt ;
+else
+   mv "$b".1.fastq_trimming_report.txt ../03.read_quality/"$b".1.fastq_trimming_report.txt ;
+fi
+
+#---------------------------------------------------------
+# FastQ -> FastA 
+
+FQ2A="$enve/FastQ.toFastA.awk" ;
+echo "==[ 04.trimmed_fasta: $(date) ]" ;
+cd $FOLDER/04.trimmed_fasta ;
+
+if [[ -e ../02.trimmed_reads/"$b".2.tagged.fastq ]] ; then
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".2.tagged.fastq > "$b"_2.fa ;
+else
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+# Interpose fasta
+
+if [[ -e "$b"_2.fa ]] ; then
+   $enve/FastA.interpose.pl "$b".CoupledReads.fa "$b"_1.fa "$b"_2.fa ;
+else
+   mv "$b"_SingleReads.fa "$b".SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
