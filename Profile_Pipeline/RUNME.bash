@@ -54,15 +54,15 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
 fi ;
 
 if [[ "$TOOL" == "metaphlan" ]] ; then
-   for i in 05.metaphlan profile_output ; do
+   for i in 05.metaphlan profile_output/metaphlan ; do
       [[ -d $i ]] || mkdir $i
    done ;
 elif [[ "$TOOL" == "kraken" ]] ; then
-   for i in 06.kraken profile_output ; do
+   for i in 06.kraken profile_output/kraken ; do
       [[ -d $i ]] || mkdir $i
    done ;
 elif [[ "$TOOL" == "kaiju" ]] ; then
-   for i in 07.kaiju profile_output ; do
+   for i in 07.kaiju profile_output/kaiju ; do
       [[ -d $i ]] || mkdir $i
    done ;
 fi ;
