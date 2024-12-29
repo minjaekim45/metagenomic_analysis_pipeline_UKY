@@ -54,15 +54,15 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
 fi ;
 
 if [[ "$TOOL" == "metaphlan" ]] ; then
-   for i in 05.metaphlan profile_output/metaphlan ; do
+   for i in 05.metaphlan profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
 elif [[ "$TOOL" == "kraken" ]] ; then
-   for i in 06.kraken profile_output/kraken ; do
+   for i in 06.kraken profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
 elif [[ "$TOOL" == "kaiju" ]] ; then
-   for i in 07.kaiju profile_output/kaiju ; do
+   for i in 07.kaiju profile_output ; do
       [[ -d $i ]] || mkdir $i
    done ;
 fi ;
@@ -76,7 +76,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"$TOOL"/"Profile-$b"-%j.err -o "$dir"/profile_output/"$TOOL"/"Profile-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
+   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"Profile-$TOOL-$b"-%j.err -o "$dir"/profile_output/"Profile-$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done 
 
 echo 'Done'
