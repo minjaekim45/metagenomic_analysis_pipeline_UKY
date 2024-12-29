@@ -20,7 +20,7 @@ THR=128
 echo "==[ 07.kaiju: $(date) ]" ;
 cd $FOLDER/07.kaiju ;
 
-singularity run --app kaiju1101 $container kaiju -t $db/nr_euk/nodes.dmp -f $db/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -o "$b"_kaiju.out -v
+singularity run --app kaiju1101 $container kaiju -t $db/nr_euk/nodes.dmp -f $db/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -o "$b"_kaiju.txt -v
 
 #---------------------------------------------------------
 
