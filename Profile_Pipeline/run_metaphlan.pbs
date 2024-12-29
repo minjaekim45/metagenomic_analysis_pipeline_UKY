@@ -19,12 +19,12 @@ cd $FOLDER/05.metaphlan ;
 
 singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container \
   metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
-  --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_profile.txt --unclassified_estimation --nproc $THR
+  --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_mphlan.txt --unclassified_estimation --nproc $THR
 
 #---------------------------------------------------------
 # Merge tables
 
-singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_profile.txt > merged_abundance_table.txt
+singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_mphlan.txt > merged_abundance_table.txt
 
 grep -E "s__|SRS" merged_abundance_table.txt \
   | grep -v "t__" \
