@@ -13,7 +13,7 @@ container=/share/singularity/images/ccs/conda/amd-conda17-rocky8.sinf
 db=/share/apps/amd/kaiju
 
 # The number of CPUs or threads
-THR=128
+THR=32
 
 #---------------------------------------------------------
 # MetaPhlAn analysis
