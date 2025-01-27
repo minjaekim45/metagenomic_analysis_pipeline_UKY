@@ -16,7 +16,6 @@ conda activate gtdbtk-2.4.0
 echo "==[ 17.checkm: $(date) ]"
 
 cd $FOLDER/17.checkm/$b/output/good_quality
-mkdir gtdbtk_output
 
 readlink -f *.fa > list.txt
 
@@ -24,7 +23,9 @@ cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
 paste list.txt ID.txt > batchfile.txt
 
-gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir ./gtdbtk_output --extension fa --cpus $THR
+mkdir $FOLDER/18.gtdbtk/$b/
+
+gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --extension fa --cpus $THR
 
 #----------------------------------------------------------
 

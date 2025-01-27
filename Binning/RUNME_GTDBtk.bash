@@ -42,6 +42,10 @@ fi ;
 
 cd $dir
 
+for i in 18.gtdbtk; do
+   [[ -d $i ]] || mkdir $i
+done
+
 # Get a list of subdirectories within the main directory
 sub_directories=($(find "17.checkm" -mindepth 1 -maxdepth 1 -type d))
 
