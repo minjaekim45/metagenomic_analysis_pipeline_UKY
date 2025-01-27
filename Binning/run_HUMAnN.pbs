@@ -17,9 +17,9 @@ THR=4
 # MetaPhlAn analysis
 
 echo "==[ 19.HUMAnN3: $(date) ]" ;
-cd $FOLDER/19.HUMAnN3 ;
+cd $FOLDER/17.checkm/$b/output/good_quality ;
 
-singularity run --app humann39 $container humann --input $FOLDER/17.checkm/$b/output/good_quality/$c.fa --output $FOLDER/19.HUMAnN/$b --threads 4
+singularity run --app humann39 $container humann --input $c.fa --output $FOLDER/19.HUMAnN/$b --threads 4
 
 #---------------------------------------------------------
 
