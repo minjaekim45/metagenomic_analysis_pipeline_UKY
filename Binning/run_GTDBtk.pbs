@@ -25,7 +25,7 @@ paste list.txt ID.txt > batchfile.txt
 
 mkdir $FOLDER/18.gtdbtk/$b/
 
-gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --skip_ani_screen --extension fa --cpus $THR
+gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --mash_db ../09.mash/$b.msh --extension fa --cpus $THR
 
 #----------------------------------------------------------
 
