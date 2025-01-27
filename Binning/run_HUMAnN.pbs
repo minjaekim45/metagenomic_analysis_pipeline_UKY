@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --mem=128g
+#SBATCH -t 6:00:00
+
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
+
+# The number of CPUs or threads
+THR=4
+
+#---------------------------------------------------------
+# MetaPhlAn analysis
+
+echo "==[ 19.HUMAnN: $(date) ]" ;
+cd $FOLDER/19.HUMAnN ;
+
+singularity run --app humann39 $container humann -i ../17.checkm/$b/output/good_quality/*.fa -o $FOLDER/19.HUMAnN/$b --threads 4
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
