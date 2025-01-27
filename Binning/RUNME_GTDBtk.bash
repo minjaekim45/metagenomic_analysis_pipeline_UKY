@@ -28,11 +28,11 @@ dir=$(readlink -f $1)
 pac=$(dirname $(readlink -f $0))
 cwd=$(pwd)
 
-cd $dir
-if [[ ! -e 14.maxbin2 ]] ; then
-   echo "Cannot locate the 14.maxbin directory, aborting..." >&2
-   exit 1
-fi ;
+#cd $dir
+#if [[ ! -e 14.maxbin2 ]] ; then
+#   echo "Cannot locate the 14.maxbin directory, aborting..." >&2
+#   exit 1
+#fi ;
 
 cd $dir
 if [[ ! -e 17.checkm ]] ; then
