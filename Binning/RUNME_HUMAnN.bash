@@ -43,7 +43,8 @@ checkm_dir=($(find "17.checkm" -mindepth 1 -maxdepth 1 -type d))
 for subdir in "${checkm_dir[@]}"; do
 
    b=$(basename $subdir)
-   OPTS="SAMPLE=$b,FOLDER=$dir"
+   c=$(basename $subdir/output/good_quality/*.fa .fa)
+   OPTS="SAMPLE=$b,READ=$c,FOLDER=$dir"
 
    mkdir $dir/19.HUMAnN3/$b
 
