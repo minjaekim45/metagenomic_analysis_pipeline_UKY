@@ -24,4 +24,16 @@ dir=$(readlink -f $1) ;
 
 cd $dir ;
 
-./sequence-stats/src/sequence-stats -s fastq > 01.stats.txt
+cd $dir/01.raw_reads/ ;
+../sequence-stats/src/sequence-stats -s fastq > $dir/01.stats.txt
+
+cd $dir/02.trimmed_reads/ ;
+../sequence-stats/src/sequence-stats -s *_val.fq > $dir/02.trim_stats.txt
+
+cd $dir/04.trimmed_reads/ ;
+../sequence-stats/src/sequence-stats -s *_filtered.fq > $dir/02.fltd_stats.txt
+
+cd $dir/04.trimmed_reads/ ;
+../sequence-stats/src/sequence-stats -s fastq > $dir/02.tagd_stats.txt
+
+
