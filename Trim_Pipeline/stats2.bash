@@ -22,6 +22,6 @@ dir=$(readlink -f $1) ;
 
 #---------------------------------------------------------
 
-cd $dir/01.raw_reads ;
+cd $dir ;
 
-./sequence-stats/src/sequence-stats -s .fastq > 01.stats.bash
+./sequence-stats/src/sequence-stats -s fastq > 01.stats.txt
