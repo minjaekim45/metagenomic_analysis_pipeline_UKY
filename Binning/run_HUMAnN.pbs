@@ -19,7 +19,7 @@ THR=4
 echo "==[ 19.HUMAnN3: $(date) ]" ;
 cd $FOLDER/19.HUMAnN3 ;
 
-singularity run --app humann39 $container humann -i ../17.checkm/$b/output/good_quality/$c.fa -o $FOLDER/19.HUMAnN/$b --threads 4
+singularity run --app humann39 $container humann --input ../17.checkm/$b/output/good_quality/$c.fa --output $FOLDER/19.HUMAnN/$b --threads 4
 
 #---------------------------------------------------------
 
