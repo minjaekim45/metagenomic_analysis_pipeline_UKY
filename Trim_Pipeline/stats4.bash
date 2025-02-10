@@ -25,7 +25,7 @@ for i in zz.stats ; do
    [[ -d $i ]] || mkdir $i
 done ;
 
-cd $zz.stats
+cd $dir/zz.stats ;
 
 for i in 01.raw_reads 02.trimmed_reads ; do
    if [[ ! -d $i ]] ; then mkdir $i ; fi ;
