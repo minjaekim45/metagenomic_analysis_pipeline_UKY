@@ -45,12 +45,12 @@ THR=8
 echo "==[ 01.raw_reads: $(date) ]" ;
 cd $dir/01.raw_reads ;
 
-singularity run --app fastqc0119 $container fastqc -o $dir/zz.stats/01.raw_reads -t $THR
+singularity run --app fastqc0119 $container fastqc $dir/01.raw_reads/* -o $dir/zz.stats/01.raw_reads -t $THR
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $dir/02.trimmed_reads ;
 
-singularity run --app fastqc0119 $container fastqc -o $dir/zz.stats/02.trimmed_reads -t $THR
+singularity run --app fastqc0119 $container fastqc $dir/02.trimmed_reads/*.fq $dir/02.trimmed_reads/*.fastq -o $dir/zz.stats/02.trimmed_reads -t $THR
 
 #---------------------------------------------------------
 
