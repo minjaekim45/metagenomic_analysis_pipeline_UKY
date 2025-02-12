@@ -17,7 +17,7 @@ THR=24
 echo "==[ 06.kraken: $(date) ]" ;
 cd $FOLDER/06.kraken ;
 
-singularity run --app kraken22132 $container kraken2 --db /share/apps/amd/kraken2/kraken-db --threads $THR --report ./"$b"_k2_report.txt ../04.trimmed_fasta/"$b".CoupledReads.fa
+singularity run --app kraken22132 $container kraken2 --db /share/apps/amd/kraken2/kraken-db --threads $THR --report ./"$b"_k2_report.txt ../04.trimmed_fasta/"$b".CoupledReads.fa --report-minimizer-data
 
 #---------------------------------------------------------
 
