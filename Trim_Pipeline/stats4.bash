@@ -41,12 +41,12 @@ conda activate multiqc
 echo "==[ 01.raw_reads: $(date) ]" ;
 cd $dir/01.raw_reads ;
 
-multiqc -o $dir/2zz.stats/01.raw_reads
+multiqc . -o $dir/2zz.stats/01.raw_reads
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $dir/02.trimmed_reads ;
 
-multiqc -o $dir/2zz.stats/02.trimmed_reads
+multiqc . -o $dir/2zz.stats/02.trimmed_reads
 
 #---------------------------------------------------------
 
