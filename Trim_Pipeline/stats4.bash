@@ -31,26 +31,22 @@ for i in 01.raw_reads 02.trimmed_reads ; do
    if [[ ! -d $i ]] ; then mkdir $i ; fi ;
 done ;
 
-#---------------------------------------------------------
-
-# Container path remains the same for anyone running on the MCC cluster
-container=/share/singularity/images/ccs/conda/amd-conda6-rocky8.sinf
-
-# The number of CPUs or threads
-THR=8
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 #---------------------------------------------------------
 # FastQC analysis
 
+conda activate multiqc
+
 echo "==[ 01.raw_reads: $(date) ]" ;
 cd $dir/01.raw_reads ;
 
-singularity run --app fastqc0119 $container fastqc $dir/01.raw_reads/* -o $dir/zz.stats/01.raw_reads -t $THR
+multiqc -o $dir/zz.stats/01.raw_reads
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $dir/02.trimmed_reads ;
 
-singularity run --app fastqc0119 $container fastqc $dir/02.trimmed_reads/*.fq $dir/02.trimmed_reads/*.fastq -o $dir/zz.stats/02.trimmed_reads -t $THR
+multiqc -o $dir/zz.stats/02.trimmed_reads
 
 #---------------------------------------------------------
 
