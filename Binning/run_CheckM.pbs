@@ -36,6 +36,8 @@ do
    cp $FOLDER/15.metabat2/$b/"$line".fa $FOLDER/17.checkm/$b/output/good_quality
 done < ./$b/output/list.txt
 
+awk '{print $0, "$b"}' > output.txt
+
 #---------------------------------------------------------
 
 conda deactivate
