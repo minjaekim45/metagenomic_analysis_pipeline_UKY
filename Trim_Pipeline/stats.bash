@@ -21,7 +21,7 @@ fi ;
 dir=$(readlink -f $1) ;
 cd $dir ;
 
-for i in 2zz.stats ; do
+for i in zz.stats ; do
    [[ -d $i ]] || mkdir $i
 done ;
 
