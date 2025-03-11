@@ -34,7 +34,7 @@ singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app 
 cd $FOLDER/18.gtdbtk/$b/
 
 for file in $FOLDER/18.gtdbtk/$b/* ; do
-   base = $(basename $file) ;
+   base=$(basename $file) ;
    mv "$base" $FOLDER/18.gtdbtk/combined/"$b"_"$base";
 done
 
