@@ -19,24 +19,24 @@ database=/share/examples/MCC/gtdbtk/release220:/gtdbtk_data/database
 
 echo "==[ 17.checkm: $(date) ]"
 
-cd $FOLDER/17.checkm/$b/output/good_quality
+cd $FOLDER/17.checkm
 
-readlink -f *.fa > list.txt
+#readlink -f *.fa > list.txt
 
-cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
+cat combined.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
-paste list.txt ID.txt > batchfile.txt
+paste combined.txt ID.txt > batchfile.txt
 
 mkdir $FOLDER/18.gtdbtk/$b/
 
-singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $FOLDER/17.checkm/$b/output/good_quality/batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --mash_db ../09.mash/"$b".msh --extension fa --cpus $THR
+singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $FOLDER/17.checkm/batchfile.txt --out_dir $FOLDER/18.gtdbtk/ --mash_db ../09.mash/"$b".msh --extension fa --cpus $THR
 
-cd $FOLDER/18.gtdbtk/$b/
+#cd $FOLDER/18.gtdbtk/$b/
 
-for file in $FOLDER/18.gtdbtk/$b/* ; do
-   base = $(basename $file) ;
-   mv "$base" $FOLDER/18.gtdbtk/combined/"$b"_"$base";
-done
+#for file in $FOLDER/18.gtdbtk/$b/* ; do
+#   base = $(basename $file) ;
+#   mv "$base" $FOLDER/18.gtdbtk/combined/"$b"_"$base";
+#done
 
 # gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --mash_db ../09.mash/"$b".msh --extension fa --cpus $THR
 
