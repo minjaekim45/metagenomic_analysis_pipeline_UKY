@@ -33,8 +33,8 @@ singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app 
 
 mkdir $FOLDER/18.gtdbtk/combined/
 
-for file in $FOLDER/18.gtdbtk/$b/*
-   mv "$file" $FOLDER/18.gtdbtk/combined/"$b"_"$file";
+for file in $FOLDER/18.gtdbtk/$b/* ; do
+   mv $FOLDER/18.gtdbtk/"$b"/"$file" $FOLDER/18.gtdbtk/combined/"$b"_"$file";
 done
 
 # gtdbtk classify_wf --batchfile ./batchfile.txt --out_dir $FOLDER/18.gtdbtk/$b/ --mash_db ../09.mash/"$b".msh --extension fa --cpus $THR
