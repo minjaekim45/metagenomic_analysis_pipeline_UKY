@@ -25,7 +25,7 @@ awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./$b/output/qs.o1.t
 
 awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./$b/output/high_qual.tsv > ./$b/output/high_qual_w_score.tsv
 
-awk '{print $1}' ./$b/output/high_qual_w_score.tsv > ./list.txt
+awk '{print $1}' ./$b/output/high_qual_w_score.tsv > ./$b/output/list.txt
 
 mkdir ./$b/output/good_quality
 
@@ -34,7 +34,7 @@ mv ./$b/output/high_qual_w_score.tsv ./$b/output/good_quality
 while IFS= read -r line
 do
    cp $FOLDER/15.metabat2/$b/"$line".fa $FOLDER/17.checkm/$b/output/good_quality
-done < ./list.txt
+done < ./$b/output/list.txt
 
 awk '{print $0, "$b"}' > output.txt
 
