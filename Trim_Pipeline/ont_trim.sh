@@ -5,8 +5,8 @@
 #SBATCH --ntasks=1            # Number of cores to allocate. Same as SBATCH -n
 #SBATCH --mem=32g
 #SBATCH -t 12:00:00              # Time limit for the job (REQUIRED)
-#SBATCH -e /scratch/rcsa230/Nanopore_YEASTF927/logs/nanoporetrim_FSI927-%j.err
-#SBATCH -o /scratch/rcsa230/Nanopore_YEASTF927/logs/nanoporetrim_FSI927-%j.out
+#SBATCH -e /scratch/sag239/logs/nanoporetrim_FSI927-%j.err
+#SBATCH -o /scratch/sag239/logs/nanoporetrim_FSI927-%j.out
 
 echo "Job running on SLURM NODELIST: $SLURM_NODELIST "
 

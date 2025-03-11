@@ -5,7 +5,7 @@
 #SBATCH -t 24:00:00
 
 b=$SAMPLE
-GENOME=/scratch/rcsa230/genomes/contam
+GENOME=/scratch/sag239/genomes/contam
 #FOLDER=directory where folders of trimmed reads are stored where RUNME was run
 
 # Change enveomics path to yours 
