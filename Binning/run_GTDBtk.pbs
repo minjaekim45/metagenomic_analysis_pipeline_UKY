@@ -23,9 +23,9 @@ cd $FOLDER/17.checkm
 
 readlink -f *.fa > list.txt
 
-cat combined.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
+cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
-paste combined.txt ID.txt > batchfile.txt
+paste list.txt ID.txt > batchfile.txt
 
 mkdir $FOLDER/18.gtdbtk/$b/
 
