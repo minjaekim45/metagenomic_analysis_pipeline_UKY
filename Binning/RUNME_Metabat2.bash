@@ -61,6 +61,12 @@ for i in 15.metabat2; do
    [[ -d $i ]] || mkdir $i
 done
 
+cd $dir/15.metabat2;
+
+for i in binned; do
+   [[ -d $i ]] || mkdir $i
+done
+
 #for i in 16.dastool; do
 #   [[ -d $i ]] || mkdir $i
 #done
