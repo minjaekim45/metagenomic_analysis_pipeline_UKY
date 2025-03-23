@@ -59,6 +59,10 @@ conda deactivate
 
 #---------------------------------------------------------
 
+cp $FOLDER/15.metabat2/$b/* $FOLDER/15.metabat2/binned/
+
+#---------------------------------------------------------
+
 ## Prepare DasTool input
 
 #conda activate DasTool
