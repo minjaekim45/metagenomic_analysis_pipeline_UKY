@@ -67,7 +67,7 @@ mkdir ./output/good_quality
 mv ./output/high_qual_w_score.tsv ./output/good_quality
 
 while IFS= read -r line; do
-   cp $dir/15.metabat2/"$line".fa $dir/17.checkm/output/good_quality
+   cp $dir/15.metabat2/binned/"$line".fa $dir/17.checkm/output/good_quality
 done < ./output/list.txt
 
 awk '{print $0, "$b"}' > output.txt
