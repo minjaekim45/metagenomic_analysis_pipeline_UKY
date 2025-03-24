@@ -4,8 +4,8 @@
 #SBATCH --job-name=index            # Job name
 #SBATCH --ntasks=48                 # Number of cores for the job. Same as SBATCH -n 1
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e index-%j.err             # Error file for this job.
-#SBATCH -o index-%j.out             # Output file for this job.
+#SBATCH -e GTDB-%j.err              # Error file for this job.
+#SBATCH -o GTDB-%j.out              # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
