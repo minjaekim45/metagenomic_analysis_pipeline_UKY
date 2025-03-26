@@ -54,7 +54,7 @@ for i in $dir/*.1.fastq ; do
       mv "$b".1.fastq 01.raw_reads/ ;
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/trim_output/"Trim-$b"-%j.err -o "$dir"/trim_output/"Trim-$b"-%j.out  $pac/run_$con.pbs | grep .;
+   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Trim-$b"-%j.err -o "$dir"/zz.out/"Trim-$b"-%j.out  $pac/run_$con.pbs | grep .;
 done ;
 
 echo 'Done'
