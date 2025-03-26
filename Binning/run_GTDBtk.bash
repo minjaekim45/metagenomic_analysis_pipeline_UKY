@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --time=06:00:00             # Time limit for the job (REQUIRED).
-#SBATCH --job-name=index            # Job name
+#SBATCH --job-name=gtdbtk           # Job name
 #SBATCH --ntasks=48                 # Number of cores for the job. Same as SBATCH -n 1
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e GTDB-%j.err              # Error file for this job.
-#SBATCH -o GTDB-%j.out              # Output file for this job.
+#SBATCH -e zz.out/GTDBtk-%j.err     # Error file for this job.
+#SBATCH -o zz.out/GTDBtk-%j.out     # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
@@ -33,6 +33,10 @@ if [[ ! -e 17.checkm ]] ; then
    echo "Cannot locate the 17.checkm directory, aborting..." >&2
    exit 1
 fi ;
+
+for i in 18.gtdbtk; do
+   [[ -d $i ]] || mkdir $i
+done
 
 for i in 18.gtdbtk; do
    [[ -d $i ]] || mkdir $i
