@@ -70,3 +70,6 @@ hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.f
 
 conda deactivate
 
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
