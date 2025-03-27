@@ -58,6 +58,7 @@ singularity run --app fastqc0119 $container fastqc $dir/02.trimmed_reads/*tagged
 
 #---------------------------------------------------------
 
+cd $dir/zz.stats/02.trimmed/
 for i in $dir/zz.stats/02.trimmed/*.zip ; do
    name=$(basename $i) ;
    base=$(basename $i _val_fastqc.zip) ;
@@ -68,6 +69,7 @@ for i in $dir/zz.stats/02.trimmed/*.zip ; do
    fi
 done
 
+cd $dir/zz.stats/04.tagged/
 for i in $dir/zz.stats/04.tagged/*.zip ; do
    name=$(basename $i) ;
    base=$(basename $i .tagged_fastqc.zip) ;
