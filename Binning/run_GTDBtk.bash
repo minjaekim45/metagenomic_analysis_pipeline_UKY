@@ -12,16 +12,9 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: sbatch ./index.bash [folder] [genome] [accession]
 
-   folder      Path to the folder containing the compressed genome dataset from NCBI.
-               Compressed file should follow the format of 'human_GRCh38_dataset.zip',
-               though you may use a more recent version.
-   
-   genome      Name of the genome assembly. Defaults to 'GRCh38_p14' to represent the
-               most recent human genome dataset.
-   
-   accession   NCBI accession number. Defaults to 'GCF_000001405.40' to represent the
-               most recent human genome dataset.
-   
+   folder      Path to the folder containing 17.checkm
+  
+    
    " >&2 ;
    exit 1 ;
 fi ;
@@ -33,10 +26,6 @@ if [[ ! -e 17.checkm ]] ; then
    echo "Cannot locate the 17.checkm directory, aborting..." >&2
    exit 1
 fi ;
-
-for i in 18.gtdbtk; do
-   [[ -d $i ]] || mkdir $i
-done
 
 for i in 18.gtdbtk; do
    [[ -d $i ]] || mkdir $i
