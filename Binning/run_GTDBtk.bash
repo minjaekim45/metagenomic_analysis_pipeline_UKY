@@ -10,11 +10,10 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: sbatch ./index.bash [folder] [genome] [accession]
+   Usage: sbatch ./index.bash [folder]
 
    folder      Path to the folder containing 17.checkm
-  
-    
+     
    " >&2 ;
    exit 1 ;
 fi ;
