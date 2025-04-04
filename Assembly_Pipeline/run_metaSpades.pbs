@@ -7,7 +7,8 @@
 b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
-SP=/scratch/jwme229/Software/SPAdes-3.15.5-Linux/bin
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate spades
 #---------------------------------------------------------
 
 echo "==[ 05.assembly: $(date) ]"
@@ -16,10 +17,10 @@ mkdir "$b"
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!" ;
-   $SP/spades.py --s $FA --only-assembler --meta -t $THR -o ./"$b" ;
+   spades.py --s $FA --only-assembler --meta -t $THR -o ./"$b" ;
 else
    echo "Coupled Reads!" ;
-   $SP/spades.py --12 $FA --only-assembler --meta -t $THR -o ./"$b" ;
+   spades.py --12 $FA --only-assembler --meta -t $THR -o ./"$b" ;
 fi
 
 cd ./"$b"
