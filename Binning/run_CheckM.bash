@@ -1,26 +1,18 @@
 #!/bin/bash
 
-#SBATCH --time=06:00:00             # Time limit for the job (REQUIRED).
-#SBATCH --job-name=checkm           # Job name
-#SBATCH --ntasks=16                 # Number of cores for the job. Same as SBATCH -n 1
+#SBATCH --time=12:00:00             # Time limit for the job (REQUIRED).
+#SBATCH --job-name=checkm2           # Job name
+#SBATCH --ntasks=20                 # Number of cores for the job. Same as SBATCH -n 1
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e CheckM-%j.err            # Error file for this job.
-#SBATCH -o CheckM-%j.out            # Output file for this job.
+#SBATCH -e CheckM2-%j.err            # Error file for this job.
+#SBATCH -o CheckM2-%j.out            # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: sbatch ./index.bash [folder] [genome] [accession]
+   Usage: sbatch ./index.bash [folder]
 
-   folder      Path to the folder containing the compressed genome dataset from NCBI.
-               Compressed file should follow the format of 'human_GRCh38_dataset.zip',
-               though you may use a more recent version.
-   
-   genome      Name of the genome assembly. Defaults to 'GRCh38_p14' to represent the
-               most recent human genome dataset.
-   
-   accession   NCBI accession number. Defaults to 'GCF_000001405.40' to represent the
-               most recent human genome dataset.
+   folder      Path to the folder containing 15.metabat2   
    
    " >&2 ;
    exit 1 ;
@@ -34,43 +26,44 @@ if [[ ! -e 15.metabat2 ]] ; then
    exit 1
 fi ;
 
-for i in 17.checkm; do
+for i in 16.checkm2; do
    [[ -d $i ]] || mkdir $i
 done
 
 #---------------------------------------------------------
 
 enve=/project/mki314_uksr/enveomics/Scripts
-THR=16
+THR=20
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-conda activate CheckM
+conda activate checkm2
+checkm2=/project/mki314_uksr/Software/checkm2
 
 #---------------------------------------------------------
 
-mkdir $dir/17.checkm/output
+mkdir $dir/16.checkm2/output
 
 cd $dir/15.metabat2/binned
 
-checkm lineage_wf -t $THR -x fa --tab_table -f $dir/17.checkm/output/qs.o1.tsv ./ $dir/17.checkm
+$checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
 
-cd $dir/17.checkm
+#cd $dir/16.checkm2
 
-awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
+#awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
 
-awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
+#awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
 
-awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
+#awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
 
-mkdir ./output/good_quality
+#mkdir ./output/good_quality
 
-mv ./output/high_qual_w_score.tsv ./output/good_quality
+#mv ./output/high_qual_w_score.tsv ./output/good_quality
 
-while IFS= read -r line; do
-   cp $dir/15.metabat2/binned/"$line".fa $dir/17.checkm/output/good_quality
-done < ./output/list.txt
+#while IFS= read -r line; do
+#   cp $dir/15.metabat2/binned/"$line".fa $dir/17.checkm/output/good_quality
+#done < ./output/list.txt
 
-awk '{print $0, "$b"}' > output.txt
+#awk '{print $0, "$b"}' > output.txt
 
 conda deactivate
 
