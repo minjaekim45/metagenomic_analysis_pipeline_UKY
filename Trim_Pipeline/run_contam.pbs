@@ -36,12 +36,12 @@ conda deactivate
 #---------------------------------------------------------
 # Filter contaminating reads using concatenated indexed fasta with identified organisms from kraken2 profiling
 
-conda activate hocort
+container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ./"$b".2_filtered.fq
+   singularity run --app hocort122 $container hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ./"$b".2_filtered.fq
 else
-   hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq
+   singularity run --app hocort122 $container hocort map bowtie2 -x $GENOME/cat_genomes -i ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq
 fi ;
 
 conda deactivate
