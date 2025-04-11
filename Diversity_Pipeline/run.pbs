@@ -19,16 +19,14 @@ MEM=76293
 
 echo "==[ 08.nonpareil: $(date) ]" ;
 cd $FOLDER/08.nonpareil ;
-
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-conda activate nonpareil
+container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
-   nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 else
    echo "Coupled Reads! Should use only one pair reads"
-   nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 fi
 
 #---------------------------------------------------------
