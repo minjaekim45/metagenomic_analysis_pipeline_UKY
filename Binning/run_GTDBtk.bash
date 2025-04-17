@@ -54,7 +54,7 @@ cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
 paste list.txt ID.txt > batchfile.txt
 
-singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/17.checkm/output/good_quality/batchfile.txt --out_dir $dir/18.gtdbtk/ --mash_db ../09.mash/mash.all.msh --extension fa --cpus $THR
+singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/17.checkm/output/good_quality/batchfile.txt --out_dir $dir/18.gtdbtk/ --mash_db $dir/18.gtdbtk --extension fa --cpus $THR
 
 cd $dir/18.gtdbtk/
 
