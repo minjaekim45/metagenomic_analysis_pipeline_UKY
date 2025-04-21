@@ -27,6 +27,17 @@ else
 fi ;
 
 #---------------------------------------------------------
+# Filter human reads
+
+conda activate bmtagger
+
+if [[ -e ./"$b".2_val_2.fq ]] ; then
+   
+else
+   
+fi ;
+
+#---------------------------------------------------------
 # Tagging fastq
 
 conda activate ruby
