@@ -47,29 +47,40 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate ncbi_datasets
 
 cd $dir ;
+datasets download genome accession $accession --include gff3,rna,cds,protein,genome,seq-report --filename human_${gen}_dataset.zip
+
 mkdir human_genome ;
 mv human_${gen}_dataset.zip $dir/human_genome ;
 
-cd ./human_genome/ ;
+cd $dir/human_genome ;
 unzip human_${gen}_dataset.zip -d human_dataset
-datasets rehydrate --directory human_dataset/
 
 cd ./human_dataset/ncbi_dataset/data/$accession ;
-cp ${accession}_${gen}.${ome}_genomic.fna $dir/human_genome/${accession}_${gen}.${ome}_genomic.fasta ;
+cp ${accession}_${gen}.${ome}_genomic.fna $dir/human_genome/${accession}_${gen}.${ome}_genomic.fa ;
 
 conda deactivate
 
 #---------------------------------------------------------
 # Performs indexing
 
-conda activate hocort
+conda activate bmtagger
 
 cd $dir ;
-
-hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18
 
 conda deactivate
 
+#---------------------------------------------------------
+# # Performs indexing
+# 
+# conda activate hocort
+# 
+# cd $dir ;
+# 
+# hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+# 
+# conda deactivate
+# 
 #---------------------------------------------------------
 
 echo "Done: $(date)." ;
