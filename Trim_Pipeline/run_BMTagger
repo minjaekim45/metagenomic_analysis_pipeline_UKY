@@ -12,6 +12,8 @@ enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
 
 #---------------------------------------------------------
+
+#---------------------------------------------------------
 # Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
