@@ -12,8 +12,6 @@ enve=/project/mki314_uksr/enveomics/Scripts
 THR=4
 
 #---------------------------------------------------------
-
-#---------------------------------------------------------
 # Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
@@ -83,6 +81,27 @@ if [[ -e "$b"_2.fa ]] ; then
 else
    mv "$b"_SingleReads.fa "$b".SingleReads.fa ;
 fi ;
+
+#---------------------------------------------------------
+# Get statistics
+
+echo "==[ zz.stats: $(date) ]" ;
+cd $FOLDER/zz.stats ;
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".1.fastq > "$b"_raw_1.fa ;
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".2.fastq > "$b"_raw_2.fa ;
+else
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".1.fastq > "$b"_raw_1.fa ;
+fi ;
+
+if [[ -e ../02.trimmed_reads/"$b".2_val_2.fq ]] ; then
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_raw_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_raw_2.fa ;
+else
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_raw_1.fa ;
+fi ;
+
 
 #---------------------------------------------------------
 
