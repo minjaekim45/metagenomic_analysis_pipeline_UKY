@@ -110,16 +110,16 @@ else
 fi ;
 
 if [[ -e "$b"_*_2.fa ]] ; then
-   $enve/FastA.qlen.pl "$b"_raw_1.fa ;
-   $enve/FastA.qlen.pl "$b"_raw_2.fa ;
-   $enve/FastA.qlen.pl "$b"_trimmed_1.fa ;
-   $enve/FastA.qlen.pl "$b"_trimmed_2.fa ;
-   $enve/FastA.qlen.pl "$b"_filtered_1.fa ;
-   $enve/FastA.qlen.pl "$b"_filtered_2.fa ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_2.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_2.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_2.fa > "$b"_stats.txt ;
 else
-   $enve/FastA.qlen.pl "$b"_raw_1.fa ;
-   $enve/FastA.qlen.pl "$b"_trimmed_1.fa ;
-   $enve/FastA.qlen.pl "$b"_filtered_1.fa ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_1.fa > "$b"_stats.txt ;
 fi ;
 
 #---------------------------------------------------------
