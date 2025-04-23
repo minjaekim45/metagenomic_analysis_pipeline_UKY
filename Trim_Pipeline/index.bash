@@ -66,7 +66,9 @@ conda deactivate
 conda activate bmtagger
 
 cd $dir ;
-bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18
+bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18 ;
+srprism mkindex -i ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.srprism -M 7168 ;
+makeblastdb -in ./human_genome/${accession}_${gen}.${ome}_genomic.fa -dbtype nucl ;
 
 conda deactivate
 
