@@ -40,7 +40,7 @@ cwd=$(pwd) ;
 #---------------------------------------------------------
 
 cd $dir ;
-for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta zz.out zz.TMP ; do
+for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta zz.out zz.stats zz.TMP ; do
    if [[ ! -d $i ]] ; then mkdir $i ; fi ;
 done ;
 
