@@ -32,9 +32,9 @@ fi ;
 conda activate bmtagger
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ;
+   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq -o ./"$b".bmtagger.out ;
 else
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq ;
+   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -o ./"$b".bmtagger.out ;
 fi ;
 
 #---------------------------------------------------------
