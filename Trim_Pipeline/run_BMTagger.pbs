@@ -42,11 +42,11 @@ fi ;
 
 conda activate ruby
 
-if [[ -e ./"$b"_filtered_2.fq ]] ; then
-   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
-   $enve/FastQ.tag.rb -i ./"$b"_filtered_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+if [[ -e ./"$b"_filtered_2.fastq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fastq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_2.fastq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
 else
-   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fastq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
 #---------------------------------------------------------
@@ -103,10 +103,10 @@ else
 fi ;
 
 if [[ -e ../02.trimmed_reads/"$b".2_filtered.fq ]] ; then
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fq > "$b"_filtered_1.fa ;
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_2.fq > "$b"_filtered_2.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fastq > "$b"_filtered_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_2.fastq > "$b"_filtered_2.fa ;
 else
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fq > "$b"_filtered_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fastq > "$b"_filtered_1.fa ;
 fi ;
 
 if [[ -e "$b"_*_2.fa ]] ; then
