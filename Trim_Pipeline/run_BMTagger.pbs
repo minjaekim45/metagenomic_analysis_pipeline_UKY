@@ -32,9 +32,9 @@ fi ;
 conda activate bmtagger
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq -o ./"$b"_bmtagger ;
+   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq -o ./"$b"_filtered -X ;
 else
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -o ./"$b"_bmtagger ;
+   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -o ./"$b"_filtered -X ;
 fi ;
 
 #---------------------------------------------------------
@@ -42,11 +42,11 @@ fi ;
 
 conda activate ruby
 
-if [[ -e ./"$b".2_filtered.fq ]] ; then
-   $enve/FastQ.tag.rb -i ./"$b".1_filtered.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
-   $enve/FastQ.tag.rb -i ./"$b".2_filtered.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+if [[ -e ./"$b"_filtered_2.fq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
 else
-   $enve/FastQ.tag.rb -i ./"$b".1_filtered.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b"_filtered_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
 fi
 
 #---------------------------------------------------------
