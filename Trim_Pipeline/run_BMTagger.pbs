@@ -103,23 +103,23 @@ else
 fi ;
 
 if [[ -e ../02.trimmed_reads/"$b".2_filtered.fq ]] ; then
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1_filtered.fq > "$b"_filtered_1.fa ;
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".2_filtered.fq > "$b"_filtered_2.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fq > "$b"_filtered_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_2.fq > "$b"_filtered_2.fa ;
 else
-   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1_filtered.fq > "$b"_filtered_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fq > "$b"_filtered_1.fa ;
 fi ;
 
 if [[ -e "$b"_*_2.fa ]] ; then
-   $enve/FastA.qlen.pl "$b"_raw_1.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_raw_2.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_trimmed_1.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_trimmed_2.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_filtered_1.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_filtered_2.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_2.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_2.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_2.fa >> "$b"_stats.txt ;
 else
-   $enve/FastA.qlen.pl "$b"_raw_1.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_trimmed_1.fa > "$b"_stats.txt ;
-   $enve/FastA.qlen.pl "$b"_filtered_1.fa > "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_filtered_1.fa >> "$b"_stats.txt ;
 fi ;
 
 #---------------------------------------------------------
