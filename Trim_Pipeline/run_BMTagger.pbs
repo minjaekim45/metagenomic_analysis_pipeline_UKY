@@ -102,7 +102,7 @@ else
    awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1_val_1.fq > "$b"_trimmed_1.fa ;
 fi ;
 
-if [[ -e ../02.trimmed_reads/"$b".2_filtered.fq ]] ; then
+if [[ -e ../02.trimmed_reads/"$b"_filtered_2.fastq ]] ; then
    awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_1.fastq > "$b"_filtered_1.fa ;
    awk -f "$FQ2A" < ../02.trimmed_reads/"$b"_filtered_2.fastq > "$b"_filtered_2.fa ;
 else
