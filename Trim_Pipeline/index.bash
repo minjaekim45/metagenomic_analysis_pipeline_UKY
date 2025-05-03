@@ -63,26 +63,27 @@ conda deactivate
 #---------------------------------------------------------
 # Performs indexing
 
-conda activate bmtagger
+#conda activate bmtagger
+
+#cd $dir ;
+
+#bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18 ;
+#srprism mkindex -i ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.srprism -M 7168 ;
+#makeblastdb -in ./human_genome/${accession}_${gen}.${ome}_genomic.fa -dbtype nucl ;
+
+#conda deactivate
+
+#---------------------------------------------------------
+# Performs indexing
+
+conda activate hocort
 
 cd $dir ;
-bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18 ;
-srprism mkindex -i ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.srprism -M 7168 ;
-makeblastdb -in ./human_genome/${accession}_${gen}.${ome}_genomic.fa -dbtype nucl ;
+
+hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
 
 conda deactivate
 
-#---------------------------------------------------------
-# # Performs indexing
-# 
-# conda activate hocort
-# 
-# cd $dir ;
-# 
-# hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
-# 
-# conda deactivate
-# 
 #---------------------------------------------------------
 
 echo "Done: $(date)." ;
