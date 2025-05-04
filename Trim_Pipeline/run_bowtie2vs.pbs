@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=4
+#SBATCH --ntasks=8
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
@@ -9,7 +9,7 @@ b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
 
 # The number of CPUs or threads
-THR=4
+THR=8
 
 # Source path to Conda environments
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
@@ -34,7 +34,7 @@ fi ;
 conda activate bowtie2
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bowtie2 [options]* -x GRCh38 {-1 <m1> -2 <m2> | -U <r> | --interleaved <i> | --sra-acc <acc> | -b <bam>} -S [<sam>]
+   bowtie2 [options]* -x GRCh38 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq --very-sensitive --threads $THR
 else
    
 fi ;
