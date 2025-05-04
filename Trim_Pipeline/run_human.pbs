@@ -11,13 +11,15 @@ enve=/project/mki314_uksr/enveomics/Scripts
 # The number of CPUs or threads
 THR=8
 
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 #---------------------------------------------------------
 # Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $FOLDER/02.trimmed_reads ;
 
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate trim-galore
 
 if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
@@ -26,16 +28,15 @@ else
    trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR ../01.raw_reads/"$b".1.fastq
 fi ;
 
-conda deactivate
-
 #---------------------------------------------------------
 # Filter human reads
-container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
+
+conda activate hocort
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   singularity run --app hocort122 $container hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ./"$b".2_filtered.fq
+   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq ./"$b".2_val_2.fq -o ./"$b".1_filtered.fq ./"$b".2_filtered.fq
 else
-   singularity run --app hocort122 $container hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq
+   hocort map bowtie2 -x $FOLDER/human_genome/GRCh38_p14 -i ./"$b".1_val_1.fq -o ./"$b".1_filtered.fq
 fi ;
 
 #---------------------------------------------------------
