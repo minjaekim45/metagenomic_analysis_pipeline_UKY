@@ -11,13 +11,15 @@ enve=/project/mki314_uksr/enveomics/Scripts
 # The number of CPUs or threads
 THR=4
 
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 #---------------------------------------------------------
 # Quality trimming
 
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $FOLDER/02.trimmed_reads ;
 
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate trim-galore
 
 if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
@@ -29,12 +31,12 @@ fi ;
 #---------------------------------------------------------
 # Filter human reads
 
-conda activate bmtagger
+conda activate bowtie2
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq -o ./"$b"_bmtagger ;
+   bowtie2 [options]* -x GRCh38 {-1 <m1> -2 <m2> | -U <r> | --interleaved <i> | --sra-acc <acc> | -b <bam>} -S [<sam>]
 else
-   bmtagger.sh -b ../human_genome/GRCh38_p14.bitmask -x ../human_genome/GRCh38_p14.srprism -T ../zz.TMP -q 1 -1 ./"$b".1_val_1.fq -o ./"$b"_bmtagger ;
+   
 fi ;
 
 #---------------------------------------------------------
