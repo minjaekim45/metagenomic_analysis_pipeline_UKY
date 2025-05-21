@@ -34,9 +34,9 @@ fi ;
 conda activate bowtie2
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bowtie2 [options]* -x GRCh38 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq --very-sensitive --threads $THR
+   bowtie2 –seed 133540 --very-sensitive -x GRCh38 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq --un-conc $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
 else
-   
+   bowtie2 –seed 133540 --very-sensitive -x GRCh38 -U ./"$b".1_val_1.fq --un $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
 fi ;
 
 #---------------------------------------------------------
