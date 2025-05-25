@@ -76,11 +76,22 @@ conda deactivate
 #---------------------------------------------------------
 # Performs indexing
 
-conda activate hocort
+#conda activate hocort
+
+#cd $dir ;
+
+#hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+
+#conda deactivate
+
+#---------------------------------------------------------
+# Performs indexing
+
+conda activate bowtie2
 
 cd $dir ;
 
-hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+bowtie2-build --seed 133540 --threads 4 ./human_genome/${accession}_${gen}.${ome}_genomic.fasta ./human_genome/GRCh38 ;
 
 conda deactivate
 
