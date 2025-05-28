@@ -12,7 +12,7 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: sbatch ./mash.bash [folder]
 
-   folder      Path to the folder containing the '07.mash' directory.
+   folder      Path to the folder containing the '09.mash' directory.
    
    " >&2 ;
    exit 1 ;
