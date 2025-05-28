@@ -44,6 +44,10 @@ for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta zz.out z
    if [[ ! -d $i ]] ; then mkdir $i ; fi ;
 done ;
 
+for i in $dir/index-* ; do
+   mv $i $dir/zz.out/
+done
+
 for i in $dir/*.1.fastq ; do 
    b=$(basename $i .1.fastq) ;
    OPTS="SAMPLE=$b,FOLDER=$dir"
