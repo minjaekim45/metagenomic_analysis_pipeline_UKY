@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=8
+#SBATCH --ntasks=24
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
@@ -9,7 +9,7 @@ b=$SAMPLE
 enve=/project/mki314_uksr/enveomics/Scripts
 
 # The number of CPUs or threads
-THR=8
+THR=24
 
 # Source path to Conda environments
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
@@ -34,9 +34,9 @@ fi ;
 conda activate bowtie2
 
 if [[ -e ./"$b".2_val_2.fq ]] ; then
-   bowtie2 -–seed 133540 --very-sensitive -x ./human_genome/GRCh38 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq --un-conc $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
+   bowtie2 --seed 133540 --very-sensitive -x ./human_genome/GRCh38 -1 ./"$b".1_val_1.fq -2 ./"$b".2_val_2.fq --un-conc $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
 else
-   bowtie2 -–seed 133540 --very-sensitive -x ./human_genome/GRCh38 -U ./"$b".1_val_1.fq --un $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
+   bowtie2 --seed 133540 --very-sensitive -x ./human_genome/GRCh38 -U ./"$b".1_val_1.fq --un $FOLDER/02.trimmed_reads/"$b"%_filtered.fq --threads $THR
 fi ;
 
 #---------------------------------------------------------
