@@ -47,23 +47,23 @@ cd $dir/15.metabat2/binned
 
 $checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
 
-#cd $dir/16.checkm2
+cd $dir/16.checkm2
 
-#awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
+awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
 
-#awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
+awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
 
-#awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
+awk '{print $1}' ./output/high_qual_w_score.tsv > ./output/list.txt
 
-#mkdir ./output/good_quality
+mkdir ./output/good_quality
 
-#mv ./output/high_qual_w_score.tsv ./output/good_quality
+mv ./output/high_qual_w_score.tsv ./output/good_quality
 
-#while IFS= read -r line; do
-#   cp $dir/15.metabat2/binned/"$line".fa $dir/17.checkm/output/good_quality
-#done < ./output/list.txt
+while IFS= read -r line; do
+   cp $dir/15.metabat2/binned/"$line".fa $dir/17.checkm/output/good_quality
+done < ./output/list.txt
 
-#awk '{print $0, "$b"}' > output.txt
+awk '{print $0, "$b"}' > output.txt
 
 conda deactivate
 
