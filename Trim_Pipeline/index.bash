@@ -91,7 +91,7 @@ conda activate bowtie2
 
 cd $dir ;
 
-bowtie2-build --seed 133540 --threads 4 ./human_genome/${accession}_${gen}.${ome}_genomic.fa ./human_genome/GRCh38 ;
+bowtie2-build --seed 133540 --threads 4 ./human_genome/${accession}_${gen}.${ome}_genomic.fa ./human_genome/$gen ;
 
 conda deactivate
 
