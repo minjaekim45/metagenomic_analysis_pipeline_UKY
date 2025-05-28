@@ -32,7 +32,7 @@ THR=4
 #---------------------------------------------------------
 # Create distance matrix
 
-cd $dir/07.mash ;
+cd $dir/09.mash ;
 
 readlink -f *.msh > mash_list.txt ;
 
