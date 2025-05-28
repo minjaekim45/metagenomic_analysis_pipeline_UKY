@@ -10,7 +10,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: sbatch ./index.bash [folder]
+   Usage: sbatch ./run_CheckM.bash [folder]
 
    folder      Path to the folder containing 15.metabat2   
    
