@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=4
-#SBATCH --mem=80g
+#SBATCH --ntasks=12
+#SBATCH --mem=40g
 #SBATCH -t 12:00:00
 
 b=$SAMPLE
@@ -11,7 +11,7 @@ enve=/project/mki314_uksr/enveomics/Scripts
 mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
 
 # The number of CPUs or threads | Maximum RAM usage in Mib
-THR=4
+THR=12
 MEM=76293
 
 #---------------------------------------------------------
@@ -19,7 +19,7 @@ MEM=76293
 
 echo "==[ 08.nonpareil: $(date) ]" ;
 cd $FOLDER/08.nonpareil ;
-container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
+container=/share/singularity/images/ccs/conda/amd-conda23-rocky9.sinf
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
