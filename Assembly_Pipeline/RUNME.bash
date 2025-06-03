@@ -68,7 +68,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    else
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
-   sbatch --export="$OPTS" -J "idba-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"idba-$b"-%j.err -o "$dir"/"idba-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "idba-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"idba-$b"-%j.err -o "$dir"/zz.out/"idba-$b"-%j.out  $pac/run.pbs | grep .;
 done ;
 
 #Hello Kaili
