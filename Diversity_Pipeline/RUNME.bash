@@ -43,7 +43,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi ;
 
-for i in 08.nonpareil 09.mash diversity_output ; do
+for i in 08.nonpareil 09.mash ; do
    [[ -d $i ]] || mkdir $i
 done
 
@@ -63,5 +63,5 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Diversity-$b" --account=$QUEUE --partition=$QOS --error "$dir"/diversity_output/"Diversity-$b"-%j.err -o "$dir"/diversity_output/"Diversity-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "Diversity-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Diversity-$b"-%j.err -o "$dir"/zz.out/"Diversity-$b"-%j.out  $pac/run.pbs | grep .;
 done 
