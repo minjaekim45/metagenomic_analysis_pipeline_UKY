@@ -36,8 +36,7 @@ enve=/project/mki314_uksr/enveomics/Scripts
 THR=20
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-conda activate checkm2
-checkm2=/project/mki314_uksr/Software/checkm2
+checkm2=/project/mki314_uksr/Software/checkm2/bin/checkm2
 
 #---------------------------------------------------------
 
