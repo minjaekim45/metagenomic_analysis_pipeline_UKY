@@ -36,7 +36,8 @@ enve=/project/mki314_uksr/enveomics/Scripts
 THR=20
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-checkm2=/project/mki314_uksr/Software/checkm2/bin/checkm2
+conda activate checkm2
+#checkm2=/project/mki314_uksr/Software/checkm2/bin/checkm2
 
 #---------------------------------------------------------
 
@@ -44,7 +45,9 @@ mkdir $dir/16.checkm2/output
 
 cd $dir/15.metabat2/binned
 
-$checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
+#$checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
+
+checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
 
 cd $dir/16.checkm2
 
