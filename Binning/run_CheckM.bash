@@ -47,7 +47,7 @@ cd $dir/15.metabat2/binned
 
 #$checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
 
-checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
+checkm2 predict -t $THR -x fa --input . --output-directory $dir/16.checkm2
 
 cd $dir/16.checkm2
 
