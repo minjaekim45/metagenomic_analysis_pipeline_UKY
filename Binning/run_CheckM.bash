@@ -33,6 +33,7 @@ done
 #---------------------------------------------------------
 
 enve=/project/mki314_uksr/enveomics/Scripts
+DB_path=/share/examples/MCC/checkm2_database/CheckM2_database/uniref100.KO.1.dmnd
 THR=20
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
@@ -47,7 +48,7 @@ cd $dir/15.metabat2/binned
 
 #$checkm2 predict --threads $THR -x fa --tab_table --input . --output-directory $dir/16.checkm2
 
-checkm2 predict -t $THR -x fa --input . --output-directory $dir/16.checkm2/output
+checkm2 predict -t $THR -x fa --input . --output-directory $dir/16.checkm2/output --database_path $DB_path
 
 cd $dir/16.checkm2
 
