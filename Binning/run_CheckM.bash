@@ -52,7 +52,7 @@ checkm2 predict -t $THR -x fa --input . --output-directory $dir/16.checkm2/outpu
 
 cd $dir/16.checkm2
 
-awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/qs.o1.tsv > ./output/high_qual.tsv
+awk -F "\t" '{x=$12; y=$13 * 5} {if (x - y >= 50) print $0}' ./output/quality_report.tsv > ./output/high_qual.tsv
 
 awk -F "\t" '{x = $12 - $13 * 5} {$(NF+1)=x;}1' OFS="\t" ./output/high_qual.tsv > ./output/high_qual_w_score.tsv
 
