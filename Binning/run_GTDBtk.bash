@@ -21,7 +21,7 @@ fi ;
 dir=$(readlink -f $1) ;
 cd $dir
 
-if [[ ! -e 17.checkm ]] ; then
+if [[ ! -e 16.checkm2 ]] ; then
    echo "Cannot locate the 17.checkm directory, aborting..." >&2
    exit 1
 fi ;
