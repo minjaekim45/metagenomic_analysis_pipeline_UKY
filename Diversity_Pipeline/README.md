@@ -26,9 +26,9 @@ HELP
 
     By the end of the run, you should find the following folders:
 
-    3.1. *06.nonpareil: you will have three files .npa .npc .npl .npo for each sample.
+    3.1. *08.nonpareil: you will have three files .npa .npc .npl .npo for each sample.
 
-    3.2. *07.mash: you will have .msh for each sample
+    3.2. *09.mash: you will have .msh for each sample
 
     What to do next:
 
