@@ -12,7 +12,7 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: sbatch ./index.bash [folder]
 
-   folder      Path to the folder containing 17.checkm
+   folder      Path to the folder containing 16.checkm2
      
    " >&2 ;
    exit 1 ;
@@ -22,7 +22,7 @@ dir=$(readlink -f $1) ;
 cd $dir
 
 if [[ ! -e 16.checkm2 ]] ; then
-   echo "Cannot locate the 17.checkm directory, aborting..." >&2
+   echo "Cannot locate the 16.checkm2 directory, aborting..." >&2
    exit 1
 fi ;
 
@@ -44,9 +44,9 @@ database=/share/examples/MCC/gtdbtk/release220:/gtdbtk_data/database
 #---------------------------------------------------------
 # Run GTDBtk
 
-echo "==[ 17.checkm: $(date) ]"
+echo "==[ 16.checkm2: $(date) ]"
 
-cd $dir/17.checkm/output/good_quality
+cd $dir/16.checkm2/output/good_quality
 
 readlink -f *.fa > list.txt
 
@@ -54,7 +54,7 @@ cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
 paste list.txt ID.txt > batchfile.txt
 
-singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/17.checkm/output/good_quality/batchfile.txt --out_dir $dir/18.gtdbtk/ --mash_db $dir/18.gtdbtk --extension fa --cpus $THR
+singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/16.checkm2/output/good_quality/batchfile.txt --out_dir $dir/18.gtdbtk/ --mash_db $dir/18.gtdbtk --extension fa --cpus $THR
 
 cd $dir/18.gtdbtk/
 
