@@ -29,7 +29,7 @@ pac=$(dirname $(readlink -f $0))
 cwd=$(pwd)
 
 cd $dir
-if [[ ! -e 17.checkm ]] ; then
+if [[ ! -e 16.checkm2 ]] ; then
    echo "Cannot locate the 17.checkm directory, aborting..." >&2
    exit 1
 fi ;
@@ -41,7 +41,7 @@ for i in 18.dRep; do
 done
 
 # Get a list of subdirectories within the main directory
-checkm_dir=($(find "17.checkm" -mindepth 1 -maxdepth 1 -type d))
+checkm_dir=($(find "16.checkm2" -mindepth 1 -maxdepth 1 -type d))
 
 # Loop through each sub-directory
 for subdir in "${checkm_dir[@]}"; do
@@ -52,7 +52,7 @@ for subdir in "${checkm_dir[@]}"; do
    mkdir $dir/18.dRep/$b
 
    # Move into the sub-directory
-   cd "$dir/17.checkm/$b" || exit
+   cd "$dir/16.checkm2/$b" || exit
 
    sbatch --export="$OPTS" -J "dRep-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"dRep-$b"-%j.err -o "$dir"/"dRep-$b"-%j.out  $pac/run_dRep.pbs | grep .;
 
