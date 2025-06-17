@@ -30,7 +30,7 @@ cwd=$(pwd)
 
 cd $dir
 if [[ ! -e 16.checkm2 ]] ; then
-   echo "Cannot locate the 17.checkm directory, aborting..." >&2
+   echo "Cannot locate the 16.checkm2 directory, aborting..." >&2
    exit 1
 fi ;
 
