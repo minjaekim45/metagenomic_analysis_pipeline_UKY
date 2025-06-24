@@ -4,17 +4,23 @@
 #SBATCH -t 48:00:00
 
 b=$SAMPLE
-enve=/project/mki314_uksr/enveomics/Scripts
-THR=100
 
+# Change enveomics path to yours 
+enve=/project/mki314_uksr/enveomics/Scripts
+
+# Source path to Conda environments
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
-conda activate idba
+# The number of CPUs or threads
+THR=100
 
 #---------------------------------------------------------
+# Assembly using idba
 
-echo "==[ 05.assembly: $(date) ]"
-cd $FOLDER/05.assembly
+echo "==[ 10.assembly: $(date) ]" ;
+cd $FOLDER/10.assembly ;
+
+conda activate idba
 
 CMD=""
 case "$TYPE" in
