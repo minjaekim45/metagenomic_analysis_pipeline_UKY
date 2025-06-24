@@ -6,9 +6,14 @@
 
 b=$SAMPLE
 
-# Change enveomics and mash paths to yours 
+# Change enveomics path to yours
 enve=/project/mki314_uksr/enveomics/Scripts
+
+# Change mash program path to yours
 mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
+
+# Container path remains the same for anyone running on the MCC cluster (unless path has been updated)
+container=/share/singularity/images/ccs/conda/amd-conda23-rocky9.sinf
 
 # The number of CPUs or threads | Maximum RAM usage in Mib
 THR=4
@@ -19,7 +24,6 @@ MEM=76293
 
 echo "==[ 08.nonpareil: $(date) ]" ;
 cd $FOLDER/08.nonpareil ;
-container=/share/singularity/images/ccs/conda/amd-conda23-rocky9.sinf
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
@@ -39,4 +43,4 @@ cd $FOLDER/09.mash ;
 
 #---------------------------------------------------------
 
-echo "Done: $(date)."
+echo "Done: $(date)." ;
