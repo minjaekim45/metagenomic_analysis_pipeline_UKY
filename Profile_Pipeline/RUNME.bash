@@ -7,8 +7,8 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
                are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
                name of the sample.
-   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan',
-               'kraken', or 'kaiju'.
+   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan4',
+               'kraken2', or 'kaiju'.
    partition   Select a partition (if not provided, coa_mki314_uksr will be used)
    qos         Select a quality of service (if not provided, normal will be used)
    
@@ -47,22 +47,24 @@ dir=$(readlink -f $1) ;
 pac=$(dirname $(readlink -f $0)) ;
 cwd=$(pwd) ;
 
+#---------------------------------------------------------
+
 cd $dir
 if [[ ! -e 04.trimmed_fasta ]] ; then
    echo "Cannot locate the 04.trimmed_fasta directory, aborting..." >&2
    exit 1
 fi ;
 
-if [[ "$TOOL" == "metaphlan" ]] ; then
-   for i in 05.metaphlan profile_output ; do
+if [[ "$TOOL" == "metaphlan4" ]] ; then
+   for i in 05.metaphlan4 ; do
       [[ -d $i ]] || mkdir $i
    done ;
-elif [[ "$TOOL" == "kraken" ]] ; then
-   for i in 06.kraken profile_output ; do
+elif [[ "$TOOL" == "kraken2" ]] ; then
+   for i in 06.kraken2 ; do
       [[ -d $i ]] || mkdir $i
    done ;
 elif [[ "$TOOL" == "kaiju" ]] ; then
-   for i in 07.kaiju profile_output ; do
+   for i in 07.kaiju ; do
       [[ -d $i ]] || mkdir $i
    done ;
 fi ;
@@ -76,7 +78,9 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/profile_output/"Profile-$TOOL-$b"-%j.err -o "$dir"/profile_output/"Profile-$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
+   sbatch --export="$OPTS" -J "Profile-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Profile-$TOOL-$b"-%j.err -o "$dir"/zz.out/"Profile-$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done 
 
-echo 'Done'
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
