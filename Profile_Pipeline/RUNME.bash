@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$1" == "" || "$1" == "-h" ]] ; then
+if [[ "$1" == "" || "$1" == "-h" || "$2" == "" ]] ; then
    echo "
    Usage: ./RUNME.bash [folder] [tool] [queue] [QOS]
    
@@ -17,20 +17,9 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
 fi ;
 
 TOOL=$2
-if [[ "$TOOL" == "" || "$TOOL" == "-h" ]] ; then
-   echo "
-   Usage: ./RUNME.bash [folder] [tool] [queue] [QOS]
-   
-   folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
-               are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
-               name of the sample.
-   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan4',
-               'kraken2', or 'kaiju'.
-   partition   Select a partition (if not provided, coa_mki314_uksr will be used)
-   qos         Select a quality of service (if not provided, normal will be used)
-   
-   " >&2 ;
-   exit 1 ;
+if [[ "$TOOL" != "metaphlan4" && "$TYPE" != "kraken2" && "$TYPE" != "kaiju" ]] ; then
+   echo "Unsupported taxonomy tool." >&2 ;
+   exit 1;
 fi ;
 
 QUEUE=$3
