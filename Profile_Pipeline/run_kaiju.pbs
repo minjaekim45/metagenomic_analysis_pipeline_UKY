@@ -10,7 +10,7 @@ b=$SAMPLE
 container=/share/singularity/images/ccs/conda/amd-conda17-rocky8.sinf
 
 # Path for the Kaiju databases
-db=/share/apps/amd/kaiju
+database=/share/apps/amd/kaiju
 
 # The number of CPUs or threads
 THR=32
@@ -21,7 +21,7 @@ THR=32
 echo "==[ 07.kaiju: $(date) ]" ;
 cd $FOLDER/07.kaiju ;
 
-singularity run --app kaiju1101 $container kaiju -t $db/nr_euk/nodes.dmp -f $db/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -o "$b"_kaiju.txt -v
+singularity run --app kaiju1101 $container kaiju -t $database/nr_euk/nodes.dmp -f $database/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -o "$b"_kaiju.txt -v
 
 #---------------------------------------------------------
 
