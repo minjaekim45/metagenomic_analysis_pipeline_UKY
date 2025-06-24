@@ -12,9 +12,9 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: sbatch ./index.bash [folder] [genome] [accession]
 
-   folder      Path to the folder containing the compressed genome dataset from NCBI.
-               Compressed file should follow the format of 'human_GRCh38_dataset.zip',
-               though you may use a more recent version.
+   folder      Path to the folder containing the raw reads. A directory named 'human
+               genome' will be created to contain the dataset. Most recent dataset as
+               of publishing will be used by default, unless instructed otherwise.
    
    genome      Name of the genome assembly. Defaults to 'GRCh38_p14' to represent the
                most recent human genome dataset.
@@ -41,7 +41,7 @@ gen="${genome%_*}" ;
 ome="${genome#*_}" ;
 
 #---------------------------------------------------------
-# Unzips file
+# Download and Unzip file
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate ncbi_datasets
@@ -61,39 +61,33 @@ cp ${accession}_${gen}.${ome}_genomic.fna $dir/human_genome/${accession}_${gen}.
 conda deactivate
 
 #---------------------------------------------------------
-# Performs indexing
+# Performs indexing using BMTagger (Recommended)
 
-#conda activate bmtagger
-
-#cd $dir ;
-
-#bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18 ;
-#srprism mkindex -i ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.srprism -M 7168 ;
-#makeblastdb -in ./human_genome/${accession}_${gen}.${ome}_genomic.fa -dbtype nucl ;
-
-#conda deactivate
-
-#---------------------------------------------------------
-# Performs indexing
-
-#conda activate hocort
-
-#cd $dir ;
-
-#hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
-
-#conda deactivate
-
-#---------------------------------------------------------
-# Performs indexing
-
-conda activate bowtie2
+conda activate bmtagger
 
 cd $dir ;
 
-bowtie2-build --seed 133540 --threads 4 ./human_genome/${accession}_${gen}.${ome}_genomic.fa ./human_genome/$gen ;
+bmtool -d ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.bitmask -A 0 -w 18 ;
+srprism mkindex -i ./human_genome/${accession}_${gen}.${ome}_genomic.fa -o ./human_genome/$genome.srprism -M 7168 ;
+makeblastdb -in ./human_genome/${accession}_${gen}.${ome}_genomic.fa -dbtype nucl ;
 
 conda deactivate
+
+#---------------------------------------------------------
+# Performs indexing using HoCoRT
+
+#conda activate hocort
+#cd $dir ;
+#hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+#conda deactivate
+
+#---------------------------------------------------------
+# Performs indexing using Bowtie2
+
+#conda activate bowtie2
+#cd $dir ;
+#bowtie2-build --seed 133540 --threads 4 ./human_genome/${accession}_${gen}.${ome}_genomic.fa ./human_genome/$gen ;
+#conda deactivate
 
 #---------------------------------------------------------
 
