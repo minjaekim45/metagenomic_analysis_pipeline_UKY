@@ -20,10 +20,10 @@ fi ;
 
 dir=$(readlink -f $1) ;
 
-#---------------------------------------------------------
-
-# Change enveomics and mash paths to yours 
+# Change enveomics path to yours
 enve=/project/mki314_uksr/enveomics/Scripts
+
+# Change mash program path to yours
 mash=/project/mki314_uksr/Software/mash-Linux64-v2.3/mash
 
 # The number of CPUs or threads
@@ -46,4 +46,4 @@ echo "Ready to make distance matrix"
 
 #---------------------------------------------------------
 
-echo "Done"
+echo "Done: $(date)." ;
