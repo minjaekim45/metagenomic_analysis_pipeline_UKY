@@ -24,8 +24,8 @@ if [[ "$TOOL" == "" || "$TOOL" == "-h" ]] ; then
    folder      Path to the folder containing the '04.trimmed_fasta' directory, where the trimmed reads
                are stored. Filenames must follow the format: <name>.CoupledReads.fa, where <name> is the
                name of the sample.
-   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan',
-               'kraken', or 'kaiju'.
+   tool        Name of the taxonomic classification tool that you want to use. Options are 'metaphlan4',
+               'kraken2', or 'kaiju'.
    partition   Select a partition (if not provided, coa_mki314_uksr will be used)
    qos         Select a quality of service (if not provided, normal will be used)
    
