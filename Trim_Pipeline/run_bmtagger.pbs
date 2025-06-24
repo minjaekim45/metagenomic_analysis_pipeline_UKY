@@ -8,6 +8,9 @@ b=$SAMPLE
 # Change enveomics path to yours 
 enve=/project/mki314_uksr/enveomics/Scripts
 
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 # The number of CPUs or threads
 THR=4
 
@@ -17,7 +20,6 @@ THR=4
 echo "==[ 02.trimmed_reads: $(date) ]" ;
 cd $FOLDER/02.trimmed_reads ;
 
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate trim-galore
 
 if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
