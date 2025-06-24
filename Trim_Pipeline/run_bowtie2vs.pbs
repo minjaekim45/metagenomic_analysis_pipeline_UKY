@@ -130,6 +130,8 @@ else
    $enve/FastA.qlen.pl "$b"_filtered_1.fa >> "$b"_stats.txt ;
 fi ;
 
+rm "$b"_*.fa
+
 #---------------------------------------------------------
 conda deactivate
 echo "Done: $(date)." ;
