@@ -8,14 +8,14 @@ b=$SAMPLE
 # Change enveomics path to yours 
 enve=/project/mki314_uksr/enveomics/Scripts
 
-# The number of CPUs or threads
-THR=8
-
 # Source path to Conda environments
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 # Container path remains the same for anyone running on the MCC cluster (unless path has been updated)
 container=/share/singularity/images/ccs/conda/amd-conda23-rocky9.sinf
+
+# The number of CPUs or threads
+THR=8
 
 #---------------------------------------------------------
 # Quality trimming
