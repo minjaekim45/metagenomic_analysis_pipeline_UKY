@@ -63,4 +63,12 @@ for i in $dir/*.1.fastq ; do
    sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Trim-$b"-%j.err -o "$dir"/zz.out/"Trim-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done ;
 
-echo 'Done'
+#---------------------------------------------------------
+# Combine statistics outputs
+
+cd $dir/zz.stats
+paste *stats.txt  > bmtagger_statistics.txt
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
