@@ -8,6 +8,9 @@ b=$SAMPLE
 # Container path remains the same for anyone running on the MCC cluster
 container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
 
+# Database path remains the same for anyone running on the MCC cluster
+database=/share/apps/amd/MetaPhlAn/databases/
+
 # The number of CPUs or threads
 THR=8
 
@@ -17,7 +20,7 @@ THR=8
 echo "==[ 05.metaphlan: $(date) ]" ;
 cd $FOLDER/05.metaphlan ;
 
-singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=/share/apps/amd/MetaPhlAn/databases/ $container \
+singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=$database $container \
   metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
   --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_mphlan.txt --unclassified_estimation --nproc $THR
 
