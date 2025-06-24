@@ -8,19 +8,21 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    		and filenames must follow the format: <name>.<sis>.fastq, where <name> is the name
 		of the sample, and <sis> is 1 or 2 indicating which sister read the file contains.
 		Use only '1' as <sis> if you have single reads.
-   filtration	Method of contamination removal. Use 'fast' if you are removing general contamination,
-   		use 'human' if you need to remove human sequences as well. (if not provided, fast
-     		will be used)
-   partition	Select a partition (if not provided, coa_mki314_uksr will be used)
-   qos		Select a quality of service (if not provided, normal will be used)
+   filtration	Method of contamination removal. Use 'standard' if performing a general quality trim,
+   		use 'bmtagger' if you need to remove human sequences as well. (If using BMTagger, be
+     		sure to create the index first using 'index.bash'). Other options for for human read
+       		removal are 'hocort' and 'bowtie2vs'. (If no option is provided, 'standard' will be
+	 	used).
+   partition	Select a partition (If not provided, coa_mki314_uksr will be used).
+   qos		Select a quality of service (If not provided, normal will be used).
    
    " >&2 ;
    exit 1 ;
 fi ;
 
-con=$2
-if [[ "$con" == "" ]] ; then
-   con="fast"
+TOOL=$2
+if [[ "$TOOL" == "" ]] ; then
+   TOOL="standard"
 fi ;
 
 QUEUE=$3
@@ -58,7 +60,7 @@ for i in $dir/*.1.fastq ; do
       mv "$b".1.fastq 01.raw_reads/ ;
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Trim-$b"-%j.err -o "$dir"/zz.out/"Trim-$b"-%j.out  $pac/run_$con.pbs | grep .;
+   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Trim-$b"-%j.err -o "$dir"/zz.out/"Trim-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done ;
 
 echo 'Done'
