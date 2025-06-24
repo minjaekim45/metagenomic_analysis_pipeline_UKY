@@ -40,10 +40,12 @@ dir=$(readlink -f $1) ;
 gen="${genome%_*}" ;
 ome="${genome#*_}" ;
 
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
 #---------------------------------------------------------
 # Download and Unzip file
 
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate ncbi_datasets
 
 cd $dir ;
