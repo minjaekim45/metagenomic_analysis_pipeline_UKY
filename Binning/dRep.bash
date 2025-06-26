@@ -19,8 +19,8 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
 fi ;
 
 dir=$(readlink -f $1) ;
+cd $dir ;
 
-cd $dir
 if [[ ! -e 16.checkm2 ]] ; then
    echo "Cannot locate the 16.checkm2 directory, aborting..." >&2
    exit 1
