@@ -73,6 +73,9 @@ done < ./output/list.txt
 
 awk '{print $0, "$b"}' > output.txt
 
+awk 'BEGIN{FS=OFS="\t"}{print $1,$2,$3}' high_qual_w_score.tsv > quality_info.tsv
+awk 'BEGIN { FS="\t"; OFS="," } {$1=$1; print}' output.tsv > quality_info.csv
+
 conda deactivate
 
 #---------------------------------------------------------
