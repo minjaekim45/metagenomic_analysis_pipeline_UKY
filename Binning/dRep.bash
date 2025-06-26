@@ -29,6 +29,16 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 # The number of CPUs or threads
 THR=6
 
+cd $dir
+if [[ ! -e 16.checkm2 ]] ; then
+   echo "Cannot locate the 16.checkm2 directory, aborting..." >&2
+   exit 1
+fi ;
+
+for i in 18.dRep; do
+   [[ -d $i ]] || mkdir $i
+done
+
 #---------------------------------------------------------
 # Compare and Dereplicate
 
