@@ -26,7 +26,7 @@ if [[ ! -e 16.checkm2 ]] ; then
    exit 1
 fi ;
 
-for i in 18.gtdbtk; do
+for i in 17.gtdbtk; do
    [[ -d $i ]] || mkdir $i
 done
 
@@ -54,9 +54,9 @@ cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
 paste list.txt ID.txt > batchfile.txt
 
-singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/16.checkm2/output/good_quality/batchfile.txt --out_dir $dir/18.gtdbtk/ --mash_db $dir/18.gtdbtk --extension fa --cpus $THR
+singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/16.checkm2/output/good_quality/batchfile.txt --out_dir $dir/17.gtdbtk/ --mash_db $dir/17.gtdbtk --extension fa --cpus $THR
 
-cd $dir/18.gtdbtk/
+cd $dir/17.gtdbtk/
 
 #----------------------------------------------------------
 echo "Done: $(date)."
