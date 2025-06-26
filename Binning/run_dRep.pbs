@@ -13,15 +13,15 @@ conda activate dRep
 
 #---------------------------------------------------------
 
-mkdir $FOLDER/18.dRep/$b/output
+mkdir $FOLDER/18.dRep/output
 
-cd $FOLDER/16.checkm2/$b/good_quality
+cd $FOLDER/16.checkm2/output/good_quality
 
-dRep compare $FOLDER/18.dRep/$b/output/compare -p $THR -g $FOLDER/16.checkm2/$b/good_quality/*.fa --S_algorithm fastANI
+dRep compare $FOLDER/18.dRep/output/compare -p $THR -g $FOLDER/16.checkm2/output/good_quality/*.fa --S_algorithm fastANI
 
-cd $FOLDER/16.checkm2/$b/good_quality
+cd $FOLDER/16.checkm2/output/good_quality
 
-dRep dereplicate $FOLDER/18.dRep/$b/output/dereplicate -p $THR -g $FOLDER/16.checkm2/$b/good_quality/*.fa --S_algorithm fastANI
+dRep dereplicate $FOLDER/18.dRep/output/dereplicate -p $THR -g $FOLDER/16.checkm2/output/good_quality/*.fa --S_algorithm fastANI
 
 #---------------------------------------------------------
 
