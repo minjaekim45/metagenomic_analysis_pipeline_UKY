@@ -54,7 +54,7 @@ dRep compare $dir/18.dRep/output/compare -p $THR -g $dir/16.checkm2/output/good_
 
 cd $dir/16.checkm2/output/good_quality ;
 
-dRep dereplicate $dir/18.dRep/output/dereplicate -p $THR -g $dir/16.checkm2/output/good_quality/*.fa --genomeInfo $dir/16.checkm2/output/good_quality/quality_info.csv --S_algorithm fastANI
+dRep dereplicate $dir/18.dRep/output/dereplicate -p $THR -g $dir/16.checkm2/output/good_quality/*.fa --ignoreGenomeQuality --genomeInfo $dir/16.checkm2/output/good_quality/quality_info.csv --S_algorithm fastANI
 
 conda deactivate
 
