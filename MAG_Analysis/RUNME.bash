@@ -49,7 +49,7 @@ done
 
 if [[ "$TOOL" == "deeparg" ]] ; then
    # Download database
-   sbatch $pac/deep_arg_db.bash $dir/12.deep_arg/database
+   sbatch $pac/deeparg_db.bash $dir/12.deep_arg/database
    wait
 fi ;
 
