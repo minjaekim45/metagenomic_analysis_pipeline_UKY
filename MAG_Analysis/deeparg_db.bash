@@ -30,7 +30,7 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 conda activate deeparg
 
-deeparg download_data -o $dir
+deeparg download_data -o $dir/database
 
 conda deactivate
 
