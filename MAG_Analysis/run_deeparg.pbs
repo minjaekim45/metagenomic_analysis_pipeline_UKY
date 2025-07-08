@@ -22,7 +22,7 @@ cd $FOLDER/12.deeparg ;
 
 conda activate deeparg
 
-deeparg predict --model LS -i $FOLDER/16.checkm2/output/good_quality/"$b".fa -o ./"$b" -d $FOLDER/deeparg 
+deeparg predict --model LS -i $FOLDER/16.checkm2/output/good_quality/"$b".fa -o ./"$b" -d $FOLDER/12.deeparg/database 
 
 conda deactivate
 
