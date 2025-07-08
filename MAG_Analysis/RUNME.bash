@@ -50,7 +50,6 @@ done
 if [[ "$TOOL" == "deeparg" ]] ; then
    # Download database
    sbatch $pac/deeparg_db.bash $dir/12.deep_arg/database --wait
-   jobID=$(jobs -r)
 fi ;
 wait
 
