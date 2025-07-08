@@ -47,14 +47,15 @@ for i in 11.bakta 12.deep_arg 13.vfdb 14.microbe_census; do
    [[ -d $i ]] || mkdir $i
 done
 
-for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
-   b=$(basename $i .CoupledReads.fa)
+if [[ "$TOOL" == "deeparg" ]] ; then
+   # Download database
+   sbatch $pac/deep_arg_db.bash $dir/12.deep_arg/database
+   wait
+fi ;
+
+for i in $dir/16.checkm2/output/good_quality/*.fa ; do
+   b=$(basename $i .fa)
    OPTS="SAMPLE=$b,FOLDER=$dir"
-   if [[ -s $dir/04.trimmed_fasta/$b.SingleReads.fa ]] ; then
-      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.SingleReads.fa"
-   else
-      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
-   fi
    # Launch job
    sbatch --export="$OPTS" -J "ARG_VF-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"$TOOL-$b"-%j.err -o "$dir"/zz.out/"$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
 done ;
