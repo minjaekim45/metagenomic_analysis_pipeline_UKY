@@ -49,9 +49,10 @@ done
 
 if [[ "$TOOL" == "deeparg" ]] ; then
    # Download database
-   sbatch $pac/deeparg_db.bash $dir/12.deep_arg/database
-   wait
+   sbatch $pac/deeparg_db.bash $dir/12.deep_arg/database --wait
+   jobID=$(jobs -r)
 fi ;
+wait
 
 for i in $dir/16.checkm2/output/good_quality/*.fa ; do
    b=$(basename $i .fa)
