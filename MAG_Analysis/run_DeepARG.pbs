@@ -17,8 +17,8 @@ THR=4
 #---------------------------------------------------------
 # Run DeepARG
 
-echo "==[ 20.deeparg: $(date) ]" ;
-cd $FOLDER/20.deeparg ;
+echo "==[ 12.deeparg: $(date) ]" ;
+cd $FOLDER/12.deeparg ;
 
 conda activate deeparg
 
