@@ -17,12 +17,12 @@ THR=4
 #---------------------------------------------------------
 # Run DeepARG
 
-echo "==[ 12.deeparg: $(date) ]" ;
-cd $FOLDER/12.deeparg ;
-
 conda activate deeparg
 
-deeparg predict --model LS -i $FOLDER/16.checkm2/output/good_quality/"$b".fa -o ./"$b" -d $FOLDER/12.deeparg/database 
+echo "==[ 12.deep_arg: $(date) ]" ;
+cd $FOLDER/12.deep_arg ;
+
+deeparg predict --model LS -i $FOLDER/16.checkm2/output/good_quality/"$b".fa -o ./"$b" -d $FOLDER/12.deep_arg/database 
 
 conda deactivate
 
