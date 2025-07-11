@@ -62,7 +62,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
    # Launch job
-   sbatch --export="$OPTS" -J "ARG_VF-$b" --partition=$QUEUE --qos=$QOS --error "$dir"/"ARG_VF-$b"-%j.err -o "$dir"/"ARG_VF-$b"-%j.out  $pac/run.pbs | grep .;
+   sbatch --export="$OPTS" -J "ARG_VF-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"ARG_VF-$b"-%j.err -o "$dir"/"ARG_VF-$b"-%j.out  $pac/run.pbs | grep .;
 done ;
 
 
