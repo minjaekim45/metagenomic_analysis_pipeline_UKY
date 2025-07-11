@@ -53,9 +53,22 @@ if [[ "$TOOL" == "deeparg" ]] ; then
 fi ;
 wait
 
-for i in $dir/16.checkm2/output/good_quality/*.fa ; do
-   b=$(basename $i .fa)
+for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
+   b=$(basename $i .CoupledReads.fa)
    OPTS="SAMPLE=$b,FOLDER=$dir"
+   if [[ -s $dir/04.trimmed_fasta/$b.SingleReads.fa ]] ; then
+      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.SingleReads.fa"
+   else
+      OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
+   fi
    # Launch job
-   sbatch --export="$OPTS" -J "ARG_VF-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"$TOOL-$b"-%j.err -o "$dir"/zz.out/"$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
+   sbatch --export="$OPTS" -J "ARG_VF-$b" --partition=$QUEUE --qos=$QOS --error "$dir"/"ARG_VF-$b"-%j.err -o "$dir"/"ARG_VF-$b"-%j.out  $pac/run.pbs | grep .;
 done ;
+
+
+#for i in $dir/16.checkm2/output/good_quality/*.fa ; do
+#   b=$(basename $i .fa)
+#   OPTS="SAMPLE=$b,FOLDER=$dir"
+#   # Launch job
+#   sbatch --export="$OPTS" -J "ARG_VF-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"$TOOL-$b"-%j.err -o "$dir"/zz.out/"$TOOL-$b"-%j.out  $pac/run_$TOOL.pbs | grep .;
+#done ;
