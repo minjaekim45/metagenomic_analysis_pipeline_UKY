@@ -1,0 +1,93 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=10
+#SBATCH -t 24:00:00
+
+source /curc/sw/anaconda3/latest
+
+conda activate deeparg_env
+
+b=$SAMPLE
+enve=/projects/kim45@colostate.edu/Software/enveomics/Scripts
+blastx=/projects/kim45@colostate.edu/Software/ncbi-blast-2.12.0+/bin/blastx
+VFDB=#PATH/VFDB_setA_pro_renamed.fas
+ARGnorm=#PATH/ARG_individual.py
+ARGlength=#PATH/features.gene.length
+VFnorm=#PATH/VFDB_individual.py
+VFlength=#PATH/VFDB_setA_pro.gene.length
+
+THR=10
+
+#---------------------------------------------------------
+
+echo "==[ 10.deepARG: $(date) ]"
+
+cd $FOLDER/10.deepARG
+
+# Run deepARG
+
+deeparg predict --model SS -d /nv/hp10/kim45/data3/programs/deepARG -i $FA -o ./"$b.deepARG.out"
+
+echo "deepARG completed"
+
+deactivate
+
+echo "==[11.VFDB: $(date) ]"
+
+cd $FOLDER/11.VFDB
+
+# Run blastx MG reads against VFDB
+
+"$blastx" -query $FA -db $VFDB -out ./"$b.VFDB.blastx" -seg no -num_threads $THR -max_target_seqs 1 -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen"
+
+echo "blastx complete"
+
+# Filtering blastx results
+
+cat ./"$b.VFDB.blastx" | sort > ./"$b.VFDB.blastx.sorted"
+$enve/BlastTab.best_hit_sorted.pl ./"$b.VFDB.blastx.sorted" > ./"$b.VFDB.blastx.bh"
+awk '$12>=60' ./"$b.VFDB.blastx.bh" > ./"$b.VFDB.blastx.bh.bs60"
+rm ./"$b.VFDB.blastx.sorted"
+gzip ./"$b.VFDB.blastx.bh"
+
+echo "==[12.MicrobeCensus: $(date) ]"
+
+cd $FOLDER/12.MicrobeCensus
+
+conda activate microbecensus
+
+# Run MicrobeCensus
+if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!"
+   run_microbe_census.py -n 100000000 -t $THR -l 50 $FA ./$b.microbecensus.out
+else
+   echo "Coupled Reads! Use both pairs"   
+   run_microbe_census.py -n 100000000 -t $THR -l 50 ../04.trimmed_fasta/"$b".1.fa,../04.trimmed_fasta/"$b".2.fa ./$b.microbecensus.out
+fi
+
+echo "MicrobeCensus Completed"
+
+# Zip blast output files
+
+cd $FOLDER/11.VFDB
+gzip ./"$b.VFDB.blastx"
+
+# Normalize the results
+
+cd $FOLDER/10.deepARG
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $ARGnorm ../"$b.out.mapping.ARG" ../../12.MicrobeCensus/"$b.microbecensus.out" $ARGlength ./"$b.master.csv" ./"$b.class.csv"
+
+cd $FOLDER/11.VFDB
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $VFnorm ../"$b.VFDB.blastx.bh.bs60" ../../12.MicrobeCensus/"$b.microbecensus.out" $VFlength ./"$b.output.csv"
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
