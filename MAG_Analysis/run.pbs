@@ -4,6 +4,7 @@
 #SBATCH -t 24:00:00
 
 b=$SAMPLE
+PATH=/metagenomic_analysis_pipeline_UKY/MAG_Analysis
 
 # Change enveomics & blastx paths to yours
 enve=/project/mki314_uksr/enveomics/Scripts
@@ -14,9 +15,9 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 # These paths should remain the same
 VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited.fas
-ARGnorm=#PATH/ARG_individual.py
+ARGnorm=$FOLDER/$PATH/ARG_individual.py
 ARGlength=$FOLDER/12.deep_arg/database/database/v2/features.gene.length
-VFnorm=#PATH/VFDB_individual.py
+VFnorm=$FOLDER/$PATH/VFDB_individual.py
 VFlength=$FOLDER/13.vfdb/VFDB_setA_pro.gene.length
 
 # The number of CPUs or threads
@@ -27,6 +28,8 @@ THR=10
 
 echo "==[ 12.deep_arg: $(date) ]"
 cd $FOLDER/12.deep_arg
+
+conda activate deeparg
 
 deeparg predict --model SS -d $FOLDER/12.deep_arg/database -i $FA -o ./"$b.deepARG.out"
 
