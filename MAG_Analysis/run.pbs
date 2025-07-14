@@ -14,11 +14,11 @@ blastx=/project/mki314_uksr/Software/ncbi-blast-2.15.0+/bin/blastx
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 # These paths should remain the same
-VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited.fas
+VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited
 ARGnorm=$FOLDER/$PATH/ARG_individual.py
 ARGlength=$FOLDER/12.deep_arg/database/database/v2/features.gene.length
 VFnorm=$FOLDER/$PATH/VFDB_individual.py
-VFlength=$FOLDER/13.vfdb/VFDB_setA_pro.gene.length
+VFlength=$FOLDER/13.vfdb/VFDB_setA_pro_edited.gene.length
 
 # The number of CPUs or threads
 THR=10
