@@ -25,26 +25,26 @@ THR=10
 #---------------------------------------------------------
 # Run DeepARG
 
-echo "==[ 12.deep_arg: $(date) ]"
-cd $FOLDER/12.deep_arg
+#echo "==[ 12.deep_arg: $(date) ]"
+#cd $FOLDER/12.deep_arg
 
-conda activate deeparg
+#conda activate deeparg
 
-deeparg predict --model SS -d $FOLDER/12.deep_arg/database -i $FA -o ./"$b.deepARG.out"
+#deeparg predict --model SS -d $FOLDER/12.deep_arg/database -i $FA -o ./"$b.deepARG.out"
 
-echo "deepARG completed"
+#echo "deepARG completed"
 
-deactivate
+#deactivate
 
 #---------------------------------------------------------
 # Run blastx MG reads against VFDB
 
-echo "==[13.vfdb: $(date) ]"
-cd $FOLDER/13.vfdb
+#echo "==[13.vfdb: $(date) ]"
+#cd $FOLDER/13.vfdb
 
-"$blastx" -query $FA -db $VFDB -out ./"$b.VFDB.blastx" -seg no -num_threads $THR -max_target_seqs 1 -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen"
+#"$blastx" -query $FA -db $VFDB -out ./"$b.VFDB.blastx" -seg no -num_threads $THR -max_target_seqs 1 -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen"
 
-echo "BLASTX Complete"
+#echo "BLASTX Complete"
 
 #---------------------------------------------------------
 # Filtering blastx results
