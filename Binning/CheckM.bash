@@ -71,10 +71,10 @@ while IFS= read -r line; do
    cp $dir/15.metabat2/binned/"$line".fa $dir/16.checkm2/output/good_quality
 done < ./output/list.txt
 
-awk '{print $0, "$b"}' > output.txt
+# awk '{print $0, "$b"}' > output.txt
 
 awk 'BEGIN{FS=OFS="\t"}{print $1,$2,$3}' high_qual_w_score.tsv > quality_info.tsv
-awk 'BEGIN { FS="\t"; OFS="," } {$1=$1; print}' output.tsv > quality_info.csv
+awk 'BEGIN { FS="\t"; OFS="," } {$1=$1; print}' output.txt > quality_info.csv
 awk -v header="genome,completeness,contamination" 'BEGIN { print header } { print }' "quality_info.csv" > temp.csv && mv temp.csv "quality_info.csv"
 
 conda deactivate
