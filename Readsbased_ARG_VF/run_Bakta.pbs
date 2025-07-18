@@ -21,6 +21,8 @@ cd $FOLDER/14.bakta ;
 
 bakta --db bakta_db "$b".fa
 
+conda deactivate
+
 #---------------------------------------------------------
 
 echo "Done: $(date)." ;
