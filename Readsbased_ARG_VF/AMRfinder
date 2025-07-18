@@ -18,3 +18,16 @@ container=/share/singularity/images/ccs/conda/amd-conda23-rocky9.sinf
 THR=8
 
 #---------------------------------------------------------
+
+echo "==[ 20.amr_finder: $(date) ]" ;
+cd $FOLDER/20.amr_finder ;
+
+conda activate amr-finder
+
+amrfinder -p test_prot.fa -g test_prot.gff -n test_dna.fa -O Escherichia --plus
+
+conda deactivate
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
