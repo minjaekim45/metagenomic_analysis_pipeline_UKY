@@ -1,0 +1,101 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=11
+#SBATCH -t 24:00:00
+
+b=$SAMPLE
+
+# Change enveomics & blastx paths to yours
+enve=/project/mki314_uksr/enveomics/Scripts
+blastx=/project/mki314_uksr/Software/ncbi-blast-2.15.0+/bin/blastx
+
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+# These paths should remain the same
+VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited
+ARGnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/MAG_Analysis/ARG_individual.py
+ARGlength=$FOLDER/12.deep_arg/database/database/v2/features.gene.length
+VFnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/MAG_Analysis/VFDB_individual.py
+VFlength=$FOLDER/13.vfdb/VFDB_setA_pro_edited.gene.length
+
+# The number of CPUs or threads
+THR=10
+
+#---------------------------------------------------------
+# Run DeepARG
+
+#echo "==[ 12.deep_arg: $(date) ]"
+#cd $FOLDER/12.deep_arg
+
+#conda activate deeparg
+
+#deeparg predict --model SS -d $FOLDER/12.deep_arg/database -i $FA -o ./"$b.deepARG.out"
+
+#echo "deepARG completed"
+
+#deactivate
+
+#---------------------------------------------------------
+# Run blastx MG reads against VFDB
+
+#echo "==[13.vfdb: $(date) ]"
+#cd $FOLDER/13.vfdb
+
+#"$blastx" -query $FA -db $VFDB -out ./"$b.VFDB.blastx" -seg no -num_threads $THR -max_target_seqs 1 -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen"
+
+#echo "BLASTX Complete"
+
+#---------------------------------------------------------
+# Filtering blastx results
+
+cat ./"$b.VFDB.blastx" | sort > ./"$b.VFDB.blastx.sorted"
+$enve/BlastTab.best_hit_sorted.pl ./"$b.VFDB.blastx.sorted" > ./"$b.VFDB.blastx.bh"
+awk '$12>=60' ./"$b.VFDB.blastx.bh" > ./"$b.VFDB.blastx.bh.bs60"
+rm ./"$b.VFDB.blastx.sorted"
+gzip ./"$b.VFDB.blastx.bh"
+
+#---------------------------------------------------------
+# Run MicrobeCensus
+
+echo "==[14.microbe_census: $(date) ]"
+cd $FOLDER/14.microbe_census
+
+conda activate microbecensus
+
+if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!"
+   run_microbe_census.py -n 100000000 -t $THR -l 50 ../04.trimmed_fasta/"$b".SingleReads.fa ./$b.microbecensus.out
+else
+   echo "Coupled Reads! Use both pairs"   
+   run_microbe_census.py -n 100000000 -t $THR -l 50 ../04.trimmed_fasta/"$b"_1.fa,../04.trimmed_fasta/"$b"_2.fa ./$b.microbecensus.out
+fi
+
+echo "MicrobeCensus Completed"
+
+#---------------------------------------------------------
+# Zip blast output files
+
+cd $FOLDER/13.vfdb
+gzip ./"$b.VFDB.blastx"
+
+#---------------------------------------------------------
+# Normalize the results
+
+cd $FOLDER/12.deep_arg
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $ARGnorm ../"$b.out.mapping.ARG" ../../14.microbe_census/"$b.microbecensus.out" $ARGlength ./"$b.master.csv" ./"$b.class.csv"
+
+cd $FOLDER/13.vfdb
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $VFnorm ../"$b.VFDB.blastx.bh.bs60" ../../14.microbe_census/"$b.microbecensus.out" $VFlength ./"$b.output.csv"
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
