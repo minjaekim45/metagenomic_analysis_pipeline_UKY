@@ -66,8 +66,8 @@ done ;
 #---------------------------------------------------------
 # Combine statistics outputs
 
-cd $dir/zz.stats
-paste *stats.txt  > bmtagger_statistics.txt
+#cd $dir/zz.stats
+#paste *stats.txt  > bmtagger_statistics.txt
 
 #---------------------------------------------------------
 
