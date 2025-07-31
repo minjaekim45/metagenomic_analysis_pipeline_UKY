@@ -80,7 +80,7 @@ conda deactivate
 
 #conda activate hocort
 #cd $dir ;
-#hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fasta --output ./human_genome/$genome ;
+#hocort index bowtie2 --input ./human_genome/${accession}_${gen}.${ome}_genomic.fa --output ./human_genome/$genome ;
 #conda deactivate
 
 #---------------------------------------------------------
