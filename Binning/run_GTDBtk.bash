@@ -10,7 +10,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: sbatch ./index.bash [folder]
+   Usage: sbatch ./run_GTDBtk.bash [folder]
 
    folder      Path to the folder containing 16.checkm2
      
