@@ -17,8 +17,8 @@ THR=100
 #---------------------------------------------------------
 # Assembly using idba
 
-echo "==[ 10.assembly: $(date) ]" ;
-cd $FOLDER/10.assembly ;
+echo "==[ 05.assembly: $(date) ]" ;
+cd $FOLDER/05.assembly ;
 
 conda activate idba
 
