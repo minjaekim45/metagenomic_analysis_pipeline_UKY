@@ -45,8 +45,11 @@ cd $dir/11.bakta ;
 
 conda activate bakta
 
+echo "Done: $(date)." ;
 bakta_db download --output ./database --type full
+echo "Done: $(date)." ;
 wait
+echo "Done: $(date)." ;
 
 #---------------------------------------------------------
 # Run Bakta
