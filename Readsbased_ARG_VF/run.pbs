@@ -34,7 +34,7 @@ deeparg predict --model SS -d $FOLDER/12.deep_arg/database -i $FA -o ./"$b.deepA
 
 echo "deepARG completed"
 
-deactivate
+conda deactivate
 
 #---------------------------------------------------------
 # Run blastx MG reads against VFDB
