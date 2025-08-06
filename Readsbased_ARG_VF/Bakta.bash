@@ -38,12 +38,18 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 THR=8
 
 #---------------------------------------------------------
-# Run Bakta
+# Build Bakta Database
 
 echo "==[ 11.bakta: $(date) ]" ;
 cd $dir/11.bakta ;
 
 conda activate bakta
+
+bakta_db download --output ./database --type full
+wait
+
+#---------------------------------------------------------
+# Run Bakta
 
 for i in $dir/16.checkm2/output/good_quality/*.fa ; do
 mkdir ./results/"$i"
