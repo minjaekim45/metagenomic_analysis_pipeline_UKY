@@ -46,7 +46,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    exit 1
 fi
 
-for i in 10.assembly ; do
+for i in 05.assembly ; do
    [[ -d $i ]] || mkdir $i
 done
 
