@@ -1,0 +1,63 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=11
+#SBATCH -t 24:00:00
+
+b=$SAMPLE
+
+# Change enveomics & blastx paths to yours
+enve=/project/mki314_uksr/enveomics/Scripts
+blastx=/project/mki314_uksr/Software/ncbi-blast-2.15.0+/bin/blastx
+
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+# These paths should remain the same
+VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited
+ARGnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/Readsbased_ARG_VF/zz.ARG_individual.py
+ARGlength=$FOLDER/12.deep_arg/database/database/v2/features.gene.length
+VFnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/Readsbased_ARG_VF/zz.VFDB_individual.py
+VFlength=$FOLDER/13.vfdb/VFDB_setA_pro_edited.gene.length
+
+# The number of CPUs or threads
+THR=10
+
+#---------------------------------------------------------
+#---------------------------------------------------------
+# Run MicrobeCensus
+
+echo "==[14.microbe_census: $(date) ]"
+cd $FOLDER/14.microbe_census
+
+conda activate microbecensus
+
+if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!"
+   run_microbe_census.py -n 100000000 -t $THR -l 50 ../04.trimmed_fasta/"$b".SingleReads.fa ./$b.microbecensus.out
+else
+   echo "Coupled Reads! Use both pairs"   
+   run_microbe_census.py -n 100000000 -t $THR -l 50 ../04.trimmed_fasta/"$b"_1.fa,../04.trimmed_fasta/"$b"_2.fa ./$b.microbecensus.out
+fi
+
+echo "MicrobeCensus Completed"
+
+#---------------------------------------------------------
+# Normalize the results
+
+cd $FOLDER/12.deep_arg
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $ARGnorm ../"$b.out.mapping.ARG" ../../14.microbe_census/"$b.microbecensus.out" $ARGlength ./"$b.master.csv" ./"$b.class.csv"
+
+cd $FOLDER/13.vfdb
+
+if [[ ! -d Norm ]] ; then mkdir Norm; fi
+cd ./Norm
+
+python3 $VFnorm ../"$b.VFDB.blastx.bh.bs60" ../../14.microbe_census/"$b.microbecensus.out" $VFlength ./"$b.output.csv"
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."
