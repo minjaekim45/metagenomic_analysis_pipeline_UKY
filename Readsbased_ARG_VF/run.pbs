@@ -87,7 +87,7 @@ cd $FOLDER/12.deep_arg
 if [[ ! -d Norm ]] ; then mkdir Norm; fi
 cd ./Norm
 
-python3 $ARGnorm ../"$b.out.mapping.ARG" ../../14.microbe_census/"$b.microbecensus.out" $ARGlength ./"$b.master.csv" ./"$b.class.csv"
+python3 $ARGnorm ../"$b.deepARG.out.mapping.ARG" ../../14.microbe_census/"$b.microbecensus.out" $ARGlength ./"$b.master.csv" ./"$b.class.csv"
 
 cd $FOLDER/13.vfdb
 
