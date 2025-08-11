@@ -1,11 +1,12 @@
 #!/bin/bash
 
-#SBATCH --time=06:00:00             # Time limit for the job (REQUIRED).
+#SBATCH --time=12:00:00             # Time limit for the job (REQUIRED)
 #SBATCH --job-name=gtdbtk           # Job name
-#SBATCH --ntasks=48                 # Number of cores for the job. Same as SBATCH -n 1
-#SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e zz.out/GTDBtk-%j.err     # Error file for this job.
-#SBATCH -o zz.out/GTDBtk-%j.out     # Output file for this job.
+#SBATCH --nodes=1                   # Number of nodes to allocate
+#SBATCH --ntasks=48                 # Number of cores for the job
+#SBATCH --partition=normal          # Partition/queue to run the job in (REQUIRED)
+#SBATCH -e zz.out/GTDBtk-%j.err     # Error file for this job
+#SBATCH -o zz.out/GTDBtk-%j.out     # Output file for this job
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
@@ -34,6 +35,7 @@ done
 
 enve=/project/mki314_uksr/enveomics/Scripts
 THR=48
+CPU=1
 
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
@@ -54,7 +56,7 @@ cat list.txt |  awk '{print $NF}' FS=/ | sed -e 's/\.fasta$//' > ID.txt
 
 paste list.txt ID.txt > batchfile.txt
 
-singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/16.checkm2/output/good_quality/batchfile.txt --out_dir $dir/17.gtdbtk/ --mash_db $dir/17.gtdbtk --extension fa --cpus $THR
+singularity run --env GTDBTK_DATA_PATH=/gtdbtk_data/database -B $database --app gtdbtk240 $container gtdbtk classify_wf --batchfile $dir/16.checkm2/output/good_quality/batchfile.txt --out_dir $dir/17.gtdbtk/ --mash_db $dir/17.gtdbtk --extension fa --cpus $CPU --pplacer_cpus $CPU
 
 cd $dir/17.gtdbtk/
 
