@@ -2,7 +2,7 @@
 
 #SBATCH --time=12:00:00             # Time limit for the job (REQUIRED).
 #SBATCH --job-name=bakta            # Job name
-#SBATCH --ntasks=8                  # Number of cores for the job. Same as SBATCH -n
+#SBATCH --ntasks=16                  # Number of cores for the job. Same as SBATCH -n
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
 #SBATCH -e ./zz.out/bakta-%j.err    # Error file for this job.
 #SBATCH -o ./zz.out/bakta-%j.out    # Output file for this job.
@@ -35,7 +35,7 @@ enve=/project/mki314_uksr/enveomics/Scripts
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 # The number of CPUs or threads
-THR=8
+THR=16
 
 #---------------------------------------------------------
 # Build Bakta Database
