@@ -4,8 +4,8 @@
 #SBATCH --job-name=bakta            # Job name
 #SBATCH --ntasks=8                  # Number of cores for the job. Same as SBATCH -n
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e /zz.out/bakta-%j.err     # Error file for this job.
-#SBATCH -o /zz.out/bakta-%j.out     # Output file for this job.
+#SBATCH -e ./zz.out/bakta-%j.err    # Error file for this job.
+#SBATCH -o ./zz.out/bakta-%j.out    # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
