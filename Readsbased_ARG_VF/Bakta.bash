@@ -10,7 +10,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: sbatch ./AMRfinder.bash [folder]
+   Usage: sbatch ./Bakta.bash [folder]
 
    folder      Path to the folder containing the '16.checkm2' directory.
    
