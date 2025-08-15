@@ -20,8 +20,8 @@ fi ;
 
 dir=$(readlink -f $1) ;
 
-# Change enveomics path to yours
-enve=/project/mki314_uksr/enveomics/Scripts
+# Change database path to yours
+database=
 
 # Source path to Conda environments
 source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
