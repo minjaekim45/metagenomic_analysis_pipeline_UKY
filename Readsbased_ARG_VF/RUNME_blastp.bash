@@ -1,1 +1,56 @@
+#!/bin/bash
 
+if [[ "$1" == "" || "$1" == "-h" ]] ; then
+   echo "
+   Usage: ./RUNME_blastp.bash [folder] [queue] [QOS]
+
+   folder     Path to the folder containing the 11.bakta directory. The trimmed reads must be
+              in interposed FastA format & separated pairs format in case you have paired-end reads,
+              and filenames must follow the format: <name>.CoupledReads.fa, where <name> is the name
+              of the sample & in case of paire-end reads, you also need to have <name>.1.fa and
+              <name>.2.fa. If non-paired, the filenames must follow the format: <name>.SingleReads.fa.
+   partition  Select a partition (If not provided, coa_mki314_uksr will be used).
+   qos        Select a quality of service (If not provided, normal will be used).
+   " >&2 ;
+   
+   exit 1 ;
+fi ;
+
+TOOL=$2
+if [[ "$TOOL" == "" ]] ; then
+   TOOL="standard"
+fi ;
+
+QUEUE=$3
+if [[ "$QUEUE" == "" ]] ; then
+   QUEUE="coa_mki314_uksr"
+fi ;
+
+QOS=$4
+if [[ "$QOS" == "" ]] ; then
+   QOS="normal"
+fi ;
+
+dir=$(readlink -f $1) ;
+pac=$(dirname $(readlink -f $0)) ;
+cwd=$(pwd) ;
+
+#---------------------------------------------------------
+
+cd $dir
+if [[ ! -e 11.bakta ]] ; then
+   echo "Cannot locate the 11.bakta directory, aborting..." >&2
+   exit 1
+fi ;
+
+for i in 21.blastp_vfdb; do
+   [[ -d $i ]] || mkdir $i
+done
+
+for i in $dir/16.checkm2/output/good_quality/*.fa ; do
+   b=$(basename $i .fa)
+   OPTS="SAMPLE=$b,FOLDER=$dir"
+   OPTS="$OPTS,FA=$dir/16.checkm2/output/good_quality/$b.fa"
+   # Launch job
+   sbatch --export="$OPTS" -J "ARG_VF-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"blstp-$b"-%j.err -o "$dir"/"blstp-$b"-%j.out  $pac/blastp_vfdb.pbs | grep .;
+done ;
