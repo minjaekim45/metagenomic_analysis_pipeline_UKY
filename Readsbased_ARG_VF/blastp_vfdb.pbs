@@ -14,13 +14,15 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 
 # These paths should remain the same
 VFDB=$FOLDER/13.vfdb/VFDB_setA_pro_edited
-ARGnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/Readsbased_ARG_VF/zz.ARG_individual.py
-ARGlength=$FOLDER/12.deep_arg/database/database/v2/features.gene.length
-VFnorm=$FOLDER/metagenomic_analysis_pipeline_UKY/Readsbased_ARG_VF/zz.VFDB_individual.py
-VFlength=$FOLDER/13.vfdb/VFDB_setA_pro_edited.gene.length
+
 
 # The number of CPUs or threads
 THR=10
 
 #---------------------------------------------------------
-# Run DeepARG
+# Split Dataset
+
+
+#---------------------------------------------------------
+# 
+
