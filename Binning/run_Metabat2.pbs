@@ -33,17 +33,20 @@ else
 fi;
 
 # Convert sam to bam and sort bam
+$ST/samtools view -@ $THR -bS "$b"_"$b"_*.sam > "$b"_"$b".bam;
+$ST/samtools sort -@ $THR "$b"_"$b".bam -o "$b"_"$b".bam.sorted;
 
-for i in ./"$b"_*.sam; do
-   m=$(basename $i .sam); 
-   $ST/samtools view -@ $THR -bS "$i" > "$m".bam;
-   $ST/samtools sort -@ $THR "$m".bam -o "$m".bam.sorted;
-done
+#This is for multiple alignments for each contig (and make sure to change the alignment part above; use for loop there too).
+#for i in ./"$b"_*.sam; do
+#   m=$(basename $i .sam); 
+#   $ST/samtools view -@ $THR -bS "$i" > "$m".bam;
+#   $ST/samtools sort -@ $THR "$m".bam -o "$m".bam.sorted;
+#done
 
 # Create a depth file & Run metabat2
 
 mkdir ./"$b"
-jgi_summarize_bam_contig_depths --outputDepth "$b"_depth.txt "$b"_*.bam.sorted;
+jgi_summarize_bam_contig_depths --outputDepth "$b"_depth.txt "$b"_"$b".bam.sorted;
 
 metabat2 -i ../05.assembly/"$b.LargeContigs.fna" -a "$b"_depth.txt -o ./"$b"/"$b"
 
