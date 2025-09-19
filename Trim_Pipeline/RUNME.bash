@@ -4,17 +4,20 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: ./RUNME.bash [folder] [filtration] [queue] [QOS]
 
-   folder	Path to the folder containing the raw reads. The raw reads must be in FastQ format,
-   		and filenames must follow the format: <name>.<sis>.fastq, where <name> is the name
-		of the sample, and <sis> is 1 or 2 indicating which sister read the file contains.
-		Use only '1' as <sis> if you have single reads.
-   filtration	Method of contamination removal. Use 'standard' if performing a general quality trim,
-   		use 'bmtagger' if you need to remove human sequences as well. (If using BMTagger, be
-     		sure to create the index first using 'index.bash'). Other options for for human read
-       		removal are 'hocort' and 'bowtie2vs'. (If no option is provided, 'standard' will be
-	 	used).
+   	folder		Path to the folder containing the raw reads. The raw reads must be in FastQ format,
+   				and filenames must follow the format: <name>.<sis>.fastq, where <name> is the name
+	   			of the sample, and <sis> is 1 or 2 indicating which sister read the file contains.
+	   			Use only '1' as <sis> if you have single reads.
+	   
+	filtration	Method of contamination removal. Use 'standard' if performing a general quality trim,
+ 				use 'bmtagger' if you need to remove human sequences as well. (If using BMTagger, be
+	 			sure to create the index first using 'index.bash'). Other options for for human read
+	 			removal are 'hocort' and 'bowtie2vs'. (If no option is provided, 'standard' will be
+	 			used).
+	 
    partition	Select a partition (If not provided, coa_mki314_uksr will be used).
-   qos		Select a quality of service (If not provided, normal will be used).
+   
+   qos			Select a quality of service (If not provided, normal will be used).
    
    " >&2 ;
    exit 1 ;
