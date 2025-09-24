@@ -31,32 +31,31 @@ for i in 18.dRep; do
 done
 
 #---------------------------------------------------------
-
-# Change enveomics path to yours
-enve=/project/mki314_uksr/enveomics/Scripts
-
-# Source path to Conda environments
-source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
-
 # The number of CPUs or threads
 THR=6
 
 #---------------------------------------------------------
 # Compare and Dereplicate
 
-conda activate dRep
-
 mkdir $dir/18.dRep/output ;
 
 cd $dir/16.checkm2/output/good_quality ;
 
-dRep compare $dir/18.dRep/output/compare -p $THR -g $dir/16.checkm2/output/good_quality/*.fa --S_algorithm fastANI
+# Run dRep compare
+singularity run --app drep3500 /share/singularity/images/ccs/conda/amd-conda19-rocky9.sinf \
+dRep compare $dir/18.dRep/output/compare \
+-p $THR \
+-g $dir/16.checkm2/output/good_quality/*.fa \
+--S_algorithm fastANI
 
-cd $dir/16.checkm2/output/good_quality ;
-
-dRep dereplicate $dir/18.dRep/output/dereplicate -p $THR -g $dir/16.checkm2/output/good_quality/*.fa --ignoreGenomeQuality --genomeInfo $dir/16.checkm2/output/good_quality/quality_info.csv --S_algorithm fastANI
-
-conda deactivate
+# dRep dereplicate
+singularity run --app drep3500 /share/singularity/images/ccs/conda/amd-conda19-rocky9.sinf \
+dRep dereplicate $dir/18.dRep/output/dereplicate \
+-p $THR \
+-g $dir/16.checkm2/output/good_quality/*.fa \
+--genomeInfo $dir/16.checkm2/output/good_quality/quality_info.csv \
+--completeness 0 \
+--contamination 100 \
 
 #---------------------------------------------------------
 
