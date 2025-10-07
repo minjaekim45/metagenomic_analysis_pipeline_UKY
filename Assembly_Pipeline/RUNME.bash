@@ -57,8 +57,8 @@ done
 
 for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    b=$(basename $i .CoupledReads.fa)
-   [[ -d $dir/10.assembly/$b ]] && continue
-   mkdir $dir/10.assembly/$b
+   [[ -d $dir/05.assembly/$b ]] && continue
+   mkdir $dir/05.assembly/$b
    OPTS="SAMPLE=$b,FOLDER=$dir,TYPE=$TYPE"
    if [[ -s $dir/04.trimmed_fasta/$b.SingleReads.fa ]] ; then
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.SingleReads.fa"
