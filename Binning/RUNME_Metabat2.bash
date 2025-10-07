@@ -2,7 +2,7 @@
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./RUNME.bash folder queue
+   Usage: ./RUNME_Metabat2.bash folder queue
    Note: In this pipeline, we will use all of your metagenomes to create abundance profiles for each assembly. 
          However, this approach might not be proper for certain metagenome datasets you have.
          BEFORE RUNNING THIS, please think carefully and modify this pipeline as it needed.
