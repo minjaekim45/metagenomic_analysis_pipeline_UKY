@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+#SBATCH --mem=1G
+
+b=$SAMPLE
+dir=$FOLDER
+enve=/project/mki314_uksr/enveomics/Scripts
+cd $dir/29.TAD80/TAD80
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate samtools
+
+
+# Take the BAM file for this sample, reorganize the reads so they’re ordered by genome position, and save the result as a new file called ${b}.sorted.bam. Use 4 cores to make it faster.
+samtools sort -@ 4 $dir/29.TAD80/map/${b}.bam ${b}.sorted.bam
+
+conda activate bedtools
+bedtools genomecov -ibam ${b}.sorted.bam -bga > ${b}.bg
+#For each dataset name in 03.tad.list, pull out its contigs’ coverage data from the bedGraph, calculate a robust average depth (TAD80), and save the results in a table.
+cd $dir/29.TAD80/TAD80/
+conda activate ruby
+for i in $(cat 03.tad.list) ; do
+    echo -ne "$i\t"
+    grep "^$i:" "${b}.bg" | $enve/BedGraph.tad.rb -i /dev/stdin -r 0.8
+done > "${b}.tad80.tsv"
+conda deactivate

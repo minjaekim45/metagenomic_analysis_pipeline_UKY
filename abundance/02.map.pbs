@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+dir=$FOLDER
+
+cd $dir/28.index
+# Load conda and activate bowtie2 env
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate bowtie2
+
+bowtie2 -f -x "01.hq-set" -S "$dir/29.TAD80/map/${b}.sam" -p 4  \
+-1 "$dir/04.trimmed_fasta/${b}_1.fa" \
+-2 "$dir/04.trimmed_fasta/${b}_2.fa" \
+&> "$dir/29.TAD80/map/${b}.log"
+
+conda activate samtools
+
+samtools view -Sb "$dir/29.TAD80/map/${b}.sam" > "$dir/29.TAD80/map/${b}.bam"
+rm "$dir/29.TAD80/map/${b}.sam"
+
+conda deactivate
+
+
+# This script maps paired-end reads from a sample (${b}) onto a reference assembly (01.hq-set, a set of high-quality contigs).
+
+# The workflow is:
+
+# Set up environment → go to the right directory, load Bowtie2 and Samtools.
+
+# Run Bowtie2 → align reads (.fa) to the reference index, output a SAM file.
+
+# Convert SAM to BAM → use Samtools to compress and store alignments more efficiently.
+
+# Clean up → delete the big SAM file to save space.
