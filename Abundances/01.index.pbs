@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH --time=12:00:00             # Time limit for the job (REQUIRED).
+#SBATCH --job-name=01.index_MAGs           # Job name
+#SBATCH --ntasks=4                  # Number of cores for the job. Same as SBATCH -n 1
+#SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
+#SBATCH -e 01.index-MAGs-%j.err             # Error file for this job.
+#SBATCH -o 01.index-MAGs-%j.out             # Output file for this job.
+#SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
+#SBATCH --mem=10G
+
+if [[ "$1" == "" || "$1" == "-h" ]] ; then
+   echo "
+   Usage: sbatch ./01.index.bash [folder]
+
+   folder      Path to the folder containing high_quality MAGs. 
+
+   " >&2 ;
+   exit 1 ;
+fi ;
+dir=$(readlink -f $1) ;
+cd $dir
+# Create the index/output directory if missing
+for i in 28.index ; do
+   [[ -d $i ]] || mkdir $i
+done
+
+# Load conda and activate bowtie2 env 
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate bowtie2
+
+
+cd $dir/28.index
+
+for i in $dir/17.checkm2/output/good_quality/*.fa ; do
+  b=$(basename $i .fa)
+  #echo $i >&2
+  cat $dir/17.checkm2/output/good_quality/$b.fa | perl -pe "s/^>/>${b}:/"
+done > 01.hq-set.fa
+# Creates 6 index files with basename '01.hq-set' in the current directory.
+bowtie2-build --threads 4 01.hq-set.fa 01.hq-set
+conda deactivate
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+echo "Done: $(date)."
