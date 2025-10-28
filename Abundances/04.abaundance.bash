@@ -3,15 +3,15 @@
 #SBATCH --job-name=04.adundance_MAGs   # Job name
 #SBATCH --ntasks=4                  # Number of cores for the job. Same as SBATCH -n 1
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e /scratch/sag239/BHG.metagenome/zz.TMP/04.abundance_MAGs-%j.err             # Error file for this job.
-#SBATCH -o /scratch/sag239/BHG.metagenome/zz.TMP/04.abundance_MAGs-%j.out             # Output file for this job.
+#SBATCH -e 04.abundance_MAGs-%j.err             # Error file for this job.
+#SBATCH -o 04.abundance_MAGs-%j.out             # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
    Usage: sbatch ./04.abundance.bash [folder]
 
-   folder      Path to the folder containing *.tad80.tsv. It should be in 29.TAD80/TAD80/ directory.
+   folder      Path to the folder containing *.tad80.tsv. They should be in 29.TAD80/TAD80/ directory.
 
    " >&2 ;
    exit 1 ;
@@ -23,7 +23,7 @@ for i in abundance ; do
 done
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-cd ../../14.microbe_census
+cd ../14.microbe_census
 
 {
   printf "sample\tgenome_equivalents\n"
