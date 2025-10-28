@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=06:00:00             # Time limit for the job (REQUIRED).
+#SBATCH --time=12:00:00             # Time limit for the job (REQUIRED).
 #SBATCH --job-name=dRep             # Job name
 #SBATCH --ntasks=6                  # Number of cores for the job. Same as SBATCH -n 1
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
