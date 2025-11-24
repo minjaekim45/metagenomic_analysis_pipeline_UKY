@@ -1,32 +1,165 @@
-This repository provides a set of scripts to perform metagenomic read mapping, genome coverage profiling (TAD80), and abundance normalization across metagenome-assembled genomes (MAGs).  
-Pipeline Steps  
-Step 1 – Build Read Index  
-Script: 01.index.pbs  
-It creates Bowtie2 index files for the merged MAG FASTA in 28.index/.  
-Input: 28.index/01.hq-set.fa  
-Output: Bowtie2 index files (*.bt2) in the same directory.  
-Step 2 – Map Reads  
-Scripts: 02.map.bash + 02.map.pbs  
-This step maps paired-end reads from 04.trimmed_fasta to the indexed MAGs.  
-Step 3 – Calculate TAD80 Coverage  
-Scripts: 03.tad.bash + 03.tad.pbs  
-This step computes coverage depth across MAGs and generates .tad80.tsv files.  
-Inputs:   
-•	BAM files from Step 2 (29.TAD80/map/*.bam)  
-•	MAG FASTA (28.index/01.hq-set.fa)  
-Outputs:  
-•	03.tad.list (MAG IDs)  
-•	03.tad.pbs.jobids (job tracking file)  
-•	.tad80.tsv files per sample in 29.TAD80/TAD80/  
-Each .tad80.tsv contains normalized coverage statistics per MAG.  
-Step 4 – Compute Normalized Abundance  
-Script: 04.abundance.bash  
-This final step normalizes genome coverage by MicrobeCensus-estimated genome equivalents to estimate relative abundance.  
-Inputs:  
-•	29.TAD80/TAD80/*.tad80.tsv  
-•	MicrobeCensus output files in 14.microbe_census/
-Outputs:
-•	MicrobeCensus_genome_equivalents.txt (auto-generated)
-•	Individual normalized abundance files (*.abundance.txt)
-•	Final combined abundance matrix: 04.abundance.tsv
+# Metagenomic Read Mapping, Coverage (TAD80), and Abundance Profiling Pipeline
 
+This repository provides a set of scripts for performing read mapping, genome coverage profiling (TAD80), rRNA filtering, dereplication clustering, and abundance normalization across metagenome-assembled genomes (MAGs).
+
+The workflow is designed for assembly-based metagenomic analysis and follows the steps below.
+
+----
+
+## Step 1 - Build MAG index
+Script: ```01.index.pbs```
+This script builds Bowtie2 index files for the merged MAG FASTA located in `28.index/`.
+
+Input:
+
+- ```28.index/01.hq-set.fa```
+
+Output:
+
+- Bowtie2 index files (`*.bt2`) in `28.index/`
+
+----
+
+## Step 2 – Map Reads to MAGs
+
+Scripts: `02.map.bash`
+
+Maps paired-end reads in `04.trimmed_fasta/` to the Bowtie2 MAG index.
+
+Output
+
+- Mapped read BAM files in `29.TAD80/map/`
+
+----
+
+## Step 3 – Calculate TAD80 Coverage
+
+Scripts: `03.tad.bash`
+
+Computes 80% truncated average depth (TAD80) coverage for each MAG.
+
+Inputs
+
+- BAM files from Step 2 (`29.TAD80/map/*.bam`)
+
+- MAG FASTA (`28.index/01.hq-set.fa`)
+
+Outputs
+
+- `03.tad.list` — List of MAG IDs
+
+- `03.tad.pbs.jobids` — Job tracking file
+
+- Per-sample TAD80 results in `29.TAD80/TAD80/*.tad80.tsv`
+
+Each `.tad80.tsv` contains normalized coverage for all MAGs for that sample.
+
+----
+
+## Step 4 – Compute Normalized Abundance
+
+Script: `04.abundance.bash`
+
+Normalizes MAG coverage using MicrobeCensus genome equivalent estimates.
+
+Inputs
+
+- `29.TAD80/TAD80/*.tad80.tsv`
+
+- MicrobeCensus output (`14.microbe_census/`)
+
+Outputs
+
+- `MicrobeCensus_genome_equivalents.txt`
+
+- Per-sample abundance files: `*.abundance.txt`
+
+- Final combined abundance matrix: `04.abundance.tsv`
+
+----
+
+## Step 5 – MAG Dereplication & Clustering
+
+Script: `make_drep_clusters.sh`
+
+This script extracts genome clusters from dRep’s Cdb.csv file and generates a clean dRep_clusters.csv file, where each line contains the MAG IDs belonging to one cluster.
+The script automatically searches for Cdb.csv inside the standard dRep output paths.
+
+### Usage
+```bash
+./make_drep_clusters.sh [folder] [cluster_level] [keep_ext]
+```
+
+### Arguments
+| Argument        | Description                                                               | Default                   |
+| --------------- | ------------------------------------------------------------------------- | ------------------------- |
+| `folder`        | Project root folder (must contain `18.dRep/output/...`)                   | **Required**              |
+| `cluster_level` | Clustering level: `secondary` (species), `primary` (strain), or `cluster` | `secondary`               |
+| `keep_ext`      | Keep FASTA extensions (`.fa`, `.fna`, `.fasta`, `.gz`) in MAG IDs         | `no` (extensions removed) |
+
+### Cluster Level Options
+- `secondary` / `sec` / `species` → uses secondary_cluster column
+- `primary` / `pri` / `strain` → uses primary_cluster column
+- `cluster` → uses `cluster` column
+
+### Input
+The script searches for `Cdb.csv` in `18.dRep/output/dereplicate/data_tables/`
+
+### Output
+A CSV file without a header, one line per cluster:
+```bash
+[folder]/dRep_clusters.csv
+```
+Each line contains MAG IDs separated by commas (`MAG1`,`MAG4`,`MAG8`).
+Extensions are removed unless `keep_ext=yes`.
+
+Output Format Example `dRep_clusters.csv`:
+```
+MAG001,MAG014,MAG022
+MAG003
+MAG007,MAG010
+```
+----
+## Step 7 – Consolidate Cluster-Level Abundance (ANI-spp)
+
+Script: `consolidate-spp.rb`
+
+This step merges MAG-level abundance (from Step 4) into cluster-level abundance based on dRep ANI clusters.
+
+### Inputs
+
+- `04.abundance.tsv`: Output table from `04.abundance.bash`
+- `dRep_clusters.csv`: Output file from `make_drep_clusters.bash`
+
+### Output
+- `ANIspp.abundance.tsv`: Abundance table aggregated by dRep clusters (ANI species-level groups)
+
+----
+## Step 8 - Separate rRNA (SortMeRNA) (Optional)
+
+Script: `05.sortmerna.bash`
+
+This step submits SortMeRNA jobs for all trimmed FASTA read pairs in `04.trimmed_fasta/`.
+It generates rRNA-filtered metagenomic reads for downstream analysis.
+
+### Usage
+```bash
+./05.sortmerna.bash [folder] [queue] [QOS]
+```
+
+### Arguments
+| Argument | Description                                              | Default           |
+| -------- | -------------------------------------------------------- | ----------------- |
+| `folder` | Path to project folder that contains `04.trimmed_fasta/` | **Required**      |
+| `queue`  | SLURM account/partition                                  | `` |
+| `QOS`    | SLURM QOS                                                | `normal`          |
+
+### Output (per sample)
+SortMeRNA results are generated by `05.sortmerna.pbs` and typically include:
+| File                          | Description                             | Usage                                                    |
+| ----------------------------- | --------------------------------------- | -------------------------------------------------------- |
+| **`$SAMPLE_ribosomal.log`**   | SortMeRNA execution log                 | Check errors, quality control                            |
+| **`$SAMPLE_ribosomal.sam`**   | SAM file containing rRNA alignments     | Mapping quality inspection (rarely used)                 |
+| **`$SAMPLE_ribosomal.fa`**    | Extracted rRNA reads (16S/23S/18S etc.) | QIIME2 taxonomy, SILVA-based classification              |
+| **`$SAMPLE_ribosomal.blast`** | BLAST-like hit summary                  | Reference similarity / taxonomy investigation            |
+| **`$SAMPLE_nonribosomal.fa`** | Non-rRNA (cleaned) reads                | Metagenome assembly, gene profiling, downstream analysis |
