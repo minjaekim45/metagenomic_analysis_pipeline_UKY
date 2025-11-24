@@ -8,15 +8,37 @@ The workflow is designed for assembly-based metagenomic analysis and follows the
 
 ## Step 1 - Build MAG index
 Script: ```01.index.pbs```
-This script builds Bowtie2 index files for the merged MAG FASTA located in `28.index/`.
+This script gathers all high-quality MAGs, merges them into a single FASTA with unique sequence headers, and generates a Bowtie2 index for downstream read mapping.
 
-Input:
+### Usage:
+```bash
+sbatch ./01.index.bash [folder]
+```
 
-- ```28.index/01.hq-set.fa```
+### Argument
+| Argument | Description                                                               |
+| -------- | ------------------------------------------------------------------------- |
+| `folder` | Path to the project root containing `16.checkm2/output/good_quality/*.fa` |
 
-Output:
+It then:
+- Extracts the basename of each MAG (e.g., IR37_0d.2)
+- Adds the basename as a prefix to each FASTA header → makes all contig IDs unique
+- Writes the combined file to: `28.index/01.hq-set.fa`
 
-- Bowtie2 index files (`*.bt2`) in `28.index/`
+Example header transformation:
+```shell
+contig-100_702
+```
+becomes
+```shell
+IR37_0d.2:contig-100_702
+```
+### Output
+| File / Directory           | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| `28.index/01.hq-set.fa`    | Merged MAG FASTA with uniquely prefixed headers |
+| `28.index/01.hq-set.*.bt2` | Bowtie2 index files generated from merged MAGs  |
+
 
 ----
 
@@ -24,35 +46,59 @@ Output:
 
 Scripts: `02.map.bash`
 
-Maps paired-end reads in `04.trimmed_fasta/` to the Bowtie2 MAG index.
+This step submits Bowtie2 mapping jobs for all trimmed paired-end FASTA reads located in `04.trimmed_fasta/`.
+Each sample must have two files ending in `_1.fa` and `_2.fa`.
 
-Output
+### Usage 
+```bash
+./02.map.bash [folder] [queue] [QOS]
+```
+- `folder`[required]: Path to directory containing `04.trimmed_fasta/`
 
-- Mapped read BAM files in `29.TAD80/map/`
+### Output
+Bowtie2 mapping output (from `02.map.pbs`) will include:
+| File                         | Description                                  | Location        |
+| ---------------------------- | -------------------------------------------- | --------------- |
+| `<sample>.bam`               | Sorted BAM file of reads mapped to MAG index | `29.TAD80/map/` |
+| `<sample>.log`               | Bowtie2 alignment statistics                 | `29.TAD80/map/` |
+| `BMAPA_<sample>-<jobID>.out` | SLURM stdout                                 | `zz.TMP/`       |
+| `BMAPA_<sample>-<jobID>.err` | SLURM stderr                                 | `zz.TMP/`       |
+
 
 ----
 
 ## Step 3 – Calculate TAD80 Coverage
 
 Scripts: `03.tad.bash`
+This step uses the mapped BAM files from Step 2 and the MAG index from Step 1 to:
+- Summarize Bowtie2 mapping statistics
+- Generate a list of MAG IDs
+- Submit per-sample jobs to compute coverage and TAD80 statistics for each MAG
 
-Computes 80% truncated average depth (TAD80) coverage for each MAG.
-
-Inputs
+### Inputs
 
 - BAM files from Step 2 (`29.TAD80/map/*.bam`)
-
 - MAG FASTA (`28.index/01.hq-set.fa`)
 
-Outputs
+### Outputs
 
-- `03.tad.list` — List of MAG IDs
+All outputs are stored under `29.TAD80/TAD80/`.
 
-- `03.tad.pbs.jobids` — Job tracking file
-
-- Per-sample TAD80 results in `29.TAD80/TAD80/*.tad80.tsv`
-
-Each `.tad80.tsv` contains normalized coverage for all MAGs for that sample.
+1. `02.map.tsv`
+    - One row per sample
+    - Contains simplified mapping summary parsed from Bowtie2 logs (`map/*.log`)
+2. `03.tad.list`
+    - One MAG ID per line (e.g., `IR37_0d.2`, `IR37_0d.5`, …)
+    - Used as the MAG list for coverage/TAD80 calculations
+3. `03.tad.pbs.jobids` 
+    - Job tracking file
+4. `*.tad80.tsv`
+    - Per-sample TAD80 results
+    - each file contains normalized coverage statistics per MAG
+5. `*.bg.gz`
+    - Coverage bedGraph
+6. `*.sorted.bam`
+    - Coordinate-sorted BAM
 
 ----
 
@@ -60,21 +106,25 @@ Each `.tad80.tsv` contains normalized coverage for all MAGs for that sample.
 
 Script: `04.abundance.bash`
 
-Normalizes MAG coverage using MicrobeCensus genome equivalent estimates.
+This step converts the raw TAD80 coverage values (from Step 3) into normalized microbial abundance estimates by dividing each MAG’s TAD80 value by the sample’s MicrobeCensus genome equivalents.
+The result is a sample-by-MAG abundance matrix (`04.abundance.tsv`).
 
-Inputs
+### Workflow
+1. Parse all MicrobeCensus outputs (`*.microbecensus.out`)
+    - it generates: `14.microbe_census/MicrobeCensus_genome_equivalents.txt`
+2. Extract genome_equivalents per sample
+3. For each `<sample>.tad80.tsv`, normalize each MAG’s TAD80
+    - ```normalized_abundance = TAD80_value / genome_equivalents```
+4. Create individual normalized abundance files (`TAD80/abundance/<sample>.abundance.txt`)
+    - One normalized value per line, corresponding to the MAG order in `03.tad.list`
+5. Combine all results into a single multi-sample matrix (`04.abundance.tsv`)
+    - Structure:
 
-- `29.TAD80/TAD80/*.tad80.tsv`
-
-- MicrobeCensus output (`14.microbe_census/`)
-
-Outputs
-
-- `MicrobeCensus_genome_equivalents.txt`
-
-- Per-sample abundance files: `*.abundance.txt`
-
-- Final combined abundance matrix: `04.abundance.tsv`
+    | Bin (MAG ID) | sample1 | sample2 | sample3 | … |
+    | ------------ | ------- | ------- | ------- | - |
+    | MAG001       | 0.0019  | 0.0021  | 0.0013  | … |
+    | MAG002       | 0.0003  | 0.0002  | 0.0001  | … |
+    | MAG003       | 0.0152  | 0.0148  | 0.0164  | … |
 
 ----
 
