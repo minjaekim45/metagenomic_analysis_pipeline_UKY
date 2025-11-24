@@ -120,7 +120,7 @@ MAG003
 MAG007,MAG010
 ```
 ----
-## Step 7 – Consolidate Cluster-Level Abundance (ANI-spp)
+## Step 6 – Consolidate Cluster-Level Abundance (ANI-spp)
 
 Script: `consolidate-spp.rb`
 
@@ -135,7 +135,7 @@ This step merges MAG-level abundance (from Step 4) into cluster-level abundance 
 - `ANIspp.abundance.tsv`: Abundance table aggregated by dRep clusters (ANI species-level groups)
 
 ----
-## Step 8 - Separate rRNA (SortMeRNA) (Optional)
+## Step 7 - Separate rRNA (SortMeRNA) (Optional)
 
 Script: `05.sortmerna.bash`
 
