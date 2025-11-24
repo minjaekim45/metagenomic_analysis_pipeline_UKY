@@ -1,0 +1,110 @@
+#!/bin/bash
+#SBATCH --job-name=sortmerna_16S
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH --time=12:00:00
+#SBATCH --mem=16G
+#SBATCH --output=sortmerna_16S.%j.out
+#SBATCH --error=sortmerna_16S.%j.err
+
+set -euo pipefail
+
+###############################
+# 0. Input arguments & basic variables
+###############################
+# Example usage:
+#   sbatch sortmerna_16S.pbs SAMPLE_NAME /scratch/.../FASTQ/fastq_files/
+if [[ $# -lt 2 ]]; then
+    echo "Usage: sbatch $0 SAMPLE_NAME FOLDER" >&2
+    exit 1
+fi
+
+SAMPLE="$1"      # ex: IR37_0d
+FOLDER="$2"      # ex: /scratch/.../FASTQ/fastq_files/
+
+# FASTA file path
+R1="${FOLDER}/04.trimmed_fasta/${SAMPLE}_1.fa"
+R2="${FOLDER}/04.trimmed_fasta/${SAMPLE}_2.fa"
+if [[ ! -f "$R1" ]]; then
+    echo "ERROR: R1 file not found: $R1" >&2
+    exit 1
+fi
+if [[ ! -f "$R2" ]]; then
+    echo "ERROR: R2 file not found: $R2" >&2
+    exit 1
+fi
+
+###############################
+# 1. Load conda & activate SortMeRNA 2.x environment
+###############################
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+if ! conda env list | grep -q "^sortmerna_old"; then
+    conda create -n sortmerna_old -c bioconda sortmerna=2.1 python=3.10 -y
+    conda activate sortmerna_old
+else
+    conda activate sortmerna_old
+fi
+
+
+###############################
+# 2. SortMeRNA DB filepath
+###############################
+
+PROJECT_ROOT=$(dirname "$(dirname "$FOLDER")")
+DBDIR="${PROJECT_ROOT}/databases/sortmerna2_db"
+
+REF="${DBDIR}/silva-bac-16s-id90.fasta,${DBDIR}/index/silva-bac-16s-id90-db:\
+${DBDIR}/silva-bac-23s-id98.fasta,${DBDIR}/index/silva-bac-23s-id98-db:\
+${DBDIR}/silva-arc-16s-id95.fasta,${DBDIR}/index/silva-arc-16s-id95-db:\
+${DBDIR}/silva-arc-23s-id98.fasta,${DBDIR}/index/silva-arc-23s-id98-db:\
+${DBDIR}/silva-euk-18s-id95.fasta,${DBDIR}/index/silva-euk-18s-id95-db:\
+${DBDIR}/silva-euk-28s-id98.fasta,${DBDIR}/index/silva-euk-28s-id98-db:\
+${DBDIR}/rfam-5s-database-id98.fasta,${DBDIR}/index/rfam-5s-database-id98-db:\
+${DBDIR}/rfam-5.8s-database-id98.fasta,${DBDIR}/index/rfam-5.8s-database-id98-db"
+
+if [[ ! -d "$DBDIR" ]]; then
+    echo "ERROR: SortMeRNA 2.x DB directory not found: $DBDIR" >&2
+    exit 1
+fi
+###############################
+# 3. Working Directory /fastq_files/30.SortmeRNA
+###############################
+
+mkdir -p "${FOLDER}/30.SortmeRNA/sortmerna"
+cd "${FOLDER}/30.SortmeRNA/sortmerna"
+
+
+echo "[INFO] Working directory: $(pwd)"
+echo "[INFO] Sample: $SAMPLE"
+echo "[INFO] R1: $R1"
+echo "[INFO] R2: $R2"
+
+###############################
+# 4. Run SortMeRNA (trimmed reads → rRNA reads)
+###############################
+# Output files:
+#   ${SAMPLE}_ribosomal.fa     → rRNA reads (mostly 16S)
+#   ${SAMPLE}_nonribosomal.fa  → non-rRNA reads (shotgun metagenome)
+#   ${SAMPLE}_ribosomal.sam       → alignment details
+#   ${SAMPLE}_ribosomal.blast     → BLAST-like summary
+#   ${SAMPLE}_ribosomal.log       → run statistics log
+
+sortmerna \
+  --ref "$REF" \
+  --reads "$R1" \
+  --reads "$R2" \
+  --paired_in \
+  --aligned "${SAMPLE}_ribosomal" \
+  --other "${SAMPLE}_nonribosomal" \
+  --fastx \
+  --sam \
+  --log \
+  --blast 1 \
+  --num_alignments 1 \
+
+echo "[INFO] SortMeRNA finished for ${SAMPLE}"
+
+echo "[INFO] rRNA (mostly 16S) FASTQ: ${FOLDER}/sortmerna/${SAMPLE}_ribosomal.fastq"
+echo "[INFO] You can now import this file into QIIME2 for classification."

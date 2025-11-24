@@ -1,0 +1,46 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --mem=16g
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+enve=/project/mki314_uksr/enveomics/Scripts
+THR=4
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate spades
+#---------------------------------------------------------
+
+echo "==[ 05.assembly: $(date) ]"
+cd $FOLDER/05.assembly
+mkdir "$b"
+
+if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
+   echo "Single Reads!" ;
+   spades.py --s $FA --only-assembler --meta -t $THR -o ./"$b" ;
+else
+   echo "Coupled Reads!" ;
+   spades.py --12 $FA --only-assembler --meta -t $THR -o ./"$b" ;
+fi
+
+cd ./"$b"
+
+if [[ -s ./scaffolds.fasta ]] ; then
+   ln -s ./scaffolds.fasta $SAMPLE.AllContigs.fna
+else
+   ln -s ./contigs.fasta $SAMPLE.AllContigs.fna
+fi
+
+time $enve/FastA.length.pl $SAMPLE.AllContigs.fna | awk '$2>=500{print $1}' \
+   > $SAMPLE.LargeContigs.ids
+time $enve/FastA.filter.pl $SAMPLE.LargeContigs.ids $SAMPLE.AllContigs.fna \
+   > $SAMPLE.LargeContigs.fna
+rm $SAMPLE.LargeContigs.ids
+
+#cd "$b"
+#mv scaffolds.fasta "$b".fasta
+
+
+#---------------------------------------------------------
+
+echo "Done: $(date)."

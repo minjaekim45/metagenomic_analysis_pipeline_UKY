@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+
+b=$SAMPLE
+dir=$FOLDER
+
+cd $dir/28.index
+# Load conda and activate bowtie2 env
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+conda activate bowtie2
+
+bowtie2 -f -x "01.hq-set" -S "$dir/29.TAD80/map/${b}.sam" -p 4  \
+-1 "$dir/04.trimmed_fasta/${b}_1.fa" \
+-2 "$dir/04.trimmed_fasta/${b}_2.fa" \
+&> "$dir/29.TAD80/map/${b}.log"
+
+conda activate samtools
+
+samtools view -Sb "$dir/29.TAD80/map/${b}.sam" > "$dir/29.TAD80/map/${b}.bam"
+rm "$dir/29.TAD80/map/${b}.sam"
+
+conda deactivate
+echo "Done: $(date)."

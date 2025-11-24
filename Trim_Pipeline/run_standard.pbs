@@ -1,0 +1,114 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH -t 12:00:00
+echo "process run_standard.pbs"
+b=$SAMPLE
+
+# Change enveomics path to yours 
+enve=/project/mki314_uksr/enveomics/Scripts
+
+# Source path to Conda environments
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+
+# The number of CPUs or threads
+THR=4
+
+#---------------------------------------------------------
+# Quality trimming
+
+echo "==[ 02.trimmed_reads: $(date) ]" ;
+cd $FOLDER/02.trimmed_reads ;
+
+conda activate trim-galore
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR --paired ../01.raw_reads/"$b".1.fastq ../01.raw_reads/"$b".2.fastq
+else
+   trim_galore -q 20 --fastqc --stringency 3  --length 50 -o ./ --cores $THR ../01.raw_reads/"$b".1.fastq
+fi ;
+
+#---------------------------------------------------------
+# Tagging fastq
+
+conda activate ruby
+
+if [[ -e ./"$b".2_val_2.fq ]] ; then
+   $enve/FastQ.tag.rb -i ./"$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+   $enve/FastQ.tag.rb -i ./"$b".2_val_2.fq -p "$b-" -s "/2" -o "$b".2.tagged.fastq ;
+else
+   $enve/FastQ.tag.rb -i ./"$b".1_val_1.fq -p "$b-" -s "/1" -o "$b".1.tagged.fastq ;
+fi
+
+#---------------------------------------------------------
+# read_quality
+
+if [[ -e ./"$b".2.fastq_trimming_report.txt ]] ; then
+   mv "$b".1.fastq_trimming_report.txt ../03.read_quality/"$b".1.fastq_trimming_report.txt ;
+   mv "$b".2.fastq_trimming_report.txt ../03.read_quality/"$b".2.fastq_trimming_report.txt ;
+else
+   mv "$b".1.fastq_trimming_report.txt ../03.read_quality/"$b".1.fastq_trimming_report.txt ;
+fi
+
+#---------------------------------------------------------
+# FastQ -> FastA 
+
+FQ2A="$enve/FastQ.toFastA.awk" ;
+echo "==[ 04.trimmed_fasta: $(date) ]" ;
+cd $FOLDER/04.trimmed_fasta ;
+
+if [[ -e ../02.trimmed_reads/"$b".2.tagged.fastq ]] ; then
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq > "$b"_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".2.tagged.fastq > "$b"_2.fa ;
+else
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1.tagged.fastq  > "$b"_SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+# Interpose fasta
+
+if [[ -e "$b"_2.fa ]] ; then
+   $enve/FastA.interpose.pl "$b".CoupledReads.fa "$b"_1.fa "$b"_2.fa ;
+else
+   mv "$b"_SingleReads.fa "$b".SingleReads.fa ;
+fi ;
+
+#---------------------------------------------------------
+# Get statistics
+
+echo "==[ zz.stats: $(date) ]" ;
+cd $FOLDER/zz.stats ;
+
+if [[ -e ../01.raw_reads/"$b".2.fastq ]] ; then
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".1.fastq > "$b"_raw_1.fa ;
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".2.fastq > "$b"_raw_2.fa ;
+else
+   awk -f "$FQ2A" < ../01.raw_reads/"$b".1.fastq > "$b"_raw_1.fa ;
+fi ;
+
+if [[ -e ../02.trimmed_reads/"$b".2_val_2.fq ]] ; then
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1_val_1.fq > "$b"_trimmed_1.fa ;
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".2_val_2.fq > "$b"_trimmed_2.fa ;
+else
+   awk -f "$FQ2A" < ../02.trimmed_reads/"$b".1_val_1.fq > "$b"_trimmed_1.fa ;
+fi ;
+
+if [[ -e "$b"_raw_2.fa ]] ; then
+   echo "[ $b Raw Read Stats ]" >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_2.fa >> "$b"_stats.txt ;
+   echo "[ $b Trimmed Read Stats ]" >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_2.fa >> "$b"_stats.txt ;
+else
+   echo "[ $b Raw Read Stats ]" >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_raw_1.fa >> "$b"_stats.txt ;
+   echo "[ $b Trimmed Read Stats ]" >> "$b"_stats.txt ;
+   $enve/FastA.qlen.pl "$b"_trimmed_1.fa >> "$b"_stats.txt ;
+fi ;
+
+rm "$b"_*.fa
+
+#---------------------------------------------------------
+conda deactivate
+echo "Done: $(date)." ;

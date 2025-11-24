@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --mem=128g
+#SBATCH -t 6:00:00
+
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda17-rocky8.sinf
+
+# Path for the Kaiju databases
+database=/share/apps/amd/kaiju
+
+# The number of CPUs or threads
+THR=32
+
+#---------------------------------------------------------
+# MetaPhlAn analysis
+
+echo "==[ 07.kaiju: $(date) ]" ;
+cd $FOLDER/07.kaiju ;
+
+singularity run --app kaiju1101 $container kaiju -t $database/nr_euk/nodes.dmp -f $database/nr_euk/kaiju_db_nr_euk.fmi -i ../04.trimmed_fasta/"$b".CoupledReads.fa -o "$b"_kaiju.txt -v
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;

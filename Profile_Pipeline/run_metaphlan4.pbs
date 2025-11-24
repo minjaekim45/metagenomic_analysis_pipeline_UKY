@@ -1,0 +1,35 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH -t 6:00:00
+
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda15-rocky8.sinf
+
+# Database path remains the same for anyone running on the MCC cluster
+database=/scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/databases
+# The number of CPUs or threads
+THR=8
+
+#---------------------------------------------------------
+# MetaPhlAn analysis
+
+echo "==[ 05.metaphlan: $(date) ]" ;
+cd $FOLDER/05.metaphlan4 ;
+
+singularity run --app metaphlan410 --env METAPHLAN_DB_DIR=$database $container \
+  metaphlan ../04.trimmed_fasta/"$b".CoupledReads.fa --input_type fasta --bowtie2out ./"$b".bowtie2.bz2 \
+  --tmp_dir ../04.trimmed_fasta/zz.TMP --add_viruses -o ./"$b"_mphlan.txt --unclassified_estimation --nproc $THR
+
+#---------------------------------------------------------
+# Merge tables
+
+# After running MetaPhlAn4, run the following two lines of code to create "merged_abundance_table_species.txt"
+#    singularity run --app metaphlan410 $container merge_metaphlan_tables.py *_mphlan.txt > merged_abundance_table.txt
+#    grep -E "s__|SRS" merged_abundance_table.txt | grep -v "t__" | sed "s/^.*|//g" | sed "s/SRS[0-9]*-//g" > merged_abundance_table_species.txt
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;

@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH -t 6:00:00
+
+b=$SAMPLE
+
+# Container path remains the same for anyone running on the MCC cluster
+container=/share/singularity/images/ccs/conda/amd-conda18-rocky8.sinf
+
+# Database path remains the same for anyone running on the MCC cluster
+database=/share/apps/amd/kraken2/kraken-db
+
+# The number of CPUs or threads
+THR=24
+
+#---------------------------------------------------------
+# Kraken2 analysis
+
+echo "==[ 06.kraken2: $(date) ]" ;
+cd $FOLDER/06.kraken2 ;
+
+singularity run --app kraken22132 "$container" kraken2 --db "$database" --threads "$THR" ../04.trimmed_fasta/"$b".CoupledReads.fa --report "./${b}_k2_report.txt" --report-zero-counts --output "./${b}_output.txt"
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;

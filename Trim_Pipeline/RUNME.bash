@@ -1,0 +1,82 @@
+#!/bin/bash
+#SBATCH --time=01:00:00             # Time limit for the job (REQUIRED).
+#SBATCH --job-name=IR37_trim      # Job name
+#SBATCH --ntasks=1                  # Number of cores for the job. Same as SBATCH -n 1
+#SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
+#SBATCH -e slurm-%j.err             # Error file for this job.
+#SBATCH -o slurm-%j.out             # Output file for this job.
+#SBATCH -A coa_mki314_uksr     # Project allocation account name (REQUIRED)
+
+if [[ "$1" == "" || "$1" == "-h" ]] ; then
+   echo "
+   Usage: ./RUNME.bash [folder] [filtration] [queue] [QOS]
+
+   folder	Path to the folder containing the raw reads. The raw reads must be in FastQ format,
+   		and filenames must follow the format: <name>.<sis>.fastq, where <name> is the name
+		of the sample, and <sis> is 1 or 2 indicating which sister read the file contains.
+		Use only '1' as <sis> if you have single reads.
+   filtration	Method of contamination removal. Use 'standard' if performing a general quality trim,
+   		use 'bmtagger' if you need to remove human sequences as well. (If using BMTagger, be
+     		sure to create the index first using 'index.bash'). Other options for for human read
+       		removal are 'hocort' and 'bowtie2vs'. (If no option is provided, 'standard' will be
+	 	used).
+   partition	Select a partition (If not provided, coa_mki314_uksr will be used).
+   qos		Select a quality of service (If not provided, normal will be used).
+   
+   " >&2 ;
+   exit 1 ;
+fi ;
+
+TOOL=$2
+if [[ "$TOOL" == "" ]] ; then
+   TOOL="standard"
+fi ;
+
+QUEUE=$3
+if [[ "$QUEUE" == "" ]] ; then
+   QUEUE="coa_mki314_uksr"
+fi ;
+
+QOS=$4
+if [[ "$QOS" == "" ]] ; then
+   QOS="normal"
+fi ;
+
+dir=$(readlink -f $1) ;
+echo $dir ;
+pac=$(dirname $(readlink -f $0)) ;
+cwd=$(pwd) ;
+
+#---------------------------------------------------------
+
+cd $dir ;
+for i in 01.raw_reads 02.trimmed_reads 03.read_quality 04.trimmed_fasta zz.out zz.stats zz.TMP ; do
+   if [[ ! -d $i ]] ; then mkdir $i ; fi ;
+done ;
+
+for i in $dir/index-* ; do
+   mv $i $dir/zz.out/
+done
+
+for i in $dir/01.raw_reads/*.1.fastq ; do 
+   b=$(basename $i .1.fastq) ;
+   OPTS="SAMPLE=$b,FOLDER=$dir"
+   if [[ -e "$b.2.fastq" ]] ; then
+      mv "$b".1.fastq 01.raw_reads/ ;
+      mv "$b".2.fastq 01.raw_reads/ ;
+   else
+      mv "$b".1.fastq 01.raw_reads/ ;
+   fi
+   # Launch job
+   sbatch --export="$OPTS" -J "Trim-$b" --account=$QUEUE --partition=$QOS --error "$dir"/zz.out/"Trim-$TOOL-$b"-%j.err -o "$dir"/zz.out/"Trim-$TOOL-$b"-%j.out  $cwd/run_$TOOL.pbs | grep .;
+done ;
+
+#---------------------------------------------------------
+# Combine statistics outputs
+
+#cd $dir/zz.stats
+#paste *stats.txt  > bmtagger_statistics.txt
+
+#---------------------------------------------------------
+
+echo "Done: $(date)." ;
