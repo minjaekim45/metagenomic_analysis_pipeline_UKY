@@ -8,9 +8,7 @@ HELP
 
     Prerequisites:
 
-    1.1. Using the conda environment on Summit. For the setup please see this link (https://curc.readthedocs.io/en/latest/software/python.html?highlight=anaconda) After setup the conda environment, conda create/install metabat2 with the environment name "metabat2" Change the paths in the run.pbs file with yours
-
-    1.2. Need to run Trimming Pipeline & Assembly Pipeline
+    1.1. Need to run Trimming Pipeline & Assembly Pipeline
 
     Pipeline execution:
 
