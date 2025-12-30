@@ -17,7 +17,7 @@ if [[ "$1" == "" || "$1" == "-h" || "$2" == "" ]] ; then
 fi ;
 
 TOOL=$2
-if [[ "$TOOL" != "metaphlan4" && "$TYPE" != "kraken2" && "$TYPE" != "kaiju" ]] ; then
+if [[ "$TOOL" != "metaphlan4" && "$TOOL" != "kraken2" && "$TOOL" != "kaiju" ]] ; then
    echo "Unsupported taxonomy tool." >&2 ;
    exit 1;
 fi ;
