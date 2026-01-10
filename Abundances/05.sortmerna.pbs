@@ -23,8 +23,8 @@ SAMPLE="$1"      # ex: IR37_0d
 FOLDER="$2"      # ex: /scratch/.../FASTQ/fastq_files/
 
 # FASTA file path
-R1="${FOLDER}/04.trimmed_fasta/${SAMPLE}_1.fa"
-R2="${FOLDER}/04.trimmed_fasta/${SAMPLE}_2.fa"
+R1="${FOLDER}/02.trimmed_reads/${SAMPLE}.1_val_1.fq"
+R2="${FOLDER}/02.trimmed_reads/${SAMPLE}.2_val_2.fq"
 if [[ ! -f "$R1" ]]; then
     echo "ERROR: R1 file not found: $R1" >&2
     exit 1

@@ -1,0 +1,183 @@
+#!/bin/bash
+#SBATCH --job-name=qiime2
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH --time=4-00:00:00
+#SBATCH --mem=128G 
+#SBATCH --output=qiime2.%j.out
+#SBATCH --error=qiime2.%j.err
+
+echo "Starting QIIME 2 analysis..."
+
+# Usage:
+#   keep the memory more than 32G for QIIME2 classification
+#   bash qiime2.sh /path/to/rRNA_fastq_dir /path/to/output_dir /path/to/silva_classifier.qza
+#
+# Download classifier: 
+#   wget https://data.qiime2.org/2024.2/common/silva-138-99-nb-classifier.qza
+# 
+# Example:
+#   bash qiime2.sh \
+#       /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/30.SortmeRNA/sortmerna \
+#       /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/31.Qiime2 \
+#       /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/databases/qiime2db/silva-138-99-nb-classifier.qza
+set -euo pipefail
+
+if [[ $# -lt 3 ]]; then
+  echo "Usage: $0 [ribosomal_fq_dir] [output_dir] [silva_classifier.qza]" >&2
+  exit 1
+fi
+
+RIBO_DIR=$(readlink -f "$1")
+OUTDIR=$(readlink -f "$2")
+CLASSIFIER=$(readlink -f "$3")
+
+mkdir -p "$OUTDIR"
+cd "$OUTDIR"
+
+echo "=== Input directory with merged ribosomal FASTQ: $RIBO_DIR"
+echo "=== Output directory: $OUTDIR"
+echo "=== Classifier: $CLASSIFIER"
+
+################################
+# 0. Gzip .fq / .fastq if needed
+################################
+echo ">>> Gzipping .fq / .fastq files (if any)..."
+
+# .fq
+find "$RIBO_DIR" -maxdepth 1 -type f -name "*_ribosomal.fq" -print0 \
+  | while IFS= read -r -d '' f; do
+    
+      # target .gz output
+      gz="${f}.gz"
+
+      # If .gz already exists, skip this file
+      if [[ -f "$gz" ]]; then
+          echo "Skipping $f (already compressed)"
+          continue
+      fi
+
+      # compress safely (avoid FastQC wrappers)
+      echo "Compressing $f → $gz"
+      command gzip -c "$f" > "$gz"
+  done
+
+# .fastq
+find "$RIBO_DIR" -maxdepth 1 -type f -name "*_ribosomal.fastq" -print0 | while IFS= read -r -d '' f; do
+  [[ -e "$f" ]] || continue
+  command gzip -c "$f" > "${f}.gz"
+done
+
+###############################
+# 1. Load conda & activate qiime2 environment
+###############################
+
+source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
+if ! conda env list | grep -q "^qiime2"; then
+    sh qiime2_setting.sh
+else
+    conda activate qiime2
+fi
+
+
+###############################################
+# 1. Create SingleEnd Fastq manifest for QIIME2
+###############################################
+
+MANIFEST="$OUTDIR/manifest_rRNA_single.tsv"
+echo ">>> Creating manifest: $MANIFEST"
+
+# Header (SingleEndFastqManifestPhred33V2)
+printf "sample-id\tabsolute-filepath\n" > "$MANIFEST"
+
+# IMPORTANT:
+#   Adjust the pattern below to match your filenames.
+#   Current version: uses any *.fastq.gz or *.fq.gz as one sample each,
+#   and uses the basename (without extension) as sample-id.
+#
+#   If you have a specific pattern (e.g. IR37_rRNA_merged.fastq.gz),
+#   this will still work fine: sample-id = "IR37_rRNA_merged".
+
+for f in "$RIBO_DIR"/*.fastq.gz "$RIBO_DIR"/*.fq.gz; do
+  [[ -e "$f" ]] || continue
+  fname=$(basename "$f")
+
+  # strip one extension (.fastq.gz or .fq.gz) for sample-id
+  sample=${fname%.fastq.gz}
+  sample=${sample%_ribosomal.fq.gz}
+
+  absf=$(readlink -f "$f")
+
+  printf "%s\t%s\n" "$sample" "$absf" >> "$MANIFEST"
+done
+
+echo "Manifest created:"
+cat "$MANIFEST"
+
+###############################################
+# 2. Import to QIIME 2 (SingleEndSequencesWithQuality)
+###############################################
+
+echo ">>> Importing single-end FASTQ into QIIME 2..."
+if [[ -f ribosomal-single-demux.qzv ]]; then
+    echo "ribosomal-single-demux.qza already exists — skipping import."
+else
+  qiime tools import \
+    --type 'SampleData[SequencesWithQuality]' \
+    --input-path "$MANIFEST" \
+    --input-format SingleEndFastqManifestPhred33V2 \
+    --output-path ribosomal-single-demux.qza
+  qiime demux summarize \
+    --i-data ribosomal-single-demux.qza \
+    --o-visualization ribosomal-single-demux.qzv
+fi
+###############################################
+# 3. Dereplicate with vsearch
+###############################################
+
+echo ">>> Dereplicating sequences..."
+if [[ -f rep-seqs.qzv ]]; then
+    echo "rep-seqs.qzv already exists — skipping import."
+else
+  qiime vsearch dereplicate-sequences \
+    --i-sequences ribosomal-single-demux.qza \
+    --o-dereplicated-table table.qza \
+    --o-dereplicated-sequences rep-seqs.qza
+
+  qiime feature-table summarize \
+    --i-table table.qza \
+    --o-visualization table.qzv
+
+  qiime feature-table tabulate-seqs \
+    --i-data rep-seqs.qza \
+    --o-visualization rep-seqs.qzv
+fi
+###############################################
+# 4. Taxonomy classification (SILVA)
+###############################################
+
+echo ">>> Classifying sequences with SILVA classifier..."
+if [[ -f taxonomy.qzv ]]; then
+    echo "taxonomy.qzv already exists — skipping import."
+else
+  qiime feature-classifier classify-sklearn \
+    --i-classifier "$CLASSIFIER" \
+    --i-reads rep-seqs.qza \
+    --o-classification taxonomy.qza
+
+  qiime metadata tabulate \
+    --i-data taxonomy.qza \
+    --o-visualization taxonomy.qzv
+fi
+###############################################
+# 5. Taxa barplots
+###############################################
+
+echo ">>> Generating taxa barplots..."
+qiime taxa barplot \
+  --i-table table.qza \
+  --i-taxonomy taxonomy.qza \
+  --m-metadata-file "$MANIFEST" \
+  --o-visualization taxa-barplot.qzv
+
+echo "=== Done! Open the *.qzv files with 'qiime tools view' or on https://view.qiime2.org ==="

@@ -35,10 +35,10 @@ if [[ ! -e "30.SortmeRNA" ]] ; then
    exit 1
 fi ;
 
-for i in "$dir"/04.trimmed_fasta/*_1.fa ; do
+for i in "$dir"/02.trimmed_reads/*.1_val_1.fq ; do
 
    base=$(basename "$i")
-   SAMPLE="${base%_1.fa}"
+   SAMPLE="${base%.1_val_1.fq}"
    OPTS="SAMPLE=$SAMPLE,FOLDER=$dir"
    
    echo -ne "$SAMPLE\t"

@@ -4,8 +4,8 @@
 #SBATCH --job-name=bakta            # Job name
 #SBATCH --ntasks=32                  # Number of cores for the job. Same as SBATCH -n
 #SBATCH --partition=normal          # Partition/queue to run the job in. (REQUIRED)
-#SBATCH -e ./zz.out/bakta-%j.err     # Error file for this job.
-#SBATCH -o ./zz.out/bakta-%j.out     # Output file for this job.
+#SBATCH -e /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/zz.out/bakta-%j.err     # Error file for this job.
+#SBATCH -o /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/zz.out/bakta-%j.out     # Output file for this job.
 #SBATCH --account=coa_mki314_uksr   # Project allocation account name (REQUIRED)
 
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
@@ -47,7 +47,7 @@ conda activate bakta
 
 for i in $dir/16.checkm2/output/good_quality/*.fa ; do
    name=$(basename "$i" .fa)
-   bakta --db $database --prefix $name --output ./results/"$name" $i
+   bakta --db $database --prefix $name --output ./results_keepHeaders/"$name" --keep-contig-headers $i
 done ;
 
 conda deactivate
