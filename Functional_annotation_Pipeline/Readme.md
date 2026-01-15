@@ -1,135 +1,186 @@
-Step 0 – (Optional) Download eggNOG Database (Parallel)
+# Functional Annotation Pipeline (eggNOG + KEGG Modules)
 
-Script: download_eggnog_parallel.sh
-This script downloads eggNOG database files in parallel (faster than serial download).
+This folder provides scripts for annotating MAG proteins with eggNOG-mapper,
+extracting KEGG module hits (methanogenesis-focused), and summarizing module
+presence with optional abundance integration.
 
-Usage
+The workflow is organized into the steps below and follows the same structure as
+other pipeline READMEs in this repository.
+
+----
+
+## Step 1 – Download eggNOG database
+
+Script: `download_eggnog_parallel.sh`
+
+This script downloads and unpacks the eggNOG database into:
+`/scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/databases/eggnog_db`.
+
+### Usage
+```bash
 bash download_eggnog_parallel.sh
+```
 
-Output
-| eggNOG database directory (your environment-specific location)|
+### Output
+The database directory should contain:
+- `eggnog.db`
+- `eggnog.taxa/`
+- `eggnog_proteins.dmnd`
 
-If your EGGNOG_DB_DIR is already populated, you can skip this step.
-----------------------------------------------------------------------------------------------------------------------------------------------
-Step 1 – Run eggNOG-mapper for all MAGs (Slurm Array)
+----
+
+## Step 2 – Generate MAG lists (optional helpers)
+
 Scripts:
-run_eggnog_array.sh (group-wise array runner) 
-run_eggnog_single.sh (single MAG runner; called by the array script) 
+- `make_IR37_mag_list.sh`
+- `make_IR37_group_list.sh`
 
-This step runs eggNOG-mapper using Bakta proteins (.faa) as input. 
+These scripts create MAG lists based on Bakta results in:
+`/scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/11.bakta/results`.
 
-Usage
-sbatch ./run_eggnog_array.sh
+### Usage
+```bash
+bash make_IR37_mag_list.sh
+bash make_IR37_group_list.sh
+```
 
-Inputs
-Input	Description
-IR37_group_list.txt	One group prefix per line; array task picks one group and runs all MAGs in that group. 
-11.bakta/results/<MAG>/<MAG>.faa	Bakta protein FASTA per MAG. 
+### Inputs
+- Bakta results: `11.bakta/results/`
 
-Output
-File / Directory	Description
-34.eggnog/<MAG>/<MAG>.eggnog.emapper.annotations	eggNOG annotation table for each MAG (main downstream input). 
-----------------------------------------------------------------------------------------------------------------------------------------------
-Step 2 – Define Targets (Modules / Pathways / KO sets) via a Config File
-File: configs/targets_map.tsv
+### Output
+| File | Description |
+| ---- | ----------- |
+| `IR37_mag_list.txt` | Full MAG IDs (e.g., `IR37_0d.2`) |
+| `IR37_group_list.txt` | Group prefixes (e.g., `IR37_0d`) |
 
-This pipeline avoids hard-coding pathway/module IDs inside scripts. Instead, you define targets in a tab-separated config file.
+----
 
-Target Config Format
-module.tsv must contain:
+## Step 3 – Run eggNOG-mapper
 
-Column	Meaning
-id	Target identifier (e.g., M00567, map00680, KO:K00399 if you implement KO filtering)
-subdir	Output folder name under 34.eggnog/ where filtered TSVs will be written
-label (optional)	Human-friendly name for plotting/reporting
-
-Example:
-
-#id	subdir	label
-M00567	Hydrogenotrophic	CO2_to_CH4
-M00357	Acetoclastic	Acetate_to_CH4
-M00356	Methanol	Methanol_to_CH4
-M00563	Methylamine	Methylamines_to_CH4
-M00422	AcetylCoA	AcetylCoA_pathway
-
-Notes
-If you want to analyze different pathways, you only edit module.tsv (not the scripts).
-The filtering step must write files in this naming pattern: <MAG>_<id>.tsv.
-----------------------------------------------------------------------------------------------------------------------------------------------
-Step 3 – Filter eggNOG Annotations by Targets (Config-driven)
-
-Scripts (generalized targets version):
-run_filter_targets.sh (recommended)
-filter_by_target.py
-
-This step filters each MAG’s eggNOG annotations (*.emapper.annotations) to generate target-specific TSV files under subdirectories listed in targets_map.tsv.
-What it produces
-For each target (e.g., M00567) and each MAG:
-
-Output file: 34.eggnog/<subdir>/<MAG>_<id>.tsv
-
-This is conceptually the same as the older module-only filtering (02.run_filter_module.sh, 02.filter_by_module.py) but without a hard-coded module list.
-
-Usage
-bash run_filter_targets.sh \
-  /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/34.eggnog \
-  /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/module.tsv
-
-Arguments
-Argument	Description
-base_dir	Root directory containing per-MAG eggNOG outputs (34.eggnog/<MAG>/...annotations)
-targets_map.tsv	Target list config (Step 2)
-Output
-Location	Description
-34.eggnog/<subdir>/<MAG>_<id>.tsv	Filtered gene list for that target in that MAG
-----------------------------------------------------------------------------------------------------------------------------------------------
-Step 4 – Summarize Target Hits per MAG (Long + Wide Tables)
-
-Scripts (generalized targets version):
-
-run_summarize_targets_per_MAG.sh
-summarize_targets_per_MAG.py
-This step scans each <subdir> and counts the number of hits per MAG per target by counting rows in each <MAG>_<id>.tsv.
-
-Usage
-bash run_summarize_targets_per_MAG.sh \
-  /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/34.eggnog \
-  /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/configs/targets_map.tsv \
-  /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/34.eggnog/IR37_targets \
-  16
-
-Arguments
-Argument	Description
-base_dir	34.eggnog root
-targets_map.tsv	Target list config
-out_prefix	Prefix for output tables (e.g., .../IR37_targets)
-jobs	Threads for fast counting (I/O parallelism)
-Output
-File	Description
-<out_prefix>_long.tsv	MAG, TargetID, n_hits (long format)
-<out_prefix>_wide.tsv	MAG × TargetID matrix (wide format)
-----------------------------------------------------------------------------------------------------------------------------------------------
-step 5. Attach gene TPM/RPKM to module-filtered eggNOG TSVs (Slurm Array)
 Scripts:
+- `run_eggnog_single.sh`
+- `run_eggnog_array.sh`
 
-04.attach_TPM_to_module_hits.bash (Slurm array runner; module.tsv 기반으로 모듈별 병렬 실행)
-04.attach_tpm_rpkm_to_module_hits.py (실제 join 수행: eggNOG module TSV + gene TPM/RPKM)
+This step uses Bakta protein FASTA files (`*.faa`) and writes outputs under:
+`/scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/34.eggnog`.
 
-Purpose
-이 step은 이미 만들어진 module-filtered eggNOG 결과물(예:
-34.eggnog/Acetoclastic/IR37_0d.13_M00357.tsv)에 대해서,
-해당 gene에 대응하는 TPM/RPKM 값을 붙여서 “pathway gene list + abundance” 테이블을 만든다.
+### Usage
+Single MAG:
+```bash
+bash run_eggnog_single.sh IR37_18-5d.120
+```
 
-핵심은 다음 2개를 **(MAG, Geneid)**로 merge하는 것:
-module TSV (gene id는 보통 query 컬럼)
-샘플별 gene TPM/RPKM 테이블 (35.featureCounts/normalized/<sample>.allMAG.gene_TPM_RPKM.tsv.gz)
+SLURM array:
+```bash
+sbatch run_eggnog_array.sh
+```
 
-Usage
-(A) module.tsv 전체를 병렬(array)로 실행 (권장)
-    module.tsv의 유효 라인 수(N) 확인:
-    awk -F'\t' '$0 !~ /^#/ && NF>0{c++} END{print c}' /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/module.tsv
-    그 후 array 제출: sbatch --array=1-N /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/Functional_annotation_Pipeline/04.attach_TPM_to_module_hits.bash --use_array
+### Inputs
+- Bakta protein FASTA files: `11.bakta/results/*/*.faa`
 
-(B) 특정 module 폴더만 단일 실행
-    example: Acetoclastic만 실행
-    sbatch /scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/Functional_annotation_Pipeline/04.attach_TPM_to_module_hits.bash --module Acetoclastic
+### Output
+Each MAG directory under `34.eggnog/` contains:
+- `<MAG>.eggnog.emapper.annotations`
+- `<MAG>.eggnog.*` (other eggNOG outputs)
+
+----
+
+## Step 4 – Filter KEGG modules
+
+Scripts:
+- `run_filter_module.sh`
+- `filter_by_module.py`
+
+This step filters eggNOG annotations for KEGG modules (methanogenesis-related)
+and writes module-specific TSVs into module subdirectories (e.g.,
+`Hydrogenotrophic/`, `Acetoclastic/`).
+
+### Usage
+```bash
+bash run_filter_module.sh
+```
+
+### Inputs
+- eggNOG annotations: `34.eggnog/<MAG>/<MAG>.eggnog.emapper.annotations`
+
+### Output
+Module TSVs are written to subdirectories (e.g., `Hydrogenotrophic/`) under the
+current working folder.
+
+| Directory | Example file |
+| --------- | ------------ |
+| `Hydrogenotrophic/` | `IR37_0d.6_M00567.tsv` |
+| `Acetoclastic/` | `IR37_0d.6_M00357.tsv` |
+| `Methanol/` | `IR37_0d.6_M00356.tsv` |
+| `Methylamine/` | `IR37_0d.6_M00563.tsv` |
+| `AcetylCoA/` | `IR37_0d.6_M00422.tsv` |
+
+----
+
+## Step 5 – Summarize modules per MAG
+
+Scripts:
+- `run_summarize_modules_per_MAG.sh`
+- `summarize_modules_per_MAG.py`
+
+### Usage
+```bash
+bash run_summarize_modules_per_MAG.sh
+```
+
+### Inputs
+- Module TSVs generated in Step 4
+
+### Output
+| File | Description |
+| ---- | ----------- |
+| `IR37_modules_long.tsv` | Long table (MAG, Module, n_genes) |
+| `IR37_modules_wide.tsv` | Wide table (MAG × Module gene counts) |
+
+----
+
+## Step 6 – Summarize modules with abundance
+
+Scripts:
+- `build_module_abundance_summary.sh`
+- `summarize_modules_with_abundance.py`
+
+This step merges module presence with the abundance matrix from TAD80:
+`/scratch/sch496/sj/metagenomic_analysis_pipeline_UKY/FASTQ/fastq_files/29.TAD80/TAD80/abundance/04.abundance.tsv`.
+
+### Usage
+```bash
+bash build_module_abundance_summary.sh
+```
+
+### Inputs
+- Module summary from Step 5 (`IR37_modules_long.tsv`)
+- TAD80 abundance matrix (`29.TAD80/TAD80/abundance/04.abundance.tsv`)
+
+### Output
+| File | Description |
+| ---- | ----------- |
+| `IR37_modules_MAG_summary.tsv` | MAG, Module, n_genes + abundance columns |
+| `IR37_modules_sample_potential.tsv` | Module potential per sample |
+
+----
+
+## Step 7 – Extract methane pathway (map00680)
+
+Script: `extract_map00680_all.sh`
+
+This step extracts rows annotated with `map00680` (methane metabolism) from each
+MAG’s eggNOG annotation file.
+
+### Usage
+```bash
+bash extract_map00680_all.sh
+```
+
+### Inputs
+- eggNOG annotations: `34.eggnog/<MAG>/<MAG>.eggnog.emapper.annotations`
+
+### Output
+| File | Description |
+| ---- | ----------- |
+| `<MAG>_map00680.tsv` | Annotation rows containing `map00680` |
