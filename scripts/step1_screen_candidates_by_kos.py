@@ -181,6 +181,16 @@ def main() -> int:
             "Overrides --threshold when provided."
         ),
     )
+    parser.add_argument(
+        "--gene_presence_threshold",
+        type=float,
+        default=0.5,
+        help=(
+            "Required fraction of metabolism KOs that must be present. "
+            "Passes only when present_required_genes / total_required_genes "
+            "is strictly greater than this value (default: 0.5)."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -255,14 +265,24 @@ def main() -> int:
             coverage_fraction = (
                 covered_count / total_steps if total_steps > 0 else 0.0
             )
-            is_candidate = int(
-                covered_count >= required_steps and covered_count >= 1
+            step_rule_pass = covered_count >= required_steps and covered_count >= 1
+
+            matched_kos = sorted(ko_union.get(metabolism, set()).intersection(mag_kos))
+            total_required_genes = len(ko_union.get(metabolism, set()))
+            present_required_genes = len(matched_kos)
+            gene_presence_fraction = (
+                present_required_genes / total_required_genes
+                if total_required_genes > 0
+                else 0.0
             )
+            gene_rule_pass = (
+                total_required_genes > 0
+                and gene_presence_fraction > args.gene_presence_threshold
+            )
+            is_candidate = int(step_rule_pass and gene_rule_pass)
 
             if is_candidate:
                 candidates[metabolism].add(mag_id)
-
-            matched_kos = sorted(ko_union.get(metabolism, set()).intersection(mag_kos))
 
             summary_rows.append(
                 {
@@ -272,6 +292,9 @@ def main() -> int:
                     "covered_steps": covered_count,
                     "required_steps": required_steps,
                     "step_coverage_fraction": f"{coverage_fraction:.4f}",
+                    "total_required_genes": total_required_genes,
+                    "present_required_genes": present_required_genes,
+                    "gene_presence_fraction": f"{gene_presence_fraction:.4f}",
                     "is_candidate": is_candidate,
                     "covered_step_ids": ",".join(covered_steps),
                     "matched_kos": ",".join(matched_kos),
@@ -289,6 +312,9 @@ def main() -> int:
                 "covered_steps",
                 "required_steps",
                 "step_coverage_fraction",
+                "total_required_genes",
+                "present_required_genes",
+                "gene_presence_fraction",
                 "is_candidate",
                 "covered_step_ids",
                 "matched_kos",

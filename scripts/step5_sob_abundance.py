@@ -8,11 +8,15 @@ from __future__ import annotations
 
 import argparse
 import math
+import re
 import sys
 from pathlib import Path
+from typing import List
 
 import pandas as pd
 import matplotlib.pyplot as plt
+
+KO_RE = re.compile(r"K\d{5}")
 
 
 def count_steps(val: str) -> int:
@@ -22,6 +26,12 @@ def count_steps(val: str) -> int:
     if not text:
         return 0
     return len([s for s in text.split(",") if s])
+
+
+def count_kos(val: str) -> int:
+    if val is None:
+        return 0
+    return len(set(KO_RE.findall(str(val))))
 
 
 def build_label(row: pd.Series, hierarchy: List[str]) -> str:
@@ -83,6 +93,16 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--gene_presence_threshold",
+        type=float,
+        default=0.5,
+        help=(
+            "Required fraction of metabolism KOs that must be present. "
+            "Passes only when present_required_genes / total_required_genes "
+            "is strictly greater than this value (default: 0.5)."
+        ),
+    )
+    parser.add_argument(
         "--plot_dir",
         default="FASTQ/fastq_files/29.TAD80/plots",
         help="Output directory for stacked bar plots.",
@@ -124,8 +144,11 @@ def main() -> int:
     # 2) Filter ANI clades by Step 1 criteria
     ani = pd.read_csv(ani_summary, sep="\t")
     geneset = pd.read_csv(gene_set_tsv, sep="\t")
-    if not {"Metabolism", "Step"}.issubset(geneset.columns):
-        print("ERROR: gene_set_tsv missing Metabolism/Step columns.", file=sys.stderr)
+    if not {"Metabolism", "Step", "KEGG_ko"}.issubset(geneset.columns):
+        print(
+            "ERROR: gene_set_tsv missing Metabolism/Step/KEGG_ko columns.",
+            file=sys.stderr,
+        )
         return 1
 
     steps_total = (
@@ -136,10 +159,42 @@ def main() -> int:
         .size()
         .to_dict()
     )
+    required_kos = (
+        geneset[["Metabolism", "KEGG_ko"]]
+        .dropna()
+        .assign(ko=lambda df: df["KEGG_ko"].astype(str).str.findall(KO_RE))
+        .explode("ko")
+        .dropna(subset=["ko"])
+        .drop_duplicates(subset=["Metabolism", "ko"])
+    )
+    required_genes_total = (
+        required_kos.groupby("Metabolism").size().to_dict()
+    )
 
     ani["covered_steps"] = ani["covered_step_ids"].apply(count_steps)
     ani["metabolism_norm"] = ani["metabolism"].str.lower()
     ani["total_steps"] = ani["metabolism"].map(steps_total).fillna(0).astype(int)
+    required_genes_total_norm = {
+        str(k).strip().lower(): int(v) for k, v in required_genes_total.items()
+    }
+    ani["total_required_genes"] = (
+        ani["metabolism_norm"].map(required_genes_total_norm).fillna(0).astype(int)
+    )
+
+    if "present_required_genes" in ani.columns:
+        ani["present_required_genes"] = (
+            pd.to_numeric(ani["present_required_genes"], errors="coerce")
+            .fillna(0)
+            .astype(int)
+        )
+    elif "matched_kos" in ani.columns:
+        ani["present_required_genes"] = ani["matched_kos"].apply(count_kos)
+    else:
+        print(
+            "ERROR: ani_summary missing both 'present_required_genes' and 'matched_kos' columns.",
+            file=sys.stderr,
+        )
+        return 1
 
     thresholds = {}
     if args.thresholds.strip():
@@ -168,9 +223,19 @@ def main() -> int:
         return int(math.ceil(row["total_steps"] * threshold))
 
     ani["required_steps"] = ani.apply(required_steps, axis=1)
+    ani["gene_presence_fraction"] = ani.apply(
+        lambda row: (
+            row["present_required_genes"] / row["total_required_genes"]
+            if row["total_required_genes"] > 0
+            else 0.0
+        ),
+        axis=1,
+    )
 
     filtered = ani[
-        (ani["covered_steps"] >= 1) & (ani["covered_steps"] >= ani["required_steps"])
+        (ani["covered_steps"] >= 1)
+        & (ani["covered_steps"] >= ani["required_steps"])
+        & (ani["gene_presence_fraction"] > args.gene_presence_threshold)
     ].copy()
 
     # 3) Merge with TAD80.csv based on Clade -> ANI_clade

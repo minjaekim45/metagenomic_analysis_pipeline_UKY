@@ -18,4 +18,5 @@ python3 scripts/step1_screen_candidates_by_kos.py \
   --eggnog_root FASTQ/fastq_files/34.eggnog \
   --outdir FASTQ/fastq_files/36.functionalprofiling \
   --metabolisms Propionate,Butyrate,Acetate \
-  --thresholds Acetate=0.75,Butyrate=1.0,Propionate=1.0
+  --thresholds Acetate=0.75,Butyrate=1.0,Propionate=1.0 \
+  --gene_presence_threshold 0.4
