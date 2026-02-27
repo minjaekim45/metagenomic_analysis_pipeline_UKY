@@ -27,10 +27,10 @@ cd $FOLDER/08.nonpareil ;
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
    echo "Single Reads!"
-   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b".SingleReads.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 else
    echo "Coupled Reads! Should use only one pair reads"
-   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T kmer alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
+   singularity run --app nonpareil355 $container nonpareil -s ../04.trimmed_fasta/"$b"_1.fa -T alignment -f fasta -R $MEM -t $THR -b "$b".nonpareil.out
 fi
 
 #---------------------------------------------------------
