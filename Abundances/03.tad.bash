@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ "$1" == "" || "$1" == "-h" ]] ; then
    echo "
-   Usage: ./03.map.bash [folder] [queue] [QOS]
+   Usage: ./03.tad.bash [folder] [queue] [QOS]
 
    folder      Path to the folder containing merged FASTA file (01.hq-set.fna).It is in 28.index directory. 
    queue       Select a partition (if not provided, coa_mki314_uksr will be used)
