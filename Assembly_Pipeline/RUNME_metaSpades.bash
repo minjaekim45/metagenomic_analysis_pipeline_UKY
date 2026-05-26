@@ -54,7 +54,7 @@ for i in $dir/04.trimmed_fasta/*.CoupledReads.fa ; do
    else
       OPTS="$OPTS,FA=$dir/04.trimmed_fasta/$b.CoupledReads.fa"
    fi
-   sbatch --export="$OPTS" -J "metaSPADES-$b" --account=$QUEUE --partition=$QOS --error "$dir"/"metaSPADES-$b"-%j.err -o "$dir"/"metaSPADES-$b"-%j.out  $pac/run_metaSpades.pbs | grep .;
+   sbatch --export="$OPTS" -J "metaSPADES-$b" --account=$QUEUE --partition=$QOS --error "$dir/zz.out"/"metaSPADES-$b"-%j.err -o "$dir/zz.out"/"metaSPADES-$b"-%j.out  $pac/run_metaSpades.pbs | grep .;
 done ;
 
 echo 'Done'
