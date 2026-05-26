@@ -11,8 +11,8 @@ source /project/mki314_uksr/miniconda3/etc/profile.d/conda.sh
 conda activate spades
 #---------------------------------------------------------
 
-echo "==[ 05.assembly: $(date) ]"
-cd $FOLDER/05.assembly
+echo "==[ 05.assembly_metaSPAdes: $(date) ]"
+cd $FOLDER/05.assembly_metaSPAdes
 mkdir "$b"
 
 if [[ -s "../04.trimmed_fasta/$b.SingleReads.fa" ]] ; then
