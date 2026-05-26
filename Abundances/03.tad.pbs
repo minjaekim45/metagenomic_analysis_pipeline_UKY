@@ -13,7 +13,10 @@ conda activate samtools
 
 
 # Take the BAM file for this sample, reorganize the reads so they’re ordered by genome position, and save the result as a new file called ${b}.sorted.bam. Use 4 cores to make it faster.
-samtools sort -@ 4 $dir/29.TAD80/map/${b}.bam -o ${b}.sorted.bam
+samtools sort -@ 4 \
+  -o "${b}.sorted.bam" \
+  -T "${b}.tmp" \
+  "$dir/29.TAD80/map/${b}.bam"
 
 conda activate bedtools
 bedtools genomecov -ibam ${b}.sorted.bam -bga > ${b}.bg
