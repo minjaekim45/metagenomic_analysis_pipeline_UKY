@@ -31,7 +31,7 @@ else
    ln -s ./contigs.fasta $SAMPLE.AllContigs.fna
 fi
 
-time $enve/FastA.length.pl $SAMPLE.AllContigs.fna | awk '$2>=500{print $1}' \
+time $enve/FastA.length.pl $SAMPLE.AllContigs.fna | awk '$2>=1000{print $1}' \
    > $SAMPLE.LargeContigs.ids
 time $enve/FastA.filter.pl $SAMPLE.LargeContigs.ids $SAMPLE.AllContigs.fna \
    > $SAMPLE.LargeContigs.fna
