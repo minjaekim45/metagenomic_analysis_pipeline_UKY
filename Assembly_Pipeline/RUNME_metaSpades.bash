@@ -35,7 +35,7 @@ if [[ ! -e 04.trimmed_fasta ]] ; then
    echo "Cannot locate the 04.trimmed_fasta directory, aborting..." >&2
    exit 1
 fi
-for i in 05.assembly ; do
+for i in 05.assembly_metaSPAdes ; do
    [[ -d $i ]] || mkdir $i
 done
 
