@@ -14,7 +14,7 @@ if [[ "$1" == "" || "$1" == "-h" ]] ; then
    folder     Path to the folder containing 29.TAD80 directory
 
    Example:
-   sbatch ./02.add_representative_gtdb.bash /scratch/sag239/PNA
+   sbatch ./06.add_representative_gtdb.bash /scratch/sag239/PNA
    " >&2
    exit 1
 fi
@@ -31,7 +31,7 @@ ANISPP_FILE="$CONSOLIDATE_DIR/ANIspp.abundance.tsv"
 REP_CLUSTER_MAP="$CONSOLIDATE_DIR/representative_cluster_map.tsv"
 REP_LIST="$CONSOLIDATE_DIR/representative_genomes.txt"
 REP_GTDB_MAP="$CONSOLIDATE_DIR/representative_gtdb_classification.tsv"
-ROW_MAP="$CONSOLIDATE_DIR/representative_by_ANIspp_row.tsv"
+CLADE_MAP="$CONSOLIDATE_DIR/representative_by_clade.tsv"
 
 FINAL_OUT="$CONSOLIDATE_DIR/ANIspp.abundance.with_representative.tsv"
 
@@ -127,7 +127,7 @@ FNR == 1 {
 }
 ' "$REP_CLUSTER_MAP" "$GTDB_FILE" > "$REP_GTDB_MAP"
 
-echo "Step 3: Matching representative genome to each row of dRep_clusters.csv"
+echo "Step 3: Computing the Clade ID for each dRep_clusters.csv row and attaching representative genome + classification to it"
 
 awk -F'\t' '
 BEGIN {
@@ -146,32 +146,32 @@ NR == FNR {
 }
 
 {
-   row++
-   found=0
+   cluster_id = FNR - 1
+   clade = sprintf("ANIsp_%03d", cluster_id)
 
-   n=split($0, genomes, ",")
+   n = split($0, genomes, ",")
+   found = 0
 
    for (c in rep_by_cluster) {
-      rep=rep_by_cluster[c]
-
-      for (i=1; i<=n; i++) {
-         if (genomes[i] == rep) {
-            print row, c, rep, class_by_cluster[c]
-            found=1
+      rep = rep_by_cluster[c]
+      for (i = 1; i <= n; i++) {
+         g = genomes[i]
+         gsub(/\r/, "", g)
+         gsub(/^ +| +$/, "", g)
+         if (g == rep) {
+            print clade, c, rep, class_by_cluster[c]
+            found = 1
             break
          }
       }
-
-      if (found == 1) {
-         break
-      }
+      if (found == 1) break
    }
 
    if (found == 0) {
-      print row, "NA", "NA", "NA"
+      print clade, "NA", "NA", "NA"
    }
 }
-' "$REP_GTDB_MAP" "$DREP_CLUSTERS" > "$ROW_MAP"
+' "$REP_GTDB_MAP" "$DREP_CLUSTERS" > "$CLADE_MAP"
 
 echo "Step 4: Adding representative genome and GTDB classification to ANIspp.abundance.tsv"
 
@@ -181,9 +181,9 @@ BEGIN {
 }
 
 NR == FNR {
-   row=$1
-   rep_by_row[row]=$3
-   class_by_row[row]=$4
+   clade = $1
+   rep_by_clade[clade] = $3
+   class_by_clade[clade] = $4
    next
 }
 
@@ -193,15 +193,15 @@ FNR == 1 {
 }
 
 {
-   data_row=FNR-1
+   clade = $1
 
-   if (data_row in rep_by_row) {
-      print $0, rep_by_row[data_row], class_by_row[data_row]
+   if (clade in rep_by_clade) {
+      print $0, rep_by_clade[clade], class_by_clade[clade]
    } else {
       print $0, "NA", "NA"
    }
 }
-' "$ROW_MAP" "$ANISPP_FILE" > "$FINAL_OUT"
+' "$CLADE_MAP" "$ANISPP_FILE" > "$FINAL_OUT"
 
 echo "Done."
 echo "Representative cluster map:"
@@ -210,7 +210,7 @@ echo "Representative genomes:"
 echo "$REP_LIST"
 echo "Representative GTDB map:"
 echo "$REP_GTDB_MAP"
-echo "Representative by ANIspp row:"
-echo "$ROW_MAP"
+echo "Representative by Clade ID:"
+echo "$CLADE_MAP"
 echo "Final output:"
 echo "$FINAL_OUT"
