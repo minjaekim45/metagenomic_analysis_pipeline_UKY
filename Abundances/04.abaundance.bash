@@ -43,7 +43,7 @@ cd ../14.microbe_census
 } > MicrobeCensus_genome_equivalents.txt
 
 # In next line, chenage the path to your MicrobeCensus_genome_equivalents.txt
-ge="/scratch/sag239/BHG.metagenome/14.microbe_census/MicrobeCensus_genome_equivalents.txt"
+ge="$dir/../14.microbe_census/MicrobeCensus_genome_equivalents.txt"
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cd $dir/abundance
